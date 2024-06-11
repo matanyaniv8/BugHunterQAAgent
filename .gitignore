@@ -1,3 +1,4 @@
 *.xml
 *.yml
 .idea/*
+QA_Agent/websitesTestsResult/*
