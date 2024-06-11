@@ -1,0 +1,16 @@
+### Test for Button 1 ###
+Button Text: Log to Console
+Result: PASSED - Button has text and no errors after clicking.
+
+### Test for Button 2 ###
+Button Text: Change Text
+Result: PASSED - Button has text and no errors after clicking.
+
+### Test for Button 3 ###
+Button Text: Trigger Error
+Result: PASSED - Button has text and no errors after clicking.
+
+### Test for Button 4 ###
+Button Text: Invisible Text
+Result: PASSED - Button has text and no errors after clicking.
+
