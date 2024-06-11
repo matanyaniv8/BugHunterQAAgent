@@ -2,7 +2,7 @@ from playwright.sync_api import sync_playwright
 from urllib.parse import urlparse
 
 
-def test_buttons_url(page_url):
+def buttons_url_test(page_url):
     """
     Loads the url and extract all the buttons.
     checks if all the buttons are loaded, visible and when are click does not lead to failure.
@@ -15,10 +15,9 @@ def test_buttons_url(page_url):
     buttons = page_url.query_selector_all("button")
     buttons = page_url.query_selector_all("button")
 
-    return test_btns(page_url, buttons, False)
+    return btns_test(page_url, buttons, False)
 
-
-def test_buttons_code(page):
+def buttons_code_test(page):
     """
     Extract all the buttons from the HTML code.
     checks if all the buttons are loaded, visible and when are click does not lead to failure.
@@ -26,10 +25,10 @@ def test_buttons_code(page):
     :return: dict of test results.
     """
     buttons = page.query_selector_all("button")
-    return test_btns(page, buttons, False)
+    return btns_test(page, buttons, False)
 
 
-def test_btns(page, buttons, is_url=True):
+def btns_test(page, buttons, is_url=True):
     """
     Tests buttons for visibility, text content, and intractability.
     :return: List of dictionaries with results for each button test.
@@ -83,7 +82,7 @@ def run_tests_html_code(html_content):
         filename = f"./websitesTestsResult/{title}_button_tests.txt"
 
         # Get test results
-        results = test_buttons_code(page)
+        results = buttons_code_test(page)
         browser.close()
         return results, filename
 
@@ -105,7 +104,7 @@ def run_url_tests(url):
         filename = f"./websitesTestsResult/{domain_name}_button_tests.txt"
 
         # Get test results
-        results = test_buttons_url(page)
+        results = buttons_url_test(page)
 
         browser.close()
         return results, filename
