@@ -5,6 +5,11 @@ from typing import List
 import os
 import random
 
+from bug_families.button_bugs import button_bugs
+from bug_families.link_bugs import link_bugs
+from bug_families.image_bugs import image_bugs
+from bug_families.tab_bugs import tab_bugs
+
 app = FastAPI()
 
 app.add_middleware(
@@ -22,32 +27,12 @@ class BugSelection(BaseModel):
 
 @app.post("/generate")
 async def generate_html(selection: BugSelection):
+    # Combine all bug dictionaries
     bug_html_snippets = {
-        "missing_alt": [
-            '<img src="image.jpg">',
-            '<img src="photo.png">'
-        ],
-        "broken_link": [
-            '<a href="nonexistent.html">Broken Link</a>',
-            '<a href="404.html">Another Broken Link</a>'
-        ],
-        "missing_doctype": [
-            '<html><head><title>Test</title></head><body></body></html>',
-            '<html><body><p>Content without DOCTYPE</p></body></html>'
-        ],
-        "submit_button_no_action": [
-            '<form><button type="button">Submit</button></form>',
-            '<form><input type="button" value="Submit"></form>'
-        ],
-        "non_functional_tabs": [
-            '''
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#">About Us</a></li>
-            </ul>
-            '''
-        ],
+        **button_bugs,
+        **link_bugs,
+        **image_bugs,
+        **tab_bugs,
     }
 
     selected_snippets = [random.choice(bug_html_snippets[bug]) for bug in selection.bugs if bug in bug_html_snippets]
@@ -56,6 +41,7 @@ async def generate_html(selection: BugSelection):
     # Save the generated HTML
     file_name = "buggy_website.html"
     file_path = os.path.join("generated_html", file_name)
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)  # Ensure the directory exists
     with open(file_path, "w") as file:
         file.write(generated_html)
 
