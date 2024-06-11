@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import '../public/styles.css';
+import styles from '../../styles/Index.module.css';
 
 export default function Home() {
   const [selectedBugs, setSelectedBugs] = useState([]);
@@ -48,20 +48,21 @@ export default function Home() {
 
   return (
     <div>
-      <h1>Select Bugs</h1>
-      <div className="center-buttons">
-        <button onClick={expandAll}>Expand All</button>
-        <button onClick={minimizeAll}>Minimize All</button>
+      <h1 className={styles.title}>Select Bugs</h1>
+      <div className={styles.centerButtons}>
+        <button className={styles.button} onClick={expandAll}>Expand All</button>
+        <button className={styles.button} onClick={minimizeAll}>Minimize All</button>
       </div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <div>
-          <h2 className="tab-title" onClick={() => toggleSection('buttonsSection')}>Buttons</h2>
-          <div id="buttonsSection" style={{ display: 'none' }}>
-            <label>
+          <h2 className={styles.tabTitle} onClick={() => toggleSection('buttonsSection')}>Buttons</h2>
+          <div id="buttonsSection" className={styles.section} style={{ display: 'none' }}>
+            <label className={styles.label}>
               <input
                 type="checkbox"
                 name="bugs"
                 value="submit_button_no_action"
+                className={styles.inputCheckbox}
                 onChange={handleCheckboxChange}
               />
               Submit Button Does Nothing
@@ -70,13 +71,14 @@ export default function Home() {
         </div>
 
         <div>
-          <h2 className="tab-title" onClick={() => toggleSection('tabsSection')}>Tabs</h2>
-          <div id="tabsSection" style={{ display: 'none' }}>
-            <label>
+          <h2 className={styles.tabTitle} onClick={() => toggleSection('tabsSection')}>Tabs</h2>
+          <div id="tabsSection" className={styles.section} style={{ display: 'none' }}>
+            <label className={styles.label}>
               <input
                 type="checkbox"
                 name="bugs"
                 value="non_functional_tabs"
+                className={styles.inputCheckbox}
                 onChange={handleCheckboxChange}
               />
               Non-Functional Tabs
@@ -85,13 +87,14 @@ export default function Home() {
         </div>
 
         <div>
-          <h2 className="tab-title" onClick={() => toggleSection('imagesSection')}>Images</h2>
-          <div id="imagesSection" style={{ display: 'none' }}>
-            <label>
+          <h2 className={styles.tabTitle} onClick={() => toggleSection('imagesSection')}>Images</h2>
+          <div id="imagesSection" className={styles.section} style={{ display: 'none' }}>
+            <label className={styles.label}>
               <input
                 type="checkbox"
                 name="bugs"
                 value="missing_alt"
+                className={styles.inputCheckbox}
                 onChange={handleCheckboxChange}
               />
               Missing Alt Attribute
@@ -100,13 +103,14 @@ export default function Home() {
         </div>
 
         <div>
-          <h2 className="tab-title" onClick={() => toggleSection('linksSection')}>Links</h2>
-          <div id="linksSection" style={{ display: 'none' }}>
-            <label>
+          <h2 className={styles.tabTitle} onClick={() => toggleSection('linksSection')}>Links</h2>
+          <div id="linksSection" className={styles.section} style={{ display: 'none' }}>
+            <label className={styles.label}>
               <input
                 type="checkbox"
                 name="bugs"
                 value="broken_link"
+                className={styles.inputCheckbox}
                 onChange={handleCheckboxChange}
               />
               Broken Link
@@ -115,13 +119,14 @@ export default function Home() {
         </div>
 
         <div>
-          <h2 className="tab-title" onClick={() => toggleSection('doctypeSection')}>DOCTYPE</h2>
-          <div id="doctypeSection" style={{ display: 'none' }}>
-            <label>
+          <h2 className={styles.tabTitle} onClick={() => toggleSection('doctypeSection')}>DOCTYPE</h2>
+          <div id="doctypeSection" className={styles.section} style={{ display: 'none' }}>
+            <label className={styles.label}>
               <input
                 type="checkbox"
                 name="bugs"
                 value="missing_doctype"
+                className={styles.inputCheckbox}
                 onChange={handleCheckboxChange}
               />
               Missing DOCTYPE
@@ -129,7 +134,7 @@ export default function Home() {
           </div>
         </div>
 
-        <button type="submit">Generate</button>
+        <button type="submit" className={styles.button}>Generate</button>
       </form>
       {generatedUrl && (
         <div>

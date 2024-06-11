@@ -1,16 +1,4 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  margin: 0;
-  padding: 20px;
-  color: #333;
-}
-
-h1 {
-  color: #4a90e2;
-}
-
-form {
+.form {
   background: #fff;
   padding: 20px;
   border-radius: 8px;
@@ -19,16 +7,16 @@ form {
   margin: 20px auto;
 }
 
-label {
+.label {
   display: block;
   margin-bottom: 10px;
 }
 
-input[type="checkbox"] {
+.inputCheckbox {
   margin-right: 10px;
 }
 
-button {
+.button {
   display: inline-block;
   background: #4a90e2;
   color: #fff;
@@ -41,17 +29,17 @@ button {
   margin: 10px;
 }
 
-button:hover {
+.button:hover {
   background: #357ab8;
 }
 
-h2 {
+.h2 {
   cursor: pointer;
   color: #4a90e2;
   margin: 10px 0;
 }
 
-.tab-title {
+.tabTitle {
   background-color: #4a90e2;
   color: white;
   padding: 10px;
@@ -59,29 +47,24 @@ h2 {
   position: relative;
 }
 
-.tab-title::after {
+.tabTitle::after {
   content: '▼';
   position: absolute;
   right: 10px;
   font-size: 12px;
 }
 
-#buttonsSection, #tabsSection, #imagesSection, #linksSection, #doctypeSection {
+.section {
   margin-left: 20px;
 }
 
-a {
-  color: #4a90e2;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-.center-buttons {
+.centerButtons {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin: 20px 0;
+}
+
+.title {
+  color: #4a90e2;
 }
