@@ -2,6 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import styles from '../../styles/Index.module.css';
 
+import ButtonBugs from './components/ButtonBugs';
+import LinkBugs from './components/LinkBugs';
+import ImageBugs from './components/ImageBugs';
+import TabBugs from './components/TabBugs';
+
 export default function Home() {
   const [selectedBugs, setSelectedBugs] = useState([]);
   const [generatedUrl, setGeneratedUrl] = useState('');
@@ -54,86 +59,10 @@ export default function Home() {
         <button className={styles.button} onClick={minimizeAll}>Minimize All</button>
       </div>
       <form onSubmit={handleSubmit} className={styles.form}>
-        <div>
-          <h2 className={styles.tabTitle} onClick={() => toggleSection('buttonsSection')}>Buttons</h2>
-          <div id="buttonsSection" className={styles.section} style={{ display: 'none' }}>
-            <label className={styles.label}>
-              <input
-                type="checkbox"
-                name="bugs"
-                value="submit_button_no_action"
-                className={styles.inputCheckbox}
-                onChange={handleCheckboxChange}
-              />
-              Submit Button Does Nothing
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <h2 className={styles.tabTitle} onClick={() => toggleSection('tabsSection')}>Tabs</h2>
-          <div id="tabsSection" className={styles.section} style={{ display: 'none' }}>
-            <label className={styles.label}>
-              <input
-                type="checkbox"
-                name="bugs"
-                value="non_functional_tabs"
-                className={styles.inputCheckbox}
-                onChange={handleCheckboxChange}
-              />
-              Non-Functional Tabs
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <h2 className={styles.tabTitle} onClick={() => toggleSection('imagesSection')}>Images</h2>
-          <div id="imagesSection" className={styles.section} style={{ display: 'none' }}>
-            <label className={styles.label}>
-              <input
-                type="checkbox"
-                name="bugs"
-                value="missing_alt"
-                className={styles.inputCheckbox}
-                onChange={handleCheckboxChange}
-              />
-              Missing Alt Attribute
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <h2 className={styles.tabTitle} onClick={() => toggleSection('linksSection')}>Links</h2>
-          <div id="linksSection" className={styles.section} style={{ display: 'none' }}>
-            <label className={styles.label}>
-              <input
-                type="checkbox"
-                name="bugs"
-                value="broken_link"
-                className={styles.inputCheckbox}
-                onChange={handleCheckboxChange}
-              />
-              Broken Link
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <h2 className={styles.tabTitle} onClick={() => toggleSection('doctypeSection')}>DOCTYPE</h2>
-          <div id="doctypeSection" className={styles.section} style={{ display: 'none' }}>
-            <label className={styles.label}>
-              <input
-                type="checkbox"
-                name="bugs"
-                value="missing_doctype"
-                className={styles.inputCheckbox}
-                onChange={handleCheckboxChange}
-              />
-              Missing DOCTYPE
-            </label>
-          </div>
-        </div>
-
+        <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+        <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+        <ImageBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+        <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
         <button type="submit" className={styles.button}>Generate</button>
       </form>
       {generatedUrl && (
