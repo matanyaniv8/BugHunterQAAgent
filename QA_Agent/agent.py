@@ -1,3 +1,4 @@
+import os
 from playwright.sync_api import sync_playwright
 from urllib.parse import urlparse
 
@@ -12,7 +13,6 @@ def buttons_url_test(page_url):
     # Use a more stable selector if possible, and wait for the general presence of buttons
     page_url.wait_for_selector("button", state="visible", timeout=50000)  # Increased timeout
 
-    buttons = page_url.query_selector_all("button")
     buttons = page_url.query_selector_all("button")
 
     return btns_test(page_url, buttons, False)
@@ -66,7 +66,7 @@ def btns_test(page, buttons, is_url=True):
     return results
 
 
-def run_tests_html_code(html_content):
+def run_tests_html_code(html_content, output_dir='./websitesTestsResult'):
     """
     Runs all the tests for an HTML code.
     """
@@ -79,17 +79,18 @@ def run_tests_html_code(html_content):
 
         # Generate a simple filename from a title or default to 'test_page'
         title = page.title() or "test_page"
-        filename = f"./websitesTestsResult/{title}_button_tests.txt"
+        filename = os.path.join(output_dir, f"{title}_button_tests.txt")
+        os.makedirs(output_dir, exist_ok=True)
 
         # Get test results
         results = buttons_code_test(page)
         browser.close()
-        return results, filename
+        write_results_to_file(results, filename)
 
 
-def run_url_tests(url):
+def run_tests_url(url, output_dir='./websitesTestsResult'):
     """
-    Runs the tests for a given url.
+    Runs the tests for a given URL.
     """
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True)
@@ -101,27 +102,41 @@ def run_url_tests(url):
         # Generate a simple filename from the domain name of the URL
         parsed_url = urlparse(url)
         domain_name = parsed_url.netloc.replace("www.", "")  # Removes 'www.' if present
-        filename = f"./websitesTestsResult/{domain_name}_button_tests.txt"
+        filename = os.path.join(output_dir, f"{domain_name}_button_tests.txt")
+        os.makedirs(output_dir, exist_ok=True)
 
         # Get test results
         results = buttons_url_test(page)
-
         browser.close()
-        return results, filename
+        write_results_to_file(results, filename)
 
 
-def run_tests_wrapper(web_data):
+def run_tests_wrapper(web_data, output_dir='./websitesTestsResult'):
     """
-    Wrapper function for run_tests, if the website is an HTML code or an url.
-    writes the results into a file.
-    :param web_data: HTML code or url.
+    Wrapper function for run_tests, if the website is an HTML code or a URL.
+    Writes the results into a file.
+    :param web_data: HTML code or URL.
     """
     if web_data.startswith("http"):
-        results, filename = run_url_tests(web_data)
+        run_tests_url(web_data, output_dir)
     else:
-        results, filename = run_tests_html_code(web_data)
+        run_tests_html_code(web_data, output_dir)
 
-    # Write results to a file
+
+def get_html_content(file_path):
+    """Reads an HTML file from the given path and returns its content."""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
+    except FileNotFoundError:
+        print("File not found. Please check the file path.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    return None
+
+
+def write_results_to_file(results, filename):
+    """Writes the test results to a file."""
     with open(filename, "w") as file:
         for result in results:
             file.write(f"### {result['name']} ###\n")
@@ -129,24 +144,26 @@ def run_tests_wrapper(web_data):
             file.write(f"Result: {result['outcome']}\n\n")
 
 
-def get_html_content(file_path):
-    """Reads an HTML file from the given path and returns its content."""
-    file_content = None
+def test_html_file(file_path, output_dir='./websitesTestsResult'):
+    """
+    Tests an HTML file given its path.
+    """
+    html_content = get_html_content(file_path)
+    if html_content:
+        run_tests_html_code(html_content, output_dir)
 
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            file_content = file.read()
 
-    except FileNotFoundError:
-        print("File not found. Please check the file path.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-    return file_content
+def test_url(url, output_dir='./websitesTestsResult'):
+    """
+    Tests a URL by first retrieving its HTML content and then calling the HTML test method.
+    """
+    run_tests_url(url, output_dir)
 
 
 if __name__ == "__main__":
-    web_path = 'testPage.html'  # Replace this with the actual file path
-    html_content = get_html_content(web_path)
-    run_tests_wrapper(html_content)
-    url = 'https://themeforest.net/search/dummy'  # URL to test
-    run_tests_wrapper(url)
+    # Example usage:
+    html_file_path = '../Websites_Generator/generated_html/buggy_website.html'  # Replace this with the actual file path
+    url_to_test = 'https://themeforest.net/search/dummy'  # URL to test
+
+    test_html_file(html_file_path)
+    test_url(url_to_test)
