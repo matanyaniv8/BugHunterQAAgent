@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test Page</title>
+</head>
+<body>
+    <h1>Test Page for Buttons</h1>
+    <button id="logButton" onclick="console.log('Log Button clicked');">Log to Console</button>
+    <button id="changeTextButton" onclick="this.innerText='Clicked!';">Change Text</button>
+    <button id="errorButton" onclick="throw new Error('This is a test error');">Trigger Error</button>
+    <button id="invisibleTextButton" style="color: white; background-color: white;">Invisible Text</button>
+    <script>
+        // Additional JavaScript can be added here if needed for more complex tests
+    </script>
+</body>
+</html>
