@@ -51,6 +51,21 @@ h2 {
   margin: 10px 0;
 }
 
+.tab-title {
+  background-color: #4a90e2;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  position: relative;
+}
+
+.tab-title::after {
+  content: '▼';
+  position: absolute;
+  right: 10px;
+  font-size: 12px;
+}
+
 #buttonsSection, #tabsSection, #imagesSection, #linksSection, #doctypeSection {
   margin-left: 20px;
 }

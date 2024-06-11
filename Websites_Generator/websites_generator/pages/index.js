@@ -55,7 +55,7 @@ export default function Home() {
       </div>
       <form onSubmit={handleSubmit}>
         <div>
-          <h2 onClick={() => toggleSection('buttonsSection')}>Buttons</h2>
+          <h2 className="tab-title" onClick={() => toggleSection('buttonsSection')}>Buttons</h2>
           <div id="buttonsSection" style={{ display: 'none' }}>
             <label>
               <input
@@ -70,7 +70,7 @@ export default function Home() {
         </div>
 
         <div>
-          <h2 onClick={() => toggleSection('tabsSection')}>Tabs</h2>
+          <h2 className="tab-title" onClick={() => toggleSection('tabsSection')}>Tabs</h2>
           <div id="tabsSection" style={{ display: 'none' }}>
             <label>
               <input
@@ -85,7 +85,7 @@ export default function Home() {
         </div>
 
         <div>
-          <h2 onClick={() => toggleSection('imagesSection')}>Images</h2>
+          <h2 className="tab-title" onClick={() => toggleSection('imagesSection')}>Images</h2>
           <div id="imagesSection" style={{ display: 'none' }}>
             <label>
               <input
@@ -100,7 +100,7 @@ export default function Home() {
         </div>
 
         <div>
-          <h2 onClick={() => toggleSection('linksSection')}>Links</h2>
+          <h2 className="tab-title" onClick={() => toggleSection('linksSection')}>Links</h2>
           <div id="linksSection" style={{ display: 'none' }}>
             <label>
               <input
@@ -115,7 +115,7 @@ export default function Home() {
         </div>
 
         <div>
-          <h2 onClick={() => toggleSection('doctypeSection')}>DOCTYPE</h2>
+          <h2 className="tab-title" onClick={() => toggleSection('doctypeSection')}>DOCTYPE</h2>
           <div id="doctypeSection" style={{ display: 'none' }}>
             <label>
               <input
