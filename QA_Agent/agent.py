@@ -3,9 +3,9 @@ from tests.button_tests import run_tests_html_code as button_tests_html, run_url
 
 def run_tests_wrapper(web_data):
     """
-    Wrapper function for run_tests, if the website is an HTML code or an url.
-    writes the results into a file.
-    :param web_data: HTML code or url.
+    Wrapper function for run_tests, if the website is an HTML code or an URL.
+    Writes the results into a file.
+    :param web_data: HTML code or URL.
     """
     if web_data.startswith("http"):
         button_results, button_filename = button_tests_url(web_data)
@@ -21,7 +21,9 @@ def run_tests_wrapper(web_data):
             for result in all_results:
                 file.write(f"### {result['name']} ###\n")
                 file.write(f"Button Text: {result['button_text']}\n")
-                file.write(f"Result: {result['outcome']}\n\n")
+                file.write(f"Result: {result['outcome']}\n")
+                file.write(f"Method: {result['test_method']}\n")
+                file.write(f"Test Description: {result['test_description']}\n\n")
 
 
 def get_html_content(file_path):
@@ -44,6 +46,8 @@ def get_html_content(file_path):
 if __name__ == "__main__":
     web_path = '../Websites_Generator/generated_html/buggy_website.html'  # Replace this with the actual file path
     html_content = get_html_content(web_path)
-    run_tests_wrapper(html_content)
+    if html_content:
+        run_tests_wrapper(html_content)
+
     url = 'https://themeforest.net/search/dummy'  # URL to test
     run_tests_wrapper(url)

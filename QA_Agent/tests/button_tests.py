@@ -1,34 +1,45 @@
 from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright
 
+# Dictionary to map method names to their descriptions
+test_descriptions = {
+    "buttons_url_test": "Loads the URL and extracts all the buttons. Checks if all the buttons are loaded, visible, and when clicked do not lead to failure.",
+    "buttons_code_test": "Extracts all the buttons from the HTML code. Checks if all the buttons are loaded, visible, and when clicked do not lead to failure.",
+    "btns_test": "Tests buttons for visibility, text content, and interactability."
+}
+
+def get_test_description(method_name):
+    """
+    Returns the test description associated with the given method name.
+    :param method_name: Name of the test method.
+    :return: Description of the test method.
+    """
+    return test_descriptions.get(method_name, "Test description not found.")
 
 def buttons_url_test(page_url):
     """
-    Loads the url and extract all the buttons.
-    checks if all the buttons are loaded, visible and when are click does not lead to failure.
-    :param page_url: url of the page
+    Loads the URL and extracts all the buttons.
+    Checks if all the buttons are loaded, visible, and when clicked do not lead to failure.
+    :param page_url: URL of the page
     :return: dict of test results.
     """
-    # Use a more stable selector if possible, and wait for the general presence of buttons
     page_url.wait_for_selector("button", state="visible", timeout=50000)
     buttons = page_url.query_selector_all("button")
-    return btns_test(page_url, buttons, False)
-
+    return btns_test(page_url, buttons, False, "buttons_url_test")
 
 def buttons_code_test(page):
     """
-    Extract all the buttons from the HTML code.
-    checks if all the buttons are loaded, visible and when are click does not lead to failure.
+    Extracts all the buttons from the HTML code.
+    Checks if all the buttons are loaded, visible, and when clicked do not lead to failure.
     :param page: HTML code.
     :return: dict of test results.
     """
     buttons = page.query_selector_all("button")
-    return btns_test(page, buttons, False)
+    return btns_test(page, buttons, False, "buttons_code_test")
 
-
-def btns_test(page, buttons, is_url=True):
+def btns_test(page, buttons, is_url, test_name):
     """
-    Tests buttons for visibility, text content, and intractability.
+    Tests buttons for visibility, text content, and interactability.
     :return: List of dictionaries with results for each button test.
     """
     results = []
@@ -37,11 +48,13 @@ def btns_test(page, buttons, is_url=True):
         if button_text:
             button_text = button_text.strip()
 
-        test_name = f"Test for Button {index + 1}"
+        individual_test_name = f"Test for Button {index + 1}"
         result = {
-            "name": test_name,
+            "name": individual_test_name,
             "button_text": button_text,
-            "outcome": ""
+            "outcome": "",
+            "test_method": test_name,
+            "test_description": get_test_description(test_name)
         }
 
         if not button_text:
@@ -61,7 +74,6 @@ def btns_test(page, buttons, is_url=True):
         results.append(result)
     return results
 
-
 def run_tests_html_code(html_content):
     """
     Runs all the tests for an HTML code.
@@ -78,7 +90,6 @@ def run_tests_html_code(html_content):
         results = buttons_code_test(page)
         browser.close()
         return results, filename
-
 
 def run_url_tests(url):
     """
