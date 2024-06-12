@@ -67,7 +67,7 @@ if __name__ == "__main__":
     web_path = '../Websites_Generator/generated_html/buggy_website.html'
     html_content = get_html_content(web_path)
     if html_content:
-        run_tests_wrapper(html_content, test_type="button")
+       # run_tests_wrapper(html_content, test_type="button")
         run_tests_wrapper(html_content, test_type="link")
 
     url = 'https://themeforest.net/search/dummy'

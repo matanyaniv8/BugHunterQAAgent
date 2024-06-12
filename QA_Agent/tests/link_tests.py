@@ -7,8 +7,10 @@ link_test_descriptions = {
     "links_code_test": "Extracts all the links from the HTML code. Checks if all the links are loaded, visible, and when clicked do not lead to failure.",
     "check_visibility": "Checks if the link is visible.",
     "check_href": "Checks if the link has a valid href attribute.",
-    "check_interactive": "Checks if the link is interactable.",
-    "check_broken_links": "Checks if the link is broken (404 error)."
+    "check_interactive": "Checks if the link is intractable.",
+    "check_broken_links": "Checks if the link is broken (404 error).",
+    "check_anchor": "Checks if the link points to a valid anchor within the page.",
+    "check_javascript_link": "Checks if the link uses JavaScript and does not provide a meaningful action."
 }
 
 
@@ -30,7 +32,7 @@ def links_url_test(page):
     """
     page.wait_for_selector("a", state="visible", timeout=50000)
     links = page.query_selector_all("a")
-    return links_test(links, "links_url_test")
+    return links_test(links, "links_url_test", page)
 
 
 def links_code_test(page):
@@ -41,7 +43,7 @@ def links_code_test(page):
     :return: List of test results.
     """
     links = page.query_selector_all("a")
-    return links_test(links, "links_code_test")
+    return links_test(links, "links_code_test", page)
 
 
 def check_visibility(link):
@@ -100,11 +102,42 @@ def check_broken_link(link_href):
         return f"FAILED - Request error: {str(e)}"
 
 
-def links_test(links, test_name):
+def check_anchor(link_href, page):
     """
-    Tests links for visibility, href content, interactability, and checks for broken links.
+    Checks if the link points to a valid anchor within the page.
+    :param link_href: Href attribute of the link.
+    :param page: Playwright page object
+    :return: "PASSED" or "FAILED" with the reason.
+    """
+    if link_href.startswith("#"):
+        anchor_id = link_href[1:]
+        try:
+            if page.query_selector(f"#{anchor_id}"):
+                return "PASSED - Valid anchor."
+            else:
+                return "FAILED - Invalid anchor."
+        except Exception as e:
+            return f"FAILED - Error checking anchor: {str(e)}"
+    return "SKIPPED - Not an anchor link."
+
+
+def check_javascript_link(link_href):
+    """
+    Checks if the link uses JavaScript and does not provide a meaningful action.
+    :param link_href: Href attribute of the link.
+    :return: "PASSED" or "FAILED" with the reason.
+    """
+    if link_href.startswith("javascript:"):
+        return "FAILED - Link uses JavaScript."
+    return "SKIPPED - Not a JavaScript link."
+
+
+def links_test(links, test_name, page):
+    """
+    Tests links for visibility, href content, intractability, and checks for broken links.
     :param links: List of link elements.
     :param test_name: Name of the test method.
+    :param page: Playwright page object
     :return: List of dictionaries with results for each link test.
     """
     results = []
@@ -143,12 +176,20 @@ def links_test(links, test_name):
 
             # Test for broken link
             result["outcomes"]["Broken Link Test"] = check_broken_link(link_href)
+
+            # Test for anchor link
+            result["outcomes"]["Anchor Link Test"] = check_anchor(link_href, page)
+
+            # Test for JavaScript link
+            result["outcomes"]["JavaScript Link Test"] = check_javascript_link(link_href)
         else:
             result["outcomes"]["Interactivity Test"] = "FAILED - No href to test."
             result["outcomes"]["Broken Link Test"] = "FAILED - No href to test."
+            result["outcomes"]["Anchor Link Test"] = "FAILED - No href to test."
+            result["outcomes"]["JavaScript Link Test"] = "FAILED - No href to test."
 
         # Determine overall outcome
-        if all(outcome.startswith("PASSED") for outcome in result["outcomes"].values()):
+        if all(outcome.startswith("PASSED") for outcome in result["outcomes"].values() if outcome != "SKIPPED"):
             result["overall_outcome"] = "PASSED - All tests passed successfully."
         else:
             failed_tests = [test for test, outcome in result["outcomes"].items() if outcome.startswith("FAILED")]

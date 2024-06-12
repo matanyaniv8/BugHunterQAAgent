@@ -36,6 +36,26 @@ const LinkBugs = ({ handleCheckboxChange, toggleSection }) => {
           />
           Link Without Href
         </label>
+        <label className={styles.label}>
+          <input
+            type="checkbox"
+            name="bugs"
+            value="incorrect_anchor_link"
+            className={styles.inputCheckbox}
+            onChange={handleCheckboxChange}
+          />
+          Incorrect Anchor Link
+        </label>
+        <label className={styles.label}>
+          <input
+            type="checkbox"
+            name="bugs"
+            value="javascript_link"
+            className={styles.inputCheckbox}
+            onChange={handleCheckboxChange}
+          />
+          JavaScript Link
+        </label>
       </div>
     </div>
   );
