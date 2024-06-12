@@ -91,7 +91,7 @@ def run_tests_html_code(html_content):
         page = browser.new_page()
         page.set_content(html_content)
         title = page.title() or "test_page"
-        filename = f"./websitesTestsResult/{title}_button_tests.txt"
+        filename = f"./results/{title}_button_tests.txt"
         results = buttons_code_test(page)
         browser.close()
         return results, filename
@@ -109,7 +109,7 @@ def run_url_tests(url):
         page.goto(url, wait_until="networkidle")
         parsed_url = urlparse(url)
         domain_name = parsed_url.netloc.replace("www.", "")
-        filename = f"./websitesTestsResult/{domain_name}_button_tests.txt"
+        filename = f"./results/{domain_name}_button_tests.txt"
         try:
             results = buttons_url_test(page)
             browser.close()

@@ -4,6 +4,8 @@ from tests.link_tests import run_link_tests_html_code as link_tests_html, run_ur
 from tests.form_tests import run_tests_html_code as form_test_html, run_form_tests
 from urllib.parse import urlparse
 
+def execute():
+    print("1")
 
 def run_tests_wrapper(web_data, filename):
     """
@@ -106,8 +108,8 @@ if __name__ == "__main__":
     # web_path = '../Websites_Generator/generated_html/buggy_website.html'
     # html_content = get_html_content(web_path)
     # if html_content:
-    #     run_tests_wrapper(html_content, filename=f"./websitesTestsResult/buggy_website_tests.html")
+    #     run_tests_wrapper(html_content, filename=f"./results/buggy_website_tests.html")
     #     pass
 
     url = "https://www.mako.co.il/collab/N12_Contact.html?partner=NewsfooterLinks&click_id=esDU5sDbdL"
-    run_tests_wrapper(url, f"websitesTestsResult/{get_domain_from_url(url)}_tests.text")
+    run_tests_wrapper(url, f"results/{get_domain_from_url(url)}_tests.text")

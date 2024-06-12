@@ -1,52 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buggy Form</title>
-    <script>
-        function checkEmail() {
-            var email = document.getElementById('email').value;
-            var pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
-            if (email.match(pattern)) {
-                alert('Email format is correct.');
-            } else {
-                alert('Invalid email format.');
-            }
-        }
-
-        function checkPasswords() {
-            var password = document.getElementById('password').value;
-            var confirmPassword = document.getElementById('confirm_password').value;
-            if (password === confirmPassword) {
-                alert('Passwords match.');
-            } else {
-                alert('Passwords do not match.');
-            }
-        }
-
-        function checkDropdown() {
-            var dropdown = document.getElementById('dropdown').value;
-            if (dropdown) {
-                alert('Dropdown selection: ' + dropdown);
-            } else {
-                alert('No option selected in the dropdown.');
-            }
-        }
-
-        function checkCarSelection() {
-            var cars = document.getElementById('cars').value;
-            if (cars) {
-                alert('Car selection: ' + cars);
-            } else {
-                alert('No car selected.');
-            }
-        }
-    </script>
-</head>
-<body>
-    <h1>Form with Bugs</h1>
+forms_bugs = {
+    "Drop-Down list selection validation": [
+        '''
     <form id="buggyForm">
+        <label>Choose a car:</label>
+        <select id="cars" name="">
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="fiat" disabled>Fiat</option>
+            <option value="audi">Audi</option>
+        </select>
+    </form>
+        '''
+    ],
+    "inputs buttons": [
+        '''
+        <form id="buggyForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+        <button type="button" onclick="checkEmail()">Check Email</button><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password"><br><br>
+
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password">
+        <button type="button" onclick="checkPasswords()">Check Passwords</button><br><br>
+        '''
+    ],
+    "combined": [
+        '''
+        <form id="buggyForm">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name"><br><br>
 
@@ -83,5 +69,6 @@
 
         <input type="submit" value="Submit">
     </form>
-</body>
-</html>
+        '''
+    ]
+}

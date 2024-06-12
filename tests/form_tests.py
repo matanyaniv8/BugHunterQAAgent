@@ -172,7 +172,7 @@ def run_tests_html_code(html_content):
         page = browser.new_page()
         page.set_content(html_content)
         title = page.title() or "test_page"
-        filename = f"./websitesTestsResult/{title}_button_tests.txt"
+        filename = f"./results/{title}_button_tests.txt"
         results = [("Drop Down List Tests", test_select_elements(page)), ("Test all inputs", test_all_forms(page))]
         browser.close()
         return results, filename
@@ -199,7 +199,7 @@ def run_form_tests(page_url):
         parsed_url = urlparse(page_url)
         domain_name = parsed_url.hostname.replace("www.", "")
         domain_name = domain_name.replace('.', '-')
-        filename = f"./websitesTestsResult/{domain_name}_form_tests.txt"
+        filename = f"./results/{domain_name}_form_tests.txt"
         results = [("Drop Down List Tests", test_select_elements(page)), ("Test all inputs", test_all_forms(page))]
 
         # update_results_file("Drop Down List Tests", test_select_elements(page), filename, 'w')
