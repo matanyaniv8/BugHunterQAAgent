@@ -4,9 +4,6 @@ from tests.link_tests import run_link_tests_html_code as link_tests_html, run_ur
 from tests.form_tests import run_tests_html_code as form_test_html, run_form_tests
 from urllib.parse import urlparse
 
-def execute():
-    print("1")
-
 def run_tests_wrapper(web_data, filename):
     """
     Wrapper function for running tests on buttons, links, and forms.
@@ -23,15 +20,12 @@ def run_tests_wrapper(web_data, filename):
     # Run button tests
     if is_url:
         button_results, _ = button_tests_url(web_data)
-        # button_results = []
         form_results, _ = run_form_tests(web_data)
         link_results, _ = link_tests_url(web_data)
-
     else:
         button_results, _ = button_tests_html(web_data)
-        link_results, _ = link_tests_url(web_data)
-        form_results, filename = form_test_html(
-            web_data)  # todo : note that the given filename needs to get back from one of the test right?
+        link_results, _ = link_tests_html(web_data)
+        form_results, filename = form_test_html(web_data)
 
     write_results_to_file(button_results, filename, "button")
     write_results_to_file(link_results, filename, "link")
@@ -57,7 +51,6 @@ def write_results_to_file(results, filename, test_type):
                 title, result = test
                 file.write(f"######## {title} ########\n\n")
 
-                # print(result)
                 for res in result:
                     file.write(f"### {res.get('name', 'Unnamed Test')} ###\n")
                     file.write(f"Option Text: {res.get('button_text', 'N/A')}\n")
@@ -104,12 +97,38 @@ def get_domain_from_url(url):
     return domain
 
 
-if __name__ == "__main__":
-    # web_path = '../Websites_Generator/generated_html/buggy_website.html'
-    # html_content = get_html_content(web_path)
-    # if html_content:
-    #     run_tests_wrapper(html_content, filename=f"./results/buggy_website_tests.html")
-    #     pass
+def execute_html_tests(file_path):
+    """
+    Runs the tests on the given HTML file and returns the results filepath.
+    :param file_path: Path to the HTML file.
+    :return: Path to the results file.
+    """
+    html_content = get_html_content(file_path)
+    if html_content:
+        results_file = f"results/{os.path.basename(file_path).replace('.html', '')}_tests.html"
+        run_tests_wrapper(html_content, results_file)
+        return results_file
+    return None
 
+
+def execute_url_tests(url):
+    """
+    Runs the tests on the given URL and returns the results filepath.
+    :param url: URL to run the tests on.
+    :return: Path to the results file.
+    """
+    results_file = f"results/{get_domain_from_url(url)}_tests.txt"
+    run_tests_wrapper(url, results_file)
+    return results_file
+
+
+if __name__ == "__main__":
+    # Example usage for an HTML file
+    # html_file_path = '../Websites_Generator/generated_html/buggy_website.html'
+    # result_file_path = test_html(html_file_path)
+    # print(f"Results written to: {result_file_path}")
+
+    # Example usage for a URL
     url = "https://www.mako.co.il/collab/N12_Contact.html?partner=NewsfooterLinks&click_id=esDU5sDbdL"
-    run_tests_wrapper(url, f"results/{get_domain_from_url(url)}_tests.text")
+    result_file_path = execute_url_tests(url)
+    print(f"Results written to: {result_file_path}")
