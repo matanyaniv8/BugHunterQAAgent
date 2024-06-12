@@ -183,10 +183,13 @@ def run_form_tests(page_url):
         domain_name = parsed_url.hostname.replace("www.", "")
         domain_name = domain_name.replace('.','-')
         filename = f"./websitesTestsResult/{domain_name}_form_tests.txt"
+        results = [("Drop Down List Tests", test_select_elements(page)), ("Test all inputs", test_all_forms(page))]
 
-        update_results_file("Drop Down List Tests", test_select_elements(page), filename, 'w')
-        update_results_file("Test all inputs", test_all_forms(page), filename, 'a')
+        # update_results_file("Drop Down List Tests", test_select_elements(page), filename, 'w')
+        # update_results_file("Test all inputs", test_all_forms(page), filename, 'a')
         browser.close()
+
+        return results
 
 if __name__ == "__main__":
     url = 'http://127.0.0.1:8000/generated_html/buggy_website.html'

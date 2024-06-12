@@ -17,22 +17,23 @@ def run_tests_wrapper(web_data, filename):
         os.remove(filename)
 
     is_url = web_data.startswith("http")
+    form_results = []
 
     # Run button tests
     if is_url:
-        #button_results, _ = button_tests_url(web_data)
+        # button_results, _ = button_tests_url(web_data)
         button_results = []
         link_results, _ = link_tests_url(web_data)
-        #form_results = run_form_tests(web_data)
-        #write_results_to_file(button_results, filename, "form")
+        form_results = run_form_tests(web_data)
+        # write_results_to_file(button_results, filename, "form")
     else:
         button_results, _ = button_tests_html(web_data)
         link_results, _ = link_tests_url(web_data)
 
-    form_results = []  # todo - form is missing here
     write_results_to_file(button_results, filename, "button")
     write_results_to_file(link_results, filename, "link")
     write_results_to_file(form_results, filename, "form")
+
 
 def write_results_to_file(results, filename, test_type):
     """
@@ -48,20 +49,28 @@ def write_results_to_file(results, filename, test_type):
             file.write("No results found.\n\n")
             return
 
-        for result in results:
-            file.write(f"### {result.get('name', 'Unnamed Test')} ###\n")
-            if test_type == "button":
-                file.write(f"Button Text: {result.get('button_text', 'N/A')}\n")
-                file.write(f"Result: {result.get('outcome', 'N/A')}\n")
-            elif test_type == "link":
-                file.write(f"Link Text: {result.get('link_text', 'N/A')}\n")
-                file.write(f"Link Href: {result.get('link_href', 'N/A')}\n")
-                for test, outcome in result.get('outcomes', {}).items():
-                    file.write(f"    {test}: {outcome}\n")
-            elif test_type == "form":
-                file.write(f"Form Text: {result.get('form_text', 'N/A')}\n")
-                file.write(f"Result: {result.get('outcome', 'N/A')}\n")
-            file.write(f"Overall Result: {result.get('overall_outcome', 'N/A')}\n\n")
+        if test_type == "form":
+            for test in results:
+                title, result = test
+                file.write(f"######## {title} ########\n\n")
+
+                for res in result:
+                    file.write(f"### {res.get('name', 'Unnamed Test')} ###\n")
+                    file.write(f"Option Text: {res.get('button_text', 'N/A')}\n")
+                    file.write(f"Outcome: {res['outcome']}\n")
+                    file.write(f"Test Method: {res['test_method']}\n")
+                    file.write(f"Test Description: {res['test_description']}\n\n")
+        else:
+            for result in results:
+                file.write(f"### {result.get('name', 'Unnamed Test')} ###\n")
+                if test_type == "button":
+                    file.write(f"Button Text: {result.get('button_text', 'N/A')}\n")
+                    file.write(f"Result: {result.get('outcome', 'N/A')}\n")
+                elif test_type == "link":
+                    file.write(f"Link Text: {result.get('link_text', 'N/A')}\n")
+                    file.write(f"Link Href: {result.get('link_href', 'N/A')}\n")
+                    for test, outcome in result.get('outcomes', {}).items():
+                        file.write(f"    {test}: {outcome}\n")
 
 
 def get_html_content(file_path):
@@ -91,12 +100,11 @@ def get_domain_from_url(url):
     return domain
 
 
-
 if __name__ == "__main__":
     web_path = '../Websites_Generator/generated_html/buggy_website.html'
     html_content = get_html_content(web_path)
     if html_content:
-        #run_tests_wrapper(html_content, filename={f"websitesTestResult/buggy_website_tests.html"})
+        # run_tests_wrapper(html_content, filename={f"websitesTestResult/buggy_website_tests.html"})
         pass
 
     url = "https://www.mako.co.il/collab/N12_Contact.html?partner=NewsfooterLinks&click_id=esDU5sDbdL"
