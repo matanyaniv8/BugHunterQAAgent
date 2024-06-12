@@ -7,7 +7,7 @@ link_test_descriptions = {
     "links_code_test": "Extracts all the links from the HTML code. Checks if all the links are loaded, visible, and when clicked do not lead to failure.",
     "check_visibility": "Checks if the link is visible.",
     "check_href": "Checks if the link has a valid href attribute.",
-    "check_interactive": "Checks if the link is intractable.",
+    "check_interactive": "Checks if the link is interactable.",
     "check_broken_links": "Checks if the link is broken (404 error)."
 }
 
@@ -21,27 +21,27 @@ def get_link_test_description(method_name):
     return link_test_descriptions.get(method_name, "Test description not found.")
 
 
-def links_url_test(page_url):
+def links_url_test(page):
     """
     Loads the URL and extracts all the links.
     Checks if all the links are loaded, visible, and when clicked do not lead to failure.
-    :param page_url: URL of the page
-    :return: dict of test results.
+    :param page: Playwright page object
+    :return: List of test results.
     """
-    page_url.wait_for_selector("a", state="visible", timeout=50000)
-    links = page_url.query_selector_all("a")
-    return links_test(page_url, links)
+    page.wait_for_selector("a", state="visible", timeout=50000)
+    links = page.query_selector_all("a")
+    return links_test(links, "links_url_test")
 
 
 def links_code_test(page):
     """
     Extracts all the links from the HTML code.
     Checks if all the links are loaded, visible, and when clicked do not lead to failure.
-    :param page: HTML code.
-    :return: dict of test results.
+    :param page: Playwright page object
+    :return: List of test results.
     """
     links = page.query_selector_all("a")
-    return links_test(page, links)
+    return links_test(links, "links_code_test")
 
 
 def check_visibility(link):
@@ -103,6 +103,8 @@ def check_broken_link(link_href):
 def links_test(links, test_name):
     """
     Tests links for visibility, href content, interactability, and checks for broken links.
+    :param links: List of link elements.
+    :param test_name: Name of the test method.
     :return: List of dictionaries with results for each link test.
     """
     results = []
@@ -159,7 +161,6 @@ def links_test(links, test_name):
 def run_link_tests_html_code(html_content):
     """
     Runs all the tests for an HTML code.
-
     :param html_content: HTML content of the page.
     :return: Results of the link tests and the filename.
     """
