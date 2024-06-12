@@ -1,6 +1,6 @@
 from tests.button_tests import run_tests_html_code as button_tests_html, run_url_tests as button_tests_url
 from tests.link_tests import run_link_tests_html_code as link_tests_html, run_url_link_tests as link_tests_url
-from tests.from_tests import run_form_tests
+from tests.form_tests import run_form_tests
 
 
 def run_tests_wrapper(web_data, test_type="button"):
