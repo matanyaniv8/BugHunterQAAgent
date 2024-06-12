@@ -1,10 +1,14 @@
 from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright
+import requests
 
 link_test_descriptions = {
     "links_url_test": "Loads the URL and extracts all the links. Checks if all the links are loaded, visible, and when clicked do not lead to failure.",
     "links_code_test": "Extracts all the links from the HTML code. Checks if all the links are loaded, visible, and when clicked do not lead to failure.",
-    "links_test": "Tests links for visibility, href content, and interactability."
+    "check_visibility": "Checks if the link is visible.",
+    "check_href": "Checks if the link has a valid href attribute.",
+    "check_interactive": "Checks if the link is intractable.",
+    "check_broken_links": "Checks if the link is broken (404 error)."
 }
 
 
@@ -26,7 +30,7 @@ def links_url_test(page_url):
     """
     page_url.wait_for_selector("a", state="visible", timeout=50000)
     links = page_url.query_selector_all("a")
-    return links_test(page_url, links, False, "links_url_test")
+    return links_test(page_url, links)
 
 
 def links_code_test(page):
@@ -37,12 +41,68 @@ def links_code_test(page):
     :return: dict of test results.
     """
     links = page.query_selector_all("a")
-    return links_test(page, links, False, "links_code_test")
+    return links_test(page, links)
 
 
-def links_test(page, links, is_url, test_name):
+def check_visibility(link):
     """
-    Tests links for visibility, href content, and interactability.
+    Checks if the link is visible.
+    :param link: Link element.
+    :return: "PASSED" or "FAILED" with the reason.
+    """
+    if link.is_visible():
+        return "PASSED - Link is visible."
+    else:
+        return "FAILED - Link is not visible."
+
+
+def check_href(link):
+    """
+    Checks if the link has a valid href attribute.
+    :param link: Link element.
+    :return: "PASSED" or "FAILED" with the reason.
+    """
+    link_href = link.get_attribute("href")
+    if link_href:
+        return "PASSED - Link has href attribute.", link_href
+    else:
+        return "FAILED - No href attribute.", None
+
+
+def check_interactive(link):
+    """
+    Checks if the link is interactable.
+    :param link: Link element.
+    :return: "PASSED" or "FAILED" with the reason.
+    """
+    if link.is_enabled():
+        return "PASSED - Link is interactable."
+    else:
+        return "FAILED - Link is not interactable."
+
+
+def check_broken_link(link_href):
+    """
+    Checks if the link is broken (404 error).
+    :param link_href: Href attribute of the link.
+    :return: "PASSED" or "FAILED" with the reason.
+    """
+    if not link_href.startswith("http"):
+        return f"FAILED - Invalid URL '{link_href}': No scheme supplied. Perhaps you meant http://{link_href}?"
+
+    try:
+        response = requests.get(link_href)
+        if response.status_code == 404:
+            return "FAILED - 404 error."
+        else:
+            return "PASSED - Link is valid."
+    except requests.RequestException as e:
+        return f"FAILED - Request error: {str(e)}"
+
+
+def links_test(links, test_name):
+    """
+    Tests links for visibility, href content, interactability, and checks for broken links.
     :return: List of dictionaries with results for each link test.
     """
     results = []
@@ -54,35 +114,43 @@ def links_test(page, links, is_url, test_name):
         if link_text:
             link_text = link_text.strip()
 
-        link_href = link.get_attribute("href")
-        link_details.append((link, link_text, link_href))
+        link_details.append((link, link_text))
 
-    for index, (link, link_text, link_href) in enumerate(link_details):
+    for index, (link, link_text) in enumerate(link_details):
         individual_test_name = f"Test for Link {index + 1}"
         result = {
             "name": individual_test_name,
             "link_text": link_text,
-            "link_href": link_href,
-            "outcome": "",
-            "test_method": test_name,
+            "link_href": "",
+            "outcomes": {},
+            "overall_outcome": "",
             "test_description": get_link_test_description(test_name)
         }
 
-        if not link_href:
-            result["outcome"] = "FAILED - No href attribute."
+        # Test for visibility
+        result["outcomes"]["Visibility Test"] = check_visibility(link)
+
+        # Test for href attribute
+        href_outcome, link_href = check_href(link)
+        result["outcomes"]["Href Test"] = href_outcome
+        result["link_href"] = link_href
+
+        if link_href:
+            # Test for interactivity
+            result["outcomes"]["Interactivity Test"] = check_interactive(link)
+
+            # Test for broken link
+            result["outcomes"]["Broken Link Test"] = check_broken_link(link_href)
         else:
-            try:
-                if link.is_visible() and link.is_enabled():
-                    result["outcome"] = "PASSED - Link has href and is interactable."
-                    if is_url:
-                        with page.expect_navigation():
-                            link.click()
-                    else:
-                        link.click()
-                else:
-                    result["outcome"] = "FAILED - Link is not interactable."
-            except Exception as e:
-                result["outcome"] = f"FAILED - Error during clicking: {str(e)}"
+            result["outcomes"]["Interactivity Test"] = "FAILED - No href to test."
+            result["outcomes"]["Broken Link Test"] = "FAILED - No href to test."
+
+        # Determine overall outcome
+        if all(outcome.startswith("PASSED") for outcome in result["outcomes"].values()):
+            result["overall_outcome"] = "PASSED - All tests passed successfully."
+        else:
+            failed_tests = [test for test, outcome in result["outcomes"].items() if outcome.startswith("FAILED")]
+            result["overall_outcome"] = f"FAILED - {', '.join(failed_tests)}."
 
         results.append(result)
     return results
@@ -122,4 +190,3 @@ def run_url_link_tests(url):
         results = links_url_test(page)
         browser.close()
         return results, filename
-
