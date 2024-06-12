@@ -2,4 +2,4 @@
 *.yml
 .idea/*
 ./results/*
-./generated_html/*
+./generated_html/buggy_website.html

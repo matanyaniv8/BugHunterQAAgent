@@ -4,7 +4,10 @@ from tests.link_tests import run_link_tests_html_code as link_tests_html, run_ur
 from tests.form_tests import run_tests_html_code as form_test_html, run_form_tests
 from urllib.parse import urlparse
 
-def run_tests_wrapper(web_data, filename):
+import nest_asyncio
+nest_asyncio.apply()
+
+async def run_tests_wrapper(web_data, filename):
     """
     Wrapper function for running tests on buttons, links, and forms.
     Writes the results into a single file.
@@ -19,20 +22,20 @@ def run_tests_wrapper(web_data, filename):
 
     # Run button tests
     if is_url:
-        button_results, _ = button_tests_url(web_data)
-        form_results, _ = run_form_tests(web_data)
-        link_results, _ = link_tests_url(web_data)
+        button_results, _ = await button_tests_url(web_data)
+        form_results, _ = await run_form_tests(web_data)
+        link_results, _ = await link_tests_url(web_data)
     else:
-        button_results, _ = button_tests_html(web_data)
-        link_results, _ = link_tests_html(web_data)
-        form_results, filename = form_test_html(web_data)
+        button_results, _ = await button_tests_html(web_data)
+        link_results, _ = await link_tests_html(web_data)
+        form_results, filename = await form_test_html(web_data)
 
-    write_results_to_file(button_results, filename, "button")
-    write_results_to_file(link_results, filename, "link")
-    write_results_to_file(form_results, filename, "form")
+    await write_results_to_file(button_results, filename, "button")
+    await write_results_to_file(link_results, filename, "link")
+    await write_results_to_file(form_results, filename, "form")
 
 
-def write_results_to_file(results, filename, test_type):
+async def write_results_to_file(results, filename, test_type):
     """
     Writes the test results to a file.
     :param results: Test results.
@@ -70,7 +73,7 @@ def write_results_to_file(results, filename, test_type):
                         file.write(f"    {test}: {outcome}\n\n")
 
 
-def get_html_content(file_path):
+async def get_html_content(file_path):
     """
     Reads an HTML file from the given path and returns its content.
     :param file_path: Path to the HTML file.
@@ -97,38 +100,40 @@ def get_domain_from_url(url):
     return domain
 
 
-def execute_html_tests(file_path):
+async def execute_html_tests(file_path):
     """
     Runs the tests on the given HTML file and returns the results filepath.
     :param file_path: Path to the HTML file.
     :return: Path to the results file.
     """
-    html_content = get_html_content(file_path)
+    html_content = await get_html_content(file_path)
     if html_content:
         results_file = f"results/{os.path.basename(file_path).replace('.html', '')}_tests.html"
-        run_tests_wrapper(html_content, results_file)
+        await run_tests_wrapper(html_content, results_file)
         return results_file
     return None
 
 
-def execute_url_tests(url):
+async def execute_url_tests(url):
     """
     Runs the tests on the given URL and returns the results filepath.
     :param url: URL to run the tests on.
     :return: Path to the results file.
     """
     results_file = f"results/{get_domain_from_url(url)}_tests.txt"
-    run_tests_wrapper(url, results_file)
+    await run_tests_wrapper(url, results_file)
     return results_file
 
 
 if __name__ == "__main__":
+    import asyncio
+
     # Example usage for an HTML file
     # html_file_path = '../Websites_Generator/generated_html/buggy_website.html'
-    # result_file_path = test_html(html_file_path)
+    # result_file_path = asyncio.run(execute_html_tests(html_file_path))
     # print(f"Results written to: {result_file_path}")
 
     # Example usage for a URL
     url = "https://www.mako.co.il/collab/N12_Contact.html?partner=NewsfooterLinks&click_id=esDU5sDbdL"
-    result_file_path = execute_url_tests(url)
+    result_file_path = asyncio.run(execute_url_tests(url))
     print(f"Results written to: {result_file_path}")

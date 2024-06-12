@@ -1,9 +1,8 @@
 from urllib.parse import urlparse
+from playwright.async_api import async_playwright
 
-from playwright.sync_api import sync_playwright
 
-
-def test_select_elements(page):
+async def test_select_elements(page):
     """
     Loads the page and finds all the drop-down lists.
     Once found, checks each "select" element in the drop-down list to ensure it is visible
@@ -13,15 +12,15 @@ def test_select_elements(page):
     """
     results = []
     # Wait for the page to load completely
-    page.wait_for_load_state('networkidle')
+    await page.wait_for_load_state('networkidle')
 
-    selects = page.query_selector_all("select")
+    selects = await page.query_selector_all("select")
 
     for select_index, select in enumerate(selects):
-        select_id = select.get_attribute('id') or select.get_attribute('name') or f'select{select_index + 1}'
-        options = select.query_selector_all('option')
-        options_text = [option.inner_text() for option in options]
-        options_value = [option.get_attribute('value') for option in options]
+        select_id = await select.get_attribute('id') or await select.get_attribute('name') or f'select{select_index + 1}'
+        options = await select.query_selector_all('option')
+        options_text = [await option.inner_text() for option in options]
+        options_value = [await option.get_attribute('value') for option in options]
         # Try selecting each option and capture any errors
         for i, option in enumerate(options):
             individual_test_name = f"Test for {select_id} Option {i + 1}"
@@ -30,16 +29,16 @@ def test_select_elements(page):
                 if i == 0:
                     continue
                 else:
-                    is_option_disabled = option.is_disabled()
+                    is_option_disabled = await option.is_disabled()
                     if not is_option_disabled:
-                        select.select_option(index=i)
-                        selected_option = select.query_selector("option:checked")
+                        await select.select_option(index=i)
+                        selected_option = await select.query_selector("option:checked")
 
-                        if selected_option.inner_text() == options_text[i] and not option.is_disabled():
+                        if await selected_option.inner_text() == options_text[i] and not await option.is_disabled():
                             outcome = "PASSED - No error on selection."
                         else:
                             outcome = (f"FAILED - Incorrect option selected. "
-                                       f"Expected '{options_text[i]}', got {selected_option}")
+                                       f"Expected '{options_text[i]}', got {await selected_option.inner_text()}")
                     else:
                         outcome = f"Failed - Option {options_text[i]} is disabled."
 
@@ -53,11 +52,10 @@ def test_select_elements(page):
                 "test_method": test_name,
                 "test_description": "Checks the functionality of a drop down list."
             })
-    print(results)
     return results
 
 
-def test_input_fields(form):
+async def test_input_fields(form):
     """
     Evaluates and interacts with all input and textarea elements within a form:
     It fills text fields, checks checkboxes, and selects radio buttons as needed.
@@ -65,23 +63,23 @@ def test_input_fields(form):
     :return: Tests results for all inputs and fields.
     """
     results = []
-    inputs = form.query_selector_all("input, textarea")
+    inputs = await form.query_selector_all("input, textarea")
     for input in inputs:
-        tag_name = input.evaluate("e => e.tagName.toLowerCase()")
-        input_type = input.get_attribute("type") if tag_name == "input" else "textarea"
+        tag_name = await input.evaluate("e => e.tagName.toLowerCase()")
+        input_type = await input.get_attribute("type") if tag_name == "input" else "textarea"
 
         if input_type in ["text", "password", "email", "textarea"]:
-            input.fill("test")
+            await input.fill("test")
         elif input_type == "checkbox":
-            input.check()
+            await input.check()
         elif input_type == "radio":
-            if not input.is_checked():
-                input.check()
+            if not await input.is_checked():
+                await input.check()
 
         result = {
             "name": tag_name if tag_name != "input" else input_type,
-            "value": input.get_attribute("value"),
-            "text": input.text_content(),
+            "value": await input.get_attribute("value"),
+            "text": await input.text_content(),
             "outcome": "PASSED - Filled or Checked",
             "test_method": "test_input_fields",
             "test_description": "Tests if text inputs, checkboxes, and radio buttons can be interacted with."
@@ -90,22 +88,22 @@ def test_input_fields(form):
     return results
 
 
-def test_form_submission(form, page):
+async def test_form_submission(form, page):
     """
     Checks Form "submit" button- if it has a values and when on-clicking, it doesn't trigger an error.
     :param form: Form to be evaluated.
     :param page: Page, which the form is submitted.
     :return: Tests results for the "submit" button.
     """
-    submit_button = form.query_selector("input[type='submit'], button[type='submit']")
+    submit_button = await form.query_selector("input[type='submit'], button[type='submit']")
     outcome = {}
 
     if submit_button:
-        submit_button.click()
-        page.wait_for_load_state("networkidle")
+        await submit_button.click()
+        await page.wait_for_load_state("networkidle")
         outcome = {
             "name": "Form Submission Test",
-            "button_text": f"{submit_button.get_attribute('value')}",
+            "button_text": f"{await submit_button.get_attribute('value')}",
             "outcome": "PASSED - Submitted",
             "test_method": "test_form_submission",
             "test_description": "Checks if the form can be submitted successfully."
@@ -121,27 +119,27 @@ def test_form_submission(form, page):
     return outcome
 
 
-def test_all_forms(page):
+async def test_all_forms(page):
     """
     A wrapper method for testing forms and all inputs fields.
     :param page: Page to be evaluated.
     :return: Tests results for all forms and input fields.
     """
     results = []
-    forms = page.query_selector_all("form")
+    forms = await page.query_selector_all("form")
     for form_index, form in enumerate(forms):
         # Test all input fields for interactions
-        input_results = test_input_fields(form)
+        input_results = await test_input_fields(form)
         results.extend(input_results)
         # Test form submission
-        submission_result = test_form_submission(form, page)
+        submission_result = await test_form_submission(form, page)
         submission_result["form_index"] = f"{form_index}"
         results.append(submission_result)
 
     return results
 
 
-def update_results_file(title: str, results: list, filename: str, file_mode: str = 'w'):
+async def update_results_file(title: str, results: list, filename: str, file_mode: str = 'w'):
     """
     Updates the results file with the results.
     :param title: Test type as the title.
@@ -160,25 +158,25 @@ def update_results_file(title: str, results: list, filename: str, file_mode: str
             file.write(f"Test Description: {result['test_description']}\n\n")
 
 
-def run_tests_html_code(html_content):
+async def run_tests_html_code(html_content):
     """
     Runs all the tests for an HTML code.
 
     :param html_content: HTML content of the page.
     :return: Results of the button tests and the filename.
     """
-    with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True)
-        page = browser.new_page()
-        page.set_content(html_content)
-        title = page.title() or "test_page"
+    async with async_playwright() as playwright:
+        browser = await playwright.chromium.launch(headless=True)
+        page = await browser.new_page()
+        await page.set_content(html_content)
+        title = await page.title() or "test_page"
         filename = f"./results/{title}_button_tests.txt"
-        results = [("Drop Down List Tests", test_select_elements(page)), ("Test all inputs", test_all_forms(page))]
-        browser.close()
+        results = [("Drop Down List Tests", await test_select_elements(page)), ("Test all inputs", await test_all_forms(page))]
+        await browser.close()
         return results, filename
 
 
-def run_form_tests(page_url):
+async def run_form_tests(page_url):
     """
     Gather all forms tests and run them.
 
@@ -187,12 +185,12 @@ def run_form_tests(page_url):
     :return:
         The function does not return a value but writes results to a file.
     """
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-        page.goto(page_url)
+    async with async_playwright() as playwright:
+        browser = await playwright.chromium.launch(headless=True)
+        page = await browser.new_page()
+        await page.goto(page_url)
         # Wait for the page to load completely
-        page.wait_for_load_state('networkidle')
+        await page.wait_for_load_state('networkidle')
 
         # Check if there are any forms on the page
         # if page.query_selector("form"):
@@ -200,16 +198,11 @@ def run_form_tests(page_url):
         domain_name = parsed_url.hostname.replace("www.", "")
         domain_name = domain_name.replace('.', '-')
         filename = f"./results/{domain_name}_form_tests.txt"
-        results = [("Drop Down List Tests", test_select_elements(page)), ("Test all inputs", test_all_forms(page))]
+        results = [("Drop Down List Tests", await test_select_elements(page)), ("Test all inputs", await test_all_forms(page))]
 
         # update_results_file("Drop Down List Tests", test_select_elements(page), filename, 'w')
         # update_results_file("Test all inputs", test_all_forms(page), filename, 'a')
-        browser.close()
+        await browser.close()
 
         return results, filename
 
-
-if __name__ == "__main__":
-    url = 'http://127.0.0.1:8000/generated_html/buggy_website.html'
-    run_form_tests(url)
-    # run_form_tests("https://help.market.envato.com/hc/en-us/requests/new")
