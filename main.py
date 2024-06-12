@@ -12,7 +12,6 @@ from system.bug_families.link_bugs import link_bugs
 from system.bug_families.image_bugs import image_bugs
 from system.bug_families.tab_bugs import tab_bugs
 from system.bug_families.form_bugs import forms_bugs
-from qa_agent import execute
 
 app = FastAPI()
 

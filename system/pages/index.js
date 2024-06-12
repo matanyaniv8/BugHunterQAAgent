@@ -12,6 +12,7 @@ export default function Home() {
   const [selectedBugs, setSelectedBugs] = useState([]);
   const [generatedUrl, setGeneratedUrl] = useState('');
   const [inputUrl, setInputUrl] = useState('');
+  const [resultsPath, setResultsPath] = useState('');
 
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
@@ -38,6 +39,26 @@ export default function Home() {
     }
   };
 
+  const handleTestHTML = async () => {
+    const htmlFilePath = 'path/to/your/html/file.html'; // Change to your HTML file path
+    const response = await axios.post('http://127.0.0.1:8000/test_html', {
+      file_path: htmlFilePath,
+    });
+    setResultsPath(response.data.results_path);
+  };
+
+  const handleTestURL = async () => {
+    const url = inputUrl;
+    if (url) {
+      const response = await axios.post('http://127.0.0.1:8000/test_url', {
+        url: url,
+      });
+      setResultsPath(response.data.results_path);
+    } else {
+      alert('Please enter a URL.');
+    }
+  };
+
   const toggleSection = (section) => {
     const content = document.getElementById(section);
     if (content.style.display === 'none' || !content.style.display) {
@@ -47,7 +68,7 @@ export default function Home() {
     }
   };
 
-    const expandAll = () => {
+  const expandAll = () => {
     const sections = ['buttonsSection', 'tabsSection', 'imagesSection', 'linksSection', 'doctypeSection'];
     sections.forEach((section) => {
       const element = document.getElementById(section);
@@ -66,7 +87,6 @@ export default function Home() {
       }
     });
   };
-
 
   return (
     <div>
@@ -92,12 +112,22 @@ export default function Home() {
         <ImageBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
         <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
         <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-        <button type="submit" className={styles.button}>Generate or Use URL</button>
+        <button type="submit" className={styles.button}>Generate HTML</button>
       </form>
+      <div className={styles.testButtons}>
+        <button className={styles.button} onClick={handleTestHTML}>Test HTML</button>
+        <button className={styles.button} onClick={handleTestURL}>Test URL</button>
+      </div>
       {generatedUrl && (
         <div>
           <h2>Generated HTML or Entered URL:</h2>
           <a href={generatedUrl} target="_blank" rel="noopener noreferrer">{generatedUrl}</a>
+        </div>
+      )}
+      {resultsPath && (
+        <div>
+          <h2>Test Results Path:</h2>
+          <p>{resultsPath}</p>
         </div>
       )}
     </div>
