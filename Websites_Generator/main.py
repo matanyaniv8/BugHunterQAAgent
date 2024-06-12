@@ -4,7 +4,6 @@ from pydantic import BaseModel
 from typing import List
 import os
 import random
-
 from bug_families.button_bugs import button_bugs
 from bug_families.link_bugs import link_bugs
 from bug_families.image_bugs import image_bugs
@@ -23,6 +22,11 @@ app.add_middleware(
 
 class BugSelection(BaseModel):
     bugs: List[str]
+
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
 
 @app.post("/generate")
@@ -51,4 +55,5 @@ async def generate_html(selection: BugSelection):
 
 # Serve the generated HTML files
 from fastapi.staticfiles import StaticFiles
+
 app.mount("/generated_html", StaticFiles(directory="generated_html"), name="generated_html")

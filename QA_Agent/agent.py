@@ -1,7 +1,7 @@
 import os
 from tests.button_tests import run_tests_html_code as button_tests_html, run_url_tests as button_tests_url
 from tests.link_tests import run_link_tests_html_code as link_tests_html, run_url_link_tests as link_tests_url
-from tests.form_tests import run_form_tests
+from tests.form_tests import run_tests_html_code as form_test_html, run_form_tests
 from urllib.parse import urlparse
 
 
@@ -17,18 +17,19 @@ def run_tests_wrapper(web_data, filename):
         os.remove(filename)
 
     is_url = web_data.startswith("http")
-    form_results = []
 
     # Run button tests
     if is_url:
-        # button_results, _ = button_tests_url(web_data)
-        button_results = []
+        button_results, _ = button_tests_url(web_data)
+        # button_results = []
+        form_results, _ = run_form_tests(web_data)
         link_results, _ = link_tests_url(web_data)
-        form_results = run_form_tests(web_data)
-        # write_results_to_file(button_results, filename, "form")
+
     else:
         button_results, _ = button_tests_html(web_data)
         link_results, _ = link_tests_url(web_data)
+        form_results, filename = form_test_html(
+            web_data)  # todo : note that the given filename needs to get back from one of the test right?
 
     write_results_to_file(button_results, filename, "button")
     write_results_to_file(link_results, filename, "link")
@@ -42,7 +43,7 @@ def write_results_to_file(results, filename, test_type):
     :param filename: Name of the file to write to.
     :param test_type: Type of test - "button", "link", or "form".
     """
-    with open(filename, "a") as file:
+    with open(filename, 'a') as file:
         file.write(f"########## {test_type.upper()} TESTS ##########\n\n")
 
         if not results:
@@ -54,6 +55,7 @@ def write_results_to_file(results, filename, test_type):
                 title, result = test
                 file.write(f"######## {title} ########\n\n")
 
+                # print(result)
                 for res in result:
                     file.write(f"### {res.get('name', 'Unnamed Test')} ###\n")
                     file.write(f"Option Text: {res.get('button_text', 'N/A')}\n")
@@ -70,7 +72,7 @@ def write_results_to_file(results, filename, test_type):
                     file.write(f"Link Text: {result.get('link_text', 'N/A')}\n")
                     file.write(f"Link Href: {result.get('link_href', 'N/A')}\n")
                     for test, outcome in result.get('outcomes', {}).items():
-                        file.write(f"    {test}: {outcome}\n")
+                        file.write(f"    {test}: {outcome}\n\n")
 
 
 def get_html_content(file_path):
@@ -101,11 +103,11 @@ def get_domain_from_url(url):
 
 
 if __name__ == "__main__":
-    web_path = '../Websites_Generator/generated_html/buggy_website.html'
-    html_content = get_html_content(web_path)
-    if html_content:
-        # run_tests_wrapper(html_content, filename={f"websitesTestResult/buggy_website_tests.html"})
-        pass
+    # web_path = '../Websites_Generator/generated_html/buggy_website.html'
+    # html_content = get_html_content(web_path)
+    # if html_content:
+    #     run_tests_wrapper(html_content, filename=f"./websitesTestsResult/buggy_website_tests.html")
+    #     pass
 
     url = "https://www.mako.co.il/collab/N12_Contact.html?partner=NewsfooterLinks&click_id=esDU5sDbdL"
     run_tests_wrapper(url, f"websitesTestsResult/{get_domain_from_url(url)}_tests.text")

@@ -8,6 +8,7 @@ test_descriptions = {
     "btns_test": "Tests buttons for visibility, text content, and interactability."
 }
 
+
 def get_test_description(method_name):
     """
     Returns the test description associated with the given method name.
@@ -15,6 +16,7 @@ def get_test_description(method_name):
     :return: Description of the test method.
     """
     return test_descriptions.get(method_name, "Test description not found.")
+
 
 def buttons_url_test(page_url):
     """
@@ -27,6 +29,7 @@ def buttons_url_test(page_url):
     buttons = page_url.query_selector_all("button")
     return btns_test(page_url, buttons, False, "buttons_url_test")
 
+
 def buttons_code_test(page):
     """
     Extracts all the buttons from the HTML code.
@@ -36,6 +39,7 @@ def buttons_code_test(page):
     """
     buttons = page.query_selector_all("button")
     return btns_test(page, buttons, False, "buttons_code_test")
+
 
 def btns_test(page, buttons, is_url, test_name):
     """
@@ -74,6 +78,7 @@ def btns_test(page, buttons, is_url, test_name):
         results.append(result)
     return results
 
+
 def run_tests_html_code(html_content):
     """
     Runs all the tests for an HTML code.
@@ -91,6 +96,7 @@ def run_tests_html_code(html_content):
         browser.close()
         return results, filename
 
+
 def run_url_tests(url):
     """
     Runs the tests for a given URL.
@@ -104,6 +110,10 @@ def run_url_tests(url):
         parsed_url = urlparse(url)
         domain_name = parsed_url.netloc.replace("www.", "")
         filename = f"./websitesTestsResult/{domain_name}_button_tests.txt"
-        results = buttons_url_test(page)
-        browser.close()
-        return results, filename
+        try:
+            results = buttons_url_test(page)
+            browser.close()
+            return results, filename
+        except Exception as e:
+            browser.close()
+            return {}, filename

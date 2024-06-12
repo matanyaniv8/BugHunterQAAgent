@@ -22,7 +22,6 @@ def test_select_elements(page):
         options = select.query_selector_all('option')
         options_text = [option.inner_text() for option in options]
         options_value = [option.get_attribute('value') for option in options]
-        print(options)
         # Try selecting each option and capture any errors
         for i, option in enumerate(options):
             individual_test_name = f"Test for {select_id} Option {i + 1}"
@@ -54,7 +53,7 @@ def test_select_elements(page):
                 "test_method": test_name,
                 "test_description": "Checks the functionality of a drop down list."
             })
-
+    print(results)
     return results
 
 
@@ -161,6 +160,24 @@ def update_results_file(title: str, results: list, filename: str, file_mode: str
             file.write(f"Test Description: {result['test_description']}\n\n")
 
 
+def run_tests_html_code(html_content):
+    """
+    Runs all the tests for an HTML code.
+
+    :param html_content: HTML content of the page.
+    :return: Results of the button tests and the filename.
+    """
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.set_content(html_content)
+        title = page.title() or "test_page"
+        filename = f"./websitesTestsResult/{title}_button_tests.txt"
+        results = [("Drop Down List Tests", test_select_elements(page)), ("Test all inputs", test_all_forms(page))]
+        browser.close()
+        return results, filename
+
+
 def run_form_tests(page_url):
     """
     Gather all forms tests and run them.
@@ -181,7 +198,7 @@ def run_form_tests(page_url):
         # if page.query_selector("form"):
         parsed_url = urlparse(page_url)
         domain_name = parsed_url.hostname.replace("www.", "")
-        domain_name = domain_name.replace('.','-')
+        domain_name = domain_name.replace('.', '-')
         filename = f"./websitesTestsResult/{domain_name}_form_tests.txt"
         results = [("Drop Down List Tests", test_select_elements(page)), ("Test all inputs", test_all_forms(page))]
 
@@ -189,7 +206,8 @@ def run_form_tests(page_url):
         # update_results_file("Test all inputs", test_all_forms(page), filename, 'a')
         browser.close()
 
-        return results
+        return results, filename
+
 
 if __name__ == "__main__":
     url = 'http://127.0.0.1:8000/generated_html/buggy_website.html'
