@@ -16,12 +16,13 @@ def test_select_elements(page):
     page.wait_for_load_state('networkidle')
 
     selects = page.query_selector_all("select")
+
     for select_index, select in enumerate(selects):
         select_id = select.get_attribute('id') or select.get_attribute('name') or f'select{select_index + 1}'
         options = select.query_selector_all('option')
         options_text = [option.inner_text() for option in options]
         options_value = [option.get_attribute('value') for option in options]
-
+        print(options)
         # Try selecting each option and capture any errors
         for i, option in enumerate(options):
             individual_test_name = f"Test for {select_id} Option {i + 1}"
@@ -79,7 +80,7 @@ def test_input_fields(form):
                 input.check()
 
         result = {
-            "element": tag_name if tag_name != "input" else input_type,
+            "name": tag_name if tag_name != "input" else input_type,
             "value": input.get_attribute("value"),
             "text": input.text_content(),
             "outcome": "PASSED - Filled or Checked",
@@ -98,8 +99,8 @@ def test_form_submission(form, page):
     :return: Tests results for the "submit" button.
     """
     submit_button = form.query_selector("input[type='submit'], button[type='submit']")
-    print(submit_button)
     outcome = {}
+
     if submit_button:
         submit_button.click()
         page.wait_for_load_state("networkidle")
@@ -141,7 +142,7 @@ def test_all_forms(page):
     return results
 
 
-def update_results_file(title: str, results: list, filename: str, file_mode: str = "w"):
+def update_results_file(title: str, results: list, filename: str, file_mode: str = 'w'):
     """
     Updates the results file with the results.
     :param title: Test type as the title.
@@ -163,8 +164,11 @@ def update_results_file(title: str, results: list, filename: str, file_mode: str
 def run_form_tests(page_url):
     """
     Gather all forms tests and run them.
-    :param page_url: Website link.
-    :return: Nothing.
+
+    Parameters:
+        page_url (str): The URL of the webpage to test.
+    :return:
+        The function does not return a value but writes results to a file.
     """
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -173,16 +177,18 @@ def run_form_tests(page_url):
         # Wait for the page to load completely
         page.wait_for_load_state('networkidle')
 
+        # Check if there are any forms on the page
+        # if page.query_selector("form"):
         parsed_url = urlparse(page_url)
         domain_name = parsed_url.hostname.replace("www.", "")
-        print(domain_name)
-        filename = f"../websitesTestsResult/{domain_name}_form_tests.txt"
+        domain_name = domain_name.replace('.','-')
+        filename = f"./websitesTestsResult/{domain_name}_form_tests.txt"
 
         update_results_file("Drop Down List Tests", test_select_elements(page), filename, 'w')
         update_results_file("Test all inputs", test_all_forms(page), filename, 'a')
         browser.close()
 
-
 if __name__ == "__main__":
     url = 'http://127.0.0.1:8000/generated_html/buggy_website.html'
     run_form_tests(url)
+    # run_form_tests("https://help.market.envato.com/hc/en-us/requests/new")

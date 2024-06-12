@@ -1,5 +1,6 @@
 from tests.button_tests import run_tests_html_code as button_tests_html, run_url_tests as button_tests_url
 from tests.link_tests import run_link_tests_html_code as link_tests_html, run_url_link_tests as link_tests_url
+from tests.from_tests import run_form_tests
 
 
 def run_tests_wrapper(web_data, test_type="button"):
@@ -19,11 +20,14 @@ def run_tests_wrapper(web_data, test_type="button"):
             results, filename = link_tests_url(web_data)
         else:
             results, filename = link_tests_html(web_data)
+    elif test_type == "form":
+        # results, filename = (
+            run_form_tests(web_data)
     else:
         print(f"Unknown test type: {test_type}")
         return
 
-    write_results_to_file(results, filename, test_type)
+    # write_results_to_file(results, filename, test_type)
 
 
 def write_results_to_file(results, filename, test_type):
@@ -67,9 +71,11 @@ if __name__ == "__main__":
     web_path = '../Websites_Generator/generated_html/buggy_website.html'
     html_content = get_html_content(web_path)
     if html_content:
-       # run_tests_wrapper(html_content, test_type="button")
+        # run_tests_wrapper(html_content, test_type="button")
         run_tests_wrapper(html_content, test_type="link")
 
-    url = 'https://themeforest.net/search/dummy'
-    run_tests_wrapper(url, test_type="button")
-    run_tests_wrapper(url, test_type="link")
+    # url = 'https://themeforest.net/search/dummy'
+    url = "https://www.mako.co.il/collab/N12_Contact.html?partner=NewsfooterLinks&click_id=esDU5sDbdL"
+    # run_tests_wrapper(url, test_type="button")
+    # run_tests_wrapper(url, test_type="link")
+    run_tests_wrapper(url, test_type="form")
