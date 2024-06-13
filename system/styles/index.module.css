@@ -7,16 +7,15 @@
 
 .label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .inputCheckbox {
     margin-right: 0;
     font-size: 60px;
-    width: 100px;
+    width: 80px;
     font-family: 'Exo 2', sans-serif;
     margin-top: 0;
-    margin-bottom: 20px;
 }
 
 .button {
@@ -43,7 +42,6 @@
 .h2 {
     cursor: pointer;
     color: rgb(1, 77, 138);
-    margin: 10px 0;
 }
 
 .tabTitle {
@@ -63,7 +61,6 @@
 }
 
 .section {
-    margin-left: 20px;
 }
 
 .centerButtons {
@@ -129,7 +126,6 @@
 .inputGroup {
     display: flex;
     align-items: center;
-    gap: 10px;
 }
 
 .input {
