@@ -120,13 +120,9 @@ export default function Home() {
         <div>
             <h1 className={styles.title}>Bug Hunter</h1>
             <p className={styles.subtitle}>Your Ultimate Bug Detection Tool</p>
-            <div id="menuButtons" className={styles.menuButtons}>
-                <button className={styles.button} onClick={expandAll}>Expand All</button>
-                <button className={styles.button} onClick={minimizeAll}>Minimize All</button>
-            </div>
             <form onSubmit={handleSubmit} className={styles.form}>
                 <div className={styles.inputGroup}>
-                    <label htmlFor="urlInput">Enter URL (optional):</label>
+                    <label htmlFor="urlInput" className={styles.inputLabel}>Enter URL (optional):</label>
                     <input
                         type="text"
                         id="urlInput"
@@ -135,6 +131,10 @@ export default function Home() {
                         placeholder="Enter URL if you want to use an existing webpage"
                         className={styles.input}
                     />
+                </div>
+                <div id="menuButtons" className={styles.menuButtons}>
+                    <button className={styles.button} onClick={expandAll}>Expand All</button>
+                    <button className={styles.button} onClick={minimizeAll}>Minimize All</button>
                 </div>
                 <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
                 <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
