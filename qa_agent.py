@@ -13,7 +13,7 @@ def run_tests_wrapper(web_data):
 
     if is_url:
         link_results = link_tests.execute_url_tests(web_data)
-        button_results = button_tests.execute_button_tests(web_data)
+        button_results = button_tests.execute_button_url_tests(web_data)
     else:
         link_results = link_tests.execute_html_tests(web_data)
         button_results = button_tests.execute_button_html_tests(web_data)

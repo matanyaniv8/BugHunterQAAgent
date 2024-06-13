@@ -1,103 +1,100 @@
-import requests
-from bs4 import BeautifulSoup
+import base64
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 
-def extract_buttons_from_html(html_content):
-    soup = BeautifulSoup(html_content, 'html.parser')
-
-    # Extract <button> tags
-    buttons = soup.find_all('button')
-
-    # Extract <input> tags that function as buttons
-    inputs = soup.find_all('input', {'type': ['button', 'submit', 'reset']})
-
-    # Extract <a> tags that are styled as buttons
-    anchors = soup.find_all('a', {'role': 'button'})
-
-    # Combine all found elements
-    all_buttons = list(buttons) + list(inputs) + list(anchors)
-    return all_buttons
+def setup_selenium_driver():
+    """
+    Sets up the selenium webdriver.
+    :return:
+        Loaded Driver.
+    """
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')  # Run in headless mode for automation environments
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    return driver
 
 
-def extract_buttons_from_page(url):
-    response = requests.get(url)
-    if response.status_code == 200:
-        return extract_buttons_from_html(response.content)
-    else:
-        return []
+def perform_button_tests(driver):
+    """
+       Performs visibility, interactivity, and click tests on all button elements found on the webpage.
 
+       Parameters:
+       - driver (webdriver): Selenium WebDriver to interact with the webpage.
 
-def check_button_visibility(button):
-    test_name = "check_button_visibility"
-    try:
-        # Check if the button is not hidden (basic check)
-        if 'hidden' not in button.attrs.get('style', ''):
-            return test_name, "passed"
-        else:
-            return test_name, "failed - Button is hidden"
-    except Exception as e:
-        return test_name, f"failed - Exception: {e}"
-
-
-def check_button_title(button):
-    test_name = "check_button_title"
-    try:
-        # Check if the button has text or title
-        if button.text.strip() or button.attrs.get('title'):
-            return test_name, "passed"
-        else:
-            return test_name, "failed - Button has no title or text"
-    except Exception as e:
-        return test_name, f"failed - Exception: {e}"
-
-
-def check_button_interactivity(button):
-    test_name = "check_button_interactivity"
-    try:
-        # Basic check: button should have a type attribute or be clickable
-        if button.name == 'button' or button.attrs.get('type') in ['button', 'submit', 'reset']:
-            return test_name, "passed"
-        elif button.name == 'a' and button.attrs.get('role') == 'button':
-            return test_name, "passed"
-        else:
-            return test_name, "failed - Button is not interactive"
-    except Exception as e:
-        return test_name, f"failed - Exception: {e}"
-
-
-def check_button_link(button):
-    test_name = "check_button_link"
-    try:
-        # Check if the button leads to a link (basic check: does it have an onclick, href or form action)
-        if 'onclick' in button.attrs or 'formaction' in button.attrs or button.attrs.get('href'):
-            return test_name, "passed"
-        else:
-            return test_name, "failed - Button does not lead to any link"
-    except Exception as e:
-        return test_name, f"failed - Exception: {e}"
-
-
-def run_tests_on_buttons(buttons):
+       Returns:
+       - dict: Results for each button tested, detailing visibility, interactivity, and click outcomes.
+       """
     results = {}
-    for button in buttons:
-        button_text = button.text.strip() or button.attrs.get('title', 'no-title')
-        results[button_text] = {}
-        for check in [check_button_visibility, check_button_title, check_button_interactivity, check_button_link]:
-            test_name, result = check(button)
-            results[button_text][test_name] = result
+    try:
+        # Wait until buttons are potentially loaded
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR,
+                                                                        "button, input[type='button'], input[type='submit'], input[type='reset'], a[role='button']")))
+        # Select all elements that could be considered buttons
+        buttons = driver.find_elements(By.CSS_SELECTOR,
+                                       "button, input[type='button'], input[type='submit'], input[type='reset'], a[role='button']")
+        print(f"Total buttons found: {len(buttons)}")
+        for index, button in enumerate(buttons):
+            button_text = button.text.strip() or button.get_attribute('title') or "Unnamed Button"
+            button_description = f"Button {index + 1}: {button_text}"  # Create a unique description for each button
+
+            # Determine visibility
+            visibility_test = "passed - Button is visible." if button.is_displayed() else "failed - Button is hidden."
+
+            # Determine interactivity
+            interact_test = "passed - Button is interactive." if button.is_enabled() else "failed - Button is not interactive."
+
+            # Attempt to click the button if it's visible and interactive
+            try:
+                if button.is_displayed() and button.is_enabled():
+                    button.click()
+                    click_test = "PASSED - Button clicked without error."
+                else:
+                    click_test = "NOT ATTEMPTED - Button is not visible or not interactive."
+            except Exception as e:
+                click_test = f"FAILED - Error on clicking: {str(e)}"
+
+            results[button_description] = {
+                "Visibility Test": visibility_test,
+                "Interactivity Test": interact_test,
+                "Click Test": click_test
+            }
+    except Exception as e:
+        results["General Error"] = f"FAILED - Error setting up button tests: {str(e)}"
     return results
 
 
-def execute_button_tests(url):
-    print(f"Start running button tests on {url}")
-    all_buttons = extract_buttons_from_page(url)
-    print(f"Extracted all buttons - total of {len(all_buttons)} buttons")
-    results = run_tests_on_buttons(all_buttons)
+def execute_button_url_tests(url):
+    """
+    Opens in a selenium driver the url.
+    """
+    driver = setup_selenium_driver()
+    try:
+        driver.get(url)
+        results = perform_button_tests(driver)
+    finally:
+        driver.quit()
     return results
 
 
 def execute_button_html_tests(html_content):
-    print(f"Start running button tests on provided HTML")
-    buttons = extract_buttons_from_html(html_content)
-    results = run_tests_on_buttons(buttons)
+    """
+    Loads with selenium the HTML content.
+    """
+    driver = setup_selenium_driver()
+    try:
+        # load the html into the driver
+        encoded_html = base64.b64encode(html_content.encode('utf-8')).decode('utf-8')
+        driver.get(f"data:text/html;base64,{encoded_html}")
+        results = perform_button_tests(driver)
+
+    finally:
+        driver.quit()
+
     return results
