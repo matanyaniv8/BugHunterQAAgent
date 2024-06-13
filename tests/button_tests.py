@@ -39,32 +39,32 @@ def perform_button_tests(driver):
         # Select all elements that could be considered buttons
         buttons = driver.find_elements(By.CSS_SELECTOR,
                                        "button, input[type='button'], input[type='submit'], input[type='reset'], a[role='button']")
-        print(f"Total buttons found: {len(buttons)}")
-        for index, button in enumerate(buttons):
-            button_text = button.text.strip() or button.get_attribute('title') or "Unnamed Button"
-            button_description = f"Button {index + 1}: {button_text}"  # Create a unique description for each button
+        if len(buttons) > 0:
+            for index, button in enumerate(buttons):
+                button_text = button.text.strip() or button.get_attribute('title') or "Unnamed Button"
+                button_description = f"Button {index + 1}: {button_text}"  # Create a unique description for each button
 
-            # Determine visibility
-            visibility_test = "passed - Button is visible." if button.is_displayed() else "failed - Button is hidden."
+                # Determine visibility
+                visibility_test = "passed - Button is visible." if button.is_displayed() else "failed - Button is hidden."
 
-            # Determine interactivity
-            interact_test = "passed - Button is interactive." if button.is_enabled() else "failed - Button is not interactive."
+                # Determine interactivity
+                interact_test = "passed - Button is interactive." if button.is_enabled() else "failed - Button is not interactive."
 
-            # Attempt to click the button if it's visible and interactive
-            try:
-                if button.is_displayed() and button.is_enabled():
-                    button.click()
-                    click_test = "PASSED - Button clicked without error."
-                else:
-                    click_test = "NOT ATTEMPTED - Button is not visible or not interactive."
-            except Exception as e:
-                click_test = f"FAILED - Error on clicking: {str(e)}"
+                # Attempt to click the button if it's visible and interactive
+                try:
+                    if button.is_displayed() and button.is_enabled():
+                        button.click()
+                        click_test = "PASSED - Button clicked without error."
+                    else:
+                        click_test = "NOT ATTEMPTED - Button is not visible or not interactive."
+                except Exception as e:
+                    click_test = f"FAILED - Error on clicking: {str(e)}"
 
-            results[button_description] = {
-                "Visibility Test": visibility_test,
-                "Interactivity Test": interact_test,
-                "Click Test": click_test
-            }
+                results[button_description] = {
+                    "Visibility Test": visibility_test,
+                    "Interactivity Test": interact_test,
+                    "Click Test": click_test
+                }
     except Exception as e:
         results["General Error"] = f"FAILED - Error setting up button tests: {str(e)}"
     return results
