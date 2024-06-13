@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import styles from '../styles/index.module.css';
 
@@ -12,10 +12,11 @@ export default function Home() {
     const [selectedBugs, setSelectedBugs] = useState([]);
     const [generatedUrl, setGeneratedUrl] = useState('');
     const [inputUrl, setInputUrl] = useState('');
-    const [resultsPath, setResultsPath] = useState('');
+    const [results, setResults] = useState('');
+    const [generatedFilePath, setGeneratedFilePath] = useState('');
 
     const handleCheckboxChange = (event) => {
-        const {value, checked} = event.target;
+        const { value, checked } = event.target;
         if (checked) {
             setSelectedBugs((prev) => [...prev, value]);
         } else {
@@ -36,15 +37,29 @@ export default function Home() {
                 bugs: selectedBugs,
             });
             setGeneratedUrl(response.data.url);
+            setGeneratedFilePath('../../generated_html/buggy_website.html'); // Save the generated file path
         }
     };
 
     const handleTestHTML = async () => {
-        const htmlFilePath = 'path/to/your/html/file.html'; // Change to your HTML file path
-        const response = await axios.post('http://127.0.0.1:8000/test_html', {
-            file_path: htmlFilePath,
-        });
-        setResultsPath(response.data.results_path);
+        const htmlFilePath = 'generated_html/buggy_website.html'; // Use the dynamically set file path
+        if (htmlFilePath) {
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/test_html', {
+                    file_path: htmlFilePath,
+                });
+                if (response.data.error) {
+                    setResults(`Error: ${response.data.error}`);
+                } else {
+                    setResults(JSON.stringify(response.data, null, 2)); // Display the test results
+                }
+            } catch (error) {
+                console.error('Failed to fetch results:', error);
+                setResults(`Error: ${error.response ? error.response.data.detail : 'Unknown error'}`);
+            }
+        } else {
+            alert('No HTML file generated yet.');
+        }
     };
 
     const handleTestURL = async () => {
@@ -53,11 +68,14 @@ export default function Home() {
                 const response = await axios.post('http://127.0.0.1:8000/test_url', {
                     url: inputUrl, // This key needs to match your FastAPI model
                 });
-                console.log("gothereeef;wknmelkwnefl;knewflkneflwenflkwjbfwkbflwbeflkbjfwklbjfkbfe");
-                setResultsPath(response.data.results_path);
+                if (response.data.error) {
+                    setResults(`Error: ${response.data.error}`);
+                } else {
+                    setResults(JSON.stringify(response.data.results, null, 2)); // Display the test results
+                }
             } catch (error) {
                 console.error('Failed to fetch results:', error);
-                alert('Failed to process the URL.');
+                setResults(`Error: ${error.response ? error.response.data.detail : 'Unknown error'}`);
             }
         } else {
             alert('Please enter a URL.');
@@ -112,17 +130,16 @@ export default function Home() {
                         className={styles.input}
                     />
                 </div>
-                <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
-                <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
-                <ImageBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
-                <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
-                <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
+                <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+                <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+                <ImageBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+                <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+                <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
                 <button type="submit" className={styles.button}>Generate HTML</button>
             </form>
             <div className={styles.testButtons}>
                 <button className={styles.button} onClick={handleTestHTML}>Test HTML</button>
-                <button className={styles.button} onClick={() => handleTestURL(inputUrl, setResultsPath)}>Test URL
-                </button>
+                <button className={styles.button} onClick={handleTestURL}>Test URL</button>
             </div>
             {generatedUrl && (
                 <div>
@@ -130,10 +147,10 @@ export default function Home() {
                     <a href={generatedUrl} target="_blank" rel="noopener noreferrer">{generatedUrl}</a>
                 </div>
             )}
-            {resultsPath && (
+            {results && (
                 <div>
-                    <h2>Test Results Path:</h2>
-                    <p>{resultsPath}</p>
+                    <h2>Test Results:</h2>
+                    <pre>{results}</pre>
                 </div>
             )}
         </div>

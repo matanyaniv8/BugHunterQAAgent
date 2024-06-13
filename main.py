@@ -1,5 +1,4 @@
-import nest_asyncio
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, HttpUrl
 from typing import List
@@ -12,9 +11,6 @@ from system.bug_families.link_bugs import link_bugs
 from system.bug_families.image_bugs import image_bugs
 from system.bug_families.tab_bugs import tab_bugs
 from system.bug_families.form_bugs import forms_bugs
-
-# Apply nest_asyncio
-nest_asyncio.apply()
 
 app = FastAPI()
 
@@ -34,17 +30,19 @@ class BugSelection(BaseModel):
 class FilePath(BaseModel):
     file_path: str
 
+
 class UrlData(BaseModel):
     url: HttpUrl
 
+
 @app.get("/")
-async def root():
+def root():
     return {"message": "Hello World"}
 
 
 @app.post("/generate")
-async def generate_html(selection: BugSelection):
-    # Combine all bug dictionaries
+def generate_html(selection: BugSelection):
+    print("Generating buggy website...")
     bug_html_snippets = {
         **button_bugs,
         **link_bugs,
@@ -54,7 +52,22 @@ async def generate_html(selection: BugSelection):
     }
 
     selected_snippets = [random.choice(bug_html_snippets[bug]) for bug in selection.bugs if bug in bug_html_snippets]
-    generated_html = "\n".join(selected_snippets)
+    generated_html_snippets = "\n".join(selected_snippets)
+
+    # Wrap in a complete HTML structure
+    generated_html = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Buggy Website</title>
+    </head>
+    <body>
+        {generated_html_snippets}
+    </body>
+    </html>
+    """
 
     # Save the generated HTML
     file_name = "buggy_website.html"
@@ -70,16 +83,15 @@ app.mount("/generated_html", StaticFiles(directory="generated_html"), name="gene
 
 
 @app.post("/test_html")
-async def test_html(file: FilePath):
-    results_file = execute_html_tests(file.file_path)
-    return {"results_path": results_file}
+def test_html(file: FilePath):
+    file_path = file.file_path
+    results = execute_html_tests(file_path)
+    return results
 
 
 @app.post("/test_url")
-async def test_url(url_data: UrlData):
-    url = str(url_data.url)  # Convert URL to string
-    try:
-        results_file = await execute_url_tests(url)
-        return {"results_path": results_file}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+def test_url(url_data: UrlData):
+    url = str(url_data.url)
+    print(url)
+    results = execute_url_tests(url)
+    return {"results": results}
