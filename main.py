@@ -1,7 +1,7 @@
 import nest_asyncio
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 from typing import List
 import os
 import random
@@ -34,6 +34,8 @@ class BugSelection(BaseModel):
 class FilePath(BaseModel):
     file_path: str
 
+class UrlData(BaseModel):
+    url: HttpUrl
 
 @app.get("/")
 async def root():
@@ -74,6 +76,10 @@ async def test_html(file: FilePath):
 
 
 @app.post("/test_url")
-async def test_url(url: str):
-    results_file = execute_url_tests(url)
-    return {"results_path": results_file}
+async def test_url(url_data: UrlData):
+    url = str(url_data.url)  # Convert URL to string
+    try:
+        results_file = await execute_url_tests(url)
+        return {"results_path": results_file}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

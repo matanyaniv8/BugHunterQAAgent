@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import axios from 'axios';
 import styles from '../styles/index.module.css';
 
@@ -9,127 +9,133 @@ import TabBugs from '../components/TabBugs';
 import FormBugs from '../components/FormBugs';
 
 export default function Home() {
-  const [selectedBugs, setSelectedBugs] = useState([]);
-  const [generatedUrl, setGeneratedUrl] = useState('');
-  const [inputUrl, setInputUrl] = useState('');
-  const [resultsPath, setResultsPath] = useState('');
+    const [selectedBugs, setSelectedBugs] = useState([]);
+    const [generatedUrl, setGeneratedUrl] = useState('');
+    const [inputUrl, setInputUrl] = useState('');
+    const [resultsPath, setResultsPath] = useState('');
 
-  const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
-    if (checked) {
-      setSelectedBugs((prev) => [...prev, value]);
-    } else {
-      setSelectedBugs((prev) => prev.filter((bug) => bug !== value));
-    }
-  };
+    const handleCheckboxChange = (event) => {
+        const {value, checked} = event.target;
+        if (checked) {
+            setSelectedBugs((prev) => [...prev, value]);
+        } else {
+            setSelectedBugs((prev) => prev.filter((bug) => bug !== value));
+        }
+    };
 
-  const handleInputChange = (event) => {
-    setInputUrl(event.target.value);
-  };
+    const handleInputChange = (event) => {
+        setInputUrl(event.target.value);
+    };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (inputUrl) {
-      setGeneratedUrl(inputUrl);
-    } else {
-      const response = await axios.post('http://127.0.0.1:8000/generate', {
-        bugs: selectedBugs,
-      });
-      setGeneratedUrl(response.data.url);
-    }
-  };
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        if (inputUrl) {
+            setGeneratedUrl(inputUrl);
+        } else {
+            const response = await axios.post('http://127.0.0.1:8000/generate', {
+                bugs: selectedBugs,
+            });
+            setGeneratedUrl(response.data.url);
+        }
+    };
 
-  const handleTestHTML = async () => {
-    const htmlFilePath = 'path/to/your/html/file.html'; // Change to your HTML file path
-    const response = await axios.post('http://127.0.0.1:8000/test_html', {
-      file_path: htmlFilePath,
-    });
-    setResultsPath(response.data.results_path);
-  };
+    const handleTestHTML = async () => {
+        const htmlFilePath = 'path/to/your/html/file.html'; // Change to your HTML file path
+        const response = await axios.post('http://127.0.0.1:8000/test_html', {
+            file_path: htmlFilePath,
+        });
+        setResultsPath(response.data.results_path);
+    };
 
-  const handleTestURL = async () => {
-    const url = inputUrl;
-    if (url) {
-      const response = await axios.post('http://127.0.0.1:8000/test_url', {
-        url: url,
-      });
-      setResultsPath(response.data.results_path);
-    } else {
-      alert('Please enter a URL.');
-    }
-  };
+    const handleTestURL = async () => {
+        if (inputUrl) {
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/test_url', {
+                    url: inputUrl, // This key needs to match your FastAPI model
+                });
+                console.log("gothereeef;wknmelkwnefl;knewflkneflwenflkwjbfwkbflwbeflkbjfwklbjfkbfe");
+                setResultsPath(response.data.results_path);
+            } catch (error) {
+                console.error('Failed to fetch results:', error);
+                alert('Failed to process the URL.');
+            }
+        } else {
+            alert('Please enter a URL.');
+        }
+    };
 
-  const toggleSection = (section) => {
-    const content = document.getElementById(section);
-    if (content.style.display === 'none' || !content.style.display) {
-      content.style.display = 'block';
-    } else {
-      content.style.display = 'none';
-    }
-  };
+    const toggleSection = (section) => {
+        const content = document.getElementById(section);
+        if (content.style.display === 'none' || !content.style.display) {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    };
 
-  const expandAll = () => {
-    const sections = ['buttonsSection', 'tabsSection', 'imagesSection', 'linksSection', 'doctypeSection'];
-    sections.forEach((section) => {
-      const element = document.getElementById(section);
-      if (element) {
-        element.style.display = 'block';
-      }
-    });
-  };
+    const expandAll = () => {
+        const sections = ['buttonsSection', 'tabsSection', 'imagesSection', 'linksSection', 'doctypeSection'];
+        sections.forEach((section) => {
+            const element = document.getElementById(section);
+            if (element) {
+                element.style.display = 'block';
+            }
+        });
+    };
 
-  const minimizeAll = () => {
-    const sections = ['buttonsSection', 'tabsSection', 'imagesSection', 'linksSection', 'doctypeSection'];
-    sections.forEach((section) => {
-      const element = document.getElementById(section);
-      if (element) {
-        element.style.display = 'none';
-      }
-    });
-  };
+    const minimizeAll = () => {
+        const sections = ['buttonsSection', 'tabsSection', 'imagesSection', 'linksSection', 'doctypeSection'];
+        sections.forEach((section) => {
+            const element = document.getElementById(section);
+            if (element) {
+                element.style.display = 'none';
+            }
+        });
+    };
 
-  return (
-    <div>
-      <h1 className={styles.title}>Select Bugs or Enter URL</h1>
-      <div className={styles.centerButtons}>
-        <button className={styles.button} onClick={expandAll}>Expand All</button>
-        <button className={styles.button} onClick={minimizeAll}>Minimize All</button>
-      </div>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.inputGroup}>
-          <label htmlFor="urlInput">Enter URL (optional):</label>
-          <input
-            type="text"
-            id="urlInput"
-            value={inputUrl}
-            onChange={handleInputChange}
-            placeholder="Enter URL if you want to use an existing webpage"
-            className={styles.input}
-          />
-        </div>
-        <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-        <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-        <ImageBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-        <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-        <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-        <button type="submit" className={styles.button}>Generate HTML</button>
-      </form>
-      <div className={styles.testButtons}>
-        <button className={styles.button} onClick={handleTestHTML}>Test HTML</button>
-        <button className={styles.button} onClick={handleTestURL}>Test URL</button>
-      </div>
-      {generatedUrl && (
+    return (
         <div>
-          <h2>Generated HTML or Entered URL:</h2>
-          <a href={generatedUrl} target="_blank" rel="noopener noreferrer">{generatedUrl}</a>
+            <h1 className={styles.title}>Select Bugs or Enter URL</h1>
+            <div className={styles.centerButtons}>
+                <button className={styles.button} onClick={expandAll}>Expand All</button>
+                <button className={styles.button} onClick={minimizeAll}>Minimize All</button>
+            </div>
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <div className={styles.inputGroup}>
+                    <label htmlFor="urlInput">Enter URL (optional):</label>
+                    <input
+                        type="text"
+                        id="urlInput"
+                        value={inputUrl}
+                        onChange={handleInputChange}
+                        placeholder="Enter URL if you want to use an existing webpage"
+                        className={styles.input}
+                    />
+                </div>
+                <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
+                <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
+                <ImageBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
+                <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
+                <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
+                <button type="submit" className={styles.button}>Generate HTML</button>
+            </form>
+            <div className={styles.testButtons}>
+                <button className={styles.button} onClick={handleTestHTML}>Test HTML</button>
+                <button className={styles.button} onClick={() => handleTestURL(inputUrl, setResultsPath)}>Test URL
+                </button>
+            </div>
+            {generatedUrl && (
+                <div>
+                    <h2>Generated HTML or Entered URL:</h2>
+                    <a href={generatedUrl} target="_blank" rel="noopener noreferrer">{generatedUrl}</a>
+                </div>
+            )}
+            {resultsPath && (
+                <div>
+                    <h2>Test Results Path:</h2>
+                    <p>{resultsPath}</p>
+                </div>
+            )}
         </div>
-      )}
-      {resultsPath && (
-        <div>
-          <h2>Test Results Path:</h2>
-          <p>{resultsPath}</p>
-        </div>
-      )}
-    </div>
-  );
+    );
 }

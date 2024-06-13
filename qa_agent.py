@@ -1,11 +1,15 @@
 import os
+from pathlib import Path
+
 from tests.button_tests import run_tests_html_code as button_tests_html, run_url_tests as button_tests_url
 from tests.link_tests import run_link_tests_html_code as link_tests_html, run_url_link_tests as link_tests_url
 from tests.form_tests import run_tests_html_code as form_test_html, run_form_tests
 from urllib.parse import urlparse
 
 import nest_asyncio
+
 nest_asyncio.apply()
+
 
 async def run_tests_wrapper(web_data, filename):
     """
@@ -33,6 +37,10 @@ async def run_tests_wrapper(web_data, filename):
     await write_results_to_file(button_results, filename, "button")
     await write_results_to_file(link_results, filename, "link")
     await write_results_to_file(form_results, filename, "form")
+
+    file_content = Path(filename).read_text(encoding='utf-8')
+    print(file_content)
+    return file_content
 
 
 async def write_results_to_file(results, filename, test_type):
@@ -121,19 +129,19 @@ async def execute_url_tests(url):
     :return: Path to the results file.
     """
     results_file = f"results/{get_domain_from_url(url)}_tests.txt"
-    await run_tests_wrapper(url, results_file)
-    return results_file
+    res = await run_tests_wrapper(url, results_file)
+    return res
 
 
 if __name__ == "__main__":
     import asyncio
 
     # Example usage for an HTML file
-    # html_file_path = '../Websites_Generator/generated_html/buggy_website.html'
-    # result_file_path = asyncio.run(execute_html_tests(html_file_path))
-    # print(f"Results written to: {result_file_path}")
+    html_file_path = 'generated_html/buggy_website.html'
+    result_file_path = asyncio.run(execute_html_tests(html_file_path))
+    print(f"Results written to: {result_file_path}")
 
     # Example usage for a URL
-    url = "https://www.mako.co.il/collab/N12_Contact.html?partner=NewsfooterLinks&click_id=esDU5sDbdL"
-    result_file_path = asyncio.run(execute_url_tests(url))
-    print(f"Results written to: {result_file_path}")
+    # url = "https://www.mako.co.il/collab/N12_Contact.html?partner=NewsfooterLinks&click_id=esDU5sDbdL"
+    # result_file_path = asyncio.run(execute_url_tests(url))
+    # print(f"Results written to: {result_file_path}")
