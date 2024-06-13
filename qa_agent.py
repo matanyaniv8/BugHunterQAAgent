@@ -1,4 +1,5 @@
-import tests.link_tests
+import tests.link_tests as link_tests
+import tests.button_tests as button_tests
 from urllib.parse import urlparse
 
 
@@ -9,10 +10,20 @@ def run_tests_wrapper(web_data):
     :param web_data: HTML code or URL.
     """
     is_url = web_data.startswith("http")
+
     if is_url:
-        return tests.link_tests.execute_url_tests(web_data)
+        link_results = link_tests.execute_url_tests(web_data)
+        button_results = button_tests.execute_button_tests(web_data)
     else:
-        return tests.link_tests.execute_html_tests(web_data)
+        link_results = link_tests.execute_html_tests(web_data)
+        button_results = button_tests.execute_button_html_tests(web_data)
+
+    unified_results = {
+        "links": link_results,
+        "buttons": button_results
+    }
+
+    return unified_results
 
 
 def get_html_content(file_path):
