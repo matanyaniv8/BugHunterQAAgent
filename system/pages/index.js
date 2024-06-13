@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import styles from '../styles/index.module.css';
 
 import ButtonBugs from '../components/ButtonBugs';
@@ -12,8 +13,8 @@ export default function Home() {
     const [selectedBugs, setSelectedBugs] = useState([]);
     const [generatedUrl, setGeneratedUrl] = useState('');
     const [inputUrl, setInputUrl] = useState('');
-    const [results, setResults] = useState('');
     const [generatedFilePath, setGeneratedFilePath] = useState('');
+    const router = useRouter();
 
     const handleCheckboxChange = (event) => {
         const { value, checked } = event.target;
@@ -41,6 +42,11 @@ export default function Home() {
         }
     };
 
+    const openResultsPage = (content) => {
+        const encodedContent = encodeURIComponent(JSON.stringify(content));
+        router.push(`/results?content=${encodedContent}`);
+    };
+
     const handleTestHTML = async () => {
         const htmlFilePath = 'generated_html/buggy_website.html'; // Use the dynamically set file path
         if (htmlFilePath) {
@@ -49,13 +55,13 @@ export default function Home() {
                     file_path: htmlFilePath,
                 });
                 if (response.data.error) {
-                    setResults(`Error: ${response.data.error}`);
+                    openResultsPage({ error: response.data.error });
                 } else {
-                    setResults(JSON.stringify(response.data, null, 2)); // Display the test results
+                    openResultsPage(response.data); // Display the test results
                 }
             } catch (error) {
                 console.error('Failed to fetch results:', error);
-                setResults(`Error: ${error.response ? error.response.data.detail : 'Unknown error'}`);
+                openResultsPage({ error: error.response ? error.response.data.detail : 'Unknown error' });
             }
         } else {
             alert('No HTML file generated yet.');
@@ -69,13 +75,13 @@ export default function Home() {
                     url: inputUrl, // This key needs to match your FastAPI model
                 });
                 if (response.data.error) {
-                    setResults(`Error: ${response.data.error}`);
+                    openResultsPage({ error: response.data.error });
                 } else {
-                    setResults(JSON.stringify(response.data.results, null, 2)); // Display the test results
+                    openResultsPage(response.data.results); // Display the test results
                 }
             } catch (error) {
                 console.error('Failed to fetch results:', error);
-                setResults(`Error: ${error.response ? error.response.data.detail : 'Unknown error'}`);
+                openResultsPage({ error: error.response ? error.response.data.detail : 'Unknown error' });
             }
         } else {
             alert('Please enter a URL.');
@@ -145,12 +151,6 @@ export default function Home() {
                 <div>
                     <h2>Generated HTML or Entered URL:</h2>
                     <a href={generatedUrl} target="_blank" rel="noopener noreferrer">{generatedUrl}</a>
-                </div>
-            )}
-            {results && (
-                <div>
-                    <h2>Test Results:</h2>
-                    <pre>{results}</pre>
                 </div>
             )}
         </div>

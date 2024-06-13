@@ -1,0 +1,15 @@
+.container {
+    padding: 20px;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.results {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 5px;
+    overflow: auto;
+}
