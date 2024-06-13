@@ -43,9 +43,11 @@ export default function Home() {
     };
 
     const openResultsPage = (content) => {
-        const encodedContent = encodeURIComponent(JSON.stringify(content));
-        router.push(`/results?content=${encodedContent}`);
+    sessionStorage.setItem('testResults', JSON.stringify(content));
+    router.push('/results');
     };
+
+
 
     const handleTestHTML = async () => {
         const htmlFilePath = 'generated_html/buggy_website.html'; // Use the dynamically set file path

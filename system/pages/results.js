@@ -3,19 +3,18 @@ import { useEffect, useState } from 'react';
 import styles from '../styles/results.module.css';
 
 export default function Results() {
-    const router = useRouter();
-    const { content } = router.query;
     const [parsedContent, setParsedContent] = useState('');
 
     useEffect(() => {
+        const content = sessionStorage.getItem('testResults');
         if (content) {
             try {
-                setParsedContent(JSON.parse(decodeURIComponent(content)));
+                setParsedContent(JSON.parse(content));
             } catch (error) {
                 setParsedContent('Failed to parse content');
             }
         }
-    }, [content]);
+    }, []);
 
     return (
         <div className={styles.container}>
