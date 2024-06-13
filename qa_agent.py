@@ -38,9 +38,9 @@ async def run_tests_wrapper(web_data, filename):
     await write_results_to_file(link_results, filename, "link")
     await write_results_to_file(form_results, filename, "form")
 
-    file_content = Path(filename).read_text(encoding='utf-8')
-    print(file_content)
-    return file_content
+    # file_content = Path(filename).read_text(encoding='utf-8')
+    # print(file_content)
+    return ["hello"]
 
 
 async def write_results_to_file(results, filename, test_type):
