@@ -45,7 +45,6 @@ def generate_html(selection: BugSelection):
     bug_html_snippets = {
         **button_bugs,
         **link_bugs,
-        **image_bugs,
         **tab_bugs,
         **forms_bugs,
     }
@@ -76,6 +75,7 @@ def generate_html(selection: BugSelection):
         file.write(generated_html)
     # Return the URL to the generated HTML file
     return {"url": f"http://127.0.0.1:8000/generated_html/{file_name}"}
+
 
 
 app.mount("/generated_html", StaticFiles(directory="generated_html"), name="generated_html")

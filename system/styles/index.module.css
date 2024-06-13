@@ -74,7 +74,7 @@
     font-size: 80px;
     font-weight: 1500;
     text-align: left;
-    margin-top: 100px;
+    margin-top: 70px;
     margin-left: 100px;
     margin-bottom: 20px;
 }
@@ -139,4 +139,9 @@
 .inputLabel {
     font-size: 20px;
     margin-right: 10px;
+}
+
+.generatedHTML {
+    margin-left: 180px;
+    margin-bottom: 30px;
 }

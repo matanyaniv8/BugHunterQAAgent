@@ -12,7 +12,6 @@ export default function Home() {
     const [selectedBugs, setSelectedBugs] = useState([]);
     const [generatedUrl, setGeneratedUrl] = useState('');
     const [inputUrl, setInputUrl] = useState('');
-    const [generatedFilePath, setGeneratedFilePath] = useState('');
     const router = useRouter();
 
     const handleCheckboxChange = (event) => {
@@ -30,14 +29,22 @@ export default function Home() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (inputUrl) {
-            setGeneratedUrl(inputUrl);
-        } else {
-            const response = await axios.post('http://127.0.0.1:8000/generate', {
-                bugs: selectedBugs,
-            });
-            setGeneratedUrl(response.data.url);
-            setGeneratedFilePath('../../generated_html/buggy_website.html'); // Save the generated file path
+        try {
+            if (inputUrl) {
+                setGeneratedUrl(inputUrl);
+            } else {
+                const response = await axios.post('http://127.0.0.1:8000/generate', {
+                    bugs: selectedBugs,
+                });
+                if (response.data.url) {
+                    setGeneratedUrl(response.data.url);
+                } else {
+                    alert('Failed to generate HTML. No URL returned.');
+                }
+            }
+        } catch (error) {
+            console.error('Failed to generate HTML:', error);
+            alert('Failed to generate HTML. Please check the server and try again.');
         }
     };
 
@@ -133,8 +140,8 @@ export default function Home() {
                     />
                 </div>
                 <div id="menuButtons" className={styles.menuButtons}>
-                    <button className={styles.button} onClick={expandAll}>Expand All</button>
-                    <button className={styles.button} onClick={minimizeAll}>Minimize All</button>
+                    <button className={styles.button} type="button" onClick={expandAll}>Expand All</button>
+                    <button className={styles.button} type="button" onClick={minimizeAll}>Minimize All</button>
                 </div>
                 <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
                 <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
@@ -142,16 +149,15 @@ export default function Home() {
                 <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
                 <button type="submit" className={styles.button}>Generate HTML</button>
             </form>
-            <div id="testButtons" className={styles.testButtons}>
-                <button className={styles.button} onClick={handleTestHTML}>Test HTML</button>
-                <button className={styles.button} onClick={handleTestURL}>Test URL</button>
-            </div>
             {generatedUrl && (
-                <div>
-                    <h2>Generated HTML or Entered URL:</h2>
-                    <a href={generatedUrl} target="_blank" rel="noopener noreferrer">{generatedUrl}</a>
+                <div className={styles.generatedHTML}>
+                    <a href={generatedUrl} id="generatedUrl" target="_blank" rel="noopener noreferrer">{generatedUrl}</a>
                 </div>
             )}
+            <div id="testButtons" className={styles.testButtons}>
+                <button className={styles.button} type="button" onClick={handleTestHTML}>Test HTML</button>
+                <button className={styles.button} type="button" onClick={handleTestURL}>Test URL</button>
+            </div>
         </div>
     );
 }
