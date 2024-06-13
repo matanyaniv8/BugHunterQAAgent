@@ -8,7 +8,6 @@ from fastapi.staticfiles import StaticFiles
 from qa_agent import execute_url_tests, execute_html_tests
 from system.bug_families.button_bugs import button_bugs
 from system.bug_families.link_bugs import link_bugs
-from system.bug_families.image_bugs import image_bugs
 from system.bug_families.tab_bugs import tab_bugs
 from system.bug_families.form_bugs import forms_bugs
 

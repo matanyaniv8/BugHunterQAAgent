@@ -1,70 +1,136 @@
 .form {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 20px 0;
+    margin-left: 80px;
 }
 
 .label {
-  display: block;
-  margin-bottom: 10px;
+    display: block;
+    margin-bottom: 10px;
 }
 
 .inputCheckbox {
-  margin-right: 10px;
+    margin-right: 0;
+    font-size: 60px;
+    width: 100px;
+    font-family: 'Exo 2', sans-serif;
 }
 
 .button {
-  display: inline-block;
-  background: #4a90e2;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  text-align: center;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 10px;
+    display: inline-block;
+    background-color: #ffffff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Exo 2', sans-serif;
+    width: 150px;
+    height: 40px;
+    margin-left: 200px;
+    color: #014d8a;
+    line-height: 20px;
 }
 
 .button:hover {
-  background: #357ab8;
+    background: #fcbf84;
 }
 
 .h2 {
-  cursor: pointer;
-  color: #4a90e2;
-  margin: 10px 0;
+    cursor: pointer;
+    color: rgb(1, 77, 138);
+    margin: 10px 0;
 }
 
 .tabTitle {
-  background-color: #4a90e2;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  position: relative;
+    background-color: #3797d5;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+    font-size: 20px;
 }
 
 .tabTitle::after {
-  content: '▼';
-  position: absolute;
-  right: 10px;
-  font-size: 12px;
+    content: '▼';
+    position: absolute;
+    right: 10px;
+    font-size: 12px;
 }
 
 .section {
-  margin-left: 20px;
+    margin-left: 20px;
 }
 
 .centerButtons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
 }
 
 .title {
-  color: #4a90e2;
+    font-size: 80px;
+    font-weight: 1500;
+    text-align: left;
+    margin-top: 100px;
+    margin-left: 100px;
+    margin-bottom: 20px;
 }
+
+.subtitle {
+    font-size: 40px;
+    font-weight: 800;
+    text-align: left;
+    margin-left: 100px;
+    margin-bottom: 40px;
+    margin-top: 0;
+}
+
+.subtitleButtons {
+    display: flex;
+    justify-content: center;
+    margin-left: 100px;
+    margin-bottom: 20px;
+}
+
+.menuButtons .button,
+.testButtons .button {
+    background: rgb(1, 77, 138);
+    color: white;
+    margin-left: 80px;
+    width: 150px;
+    height: 40px;
+    line-height: 20px;
+}
+
+.testButtons .button:hover,
+.menuButtons .button:hover {
+    background: rgb(17, 92, 149);
+}
+
+.menuButtons,
+.testButtons {
+    display: flex;
+    margin-left: 110px;
+    margin-bottom: 20px;
+}
+
+.inputGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+

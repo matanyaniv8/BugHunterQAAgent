@@ -5,7 +5,6 @@ import styles from '../styles/index.module.css';
 
 import ButtonBugs from '../components/ButtonBugs';
 import LinkBugs from '../components/LinkBugs';
-import ImageBugs from '../components/ImageBugs';
 import TabBugs from '../components/TabBugs';
 import FormBugs from '../components/FormBugs';
 
@@ -43,11 +42,9 @@ export default function Home() {
     };
 
     const openResultsPage = (content) => {
-    sessionStorage.setItem('testResults', JSON.stringify(content));
-    router.push('/results');
+        sessionStorage.setItem('testResults', JSON.stringify(content));
+        router.push('/results');
     };
-
-
 
     const handleTestHTML = async () => {
         const htmlFilePath = 'generated_html/buggy_website.html'; // Use the dynamically set file path
@@ -100,7 +97,7 @@ export default function Home() {
     };
 
     const expandAll = () => {
-        const sections = ['buttonsSection', 'tabsSection', 'imagesSection', 'linksSection', 'doctypeSection'];
+        const sections = ['buttonsSection', 'tabsSection', 'linksSection', 'doctypeSection'];
         sections.forEach((section) => {
             const element = document.getElementById(section);
             if (element) {
@@ -110,7 +107,7 @@ export default function Home() {
     };
 
     const minimizeAll = () => {
-        const sections = ['buttonsSection', 'tabsSection', 'imagesSection', 'linksSection', 'doctypeSection'];
+        const sections = ['buttonsSection', 'tabsSection', 'linksSection', 'doctypeSection'];
         sections.forEach((section) => {
             const element = document.getElementById(section);
             if (element) {
@@ -121,8 +118,9 @@ export default function Home() {
 
     return (
         <div>
-            <h1 className={styles.title}>Select Bugs or Enter URL</h1>
-            <div className={styles.centerButtons}>
+            <h1 className={styles.title}>Bug Hunter</h1>
+            <p className={styles.subtitle}>Your Ultimate Bug Detection Tool</p>
+            <div id="menuButtons" className={styles.menuButtons}>
                 <button className={styles.button} onClick={expandAll}>Expand All</button>
                 <button className={styles.button} onClick={minimizeAll}>Minimize All</button>
             </div>
@@ -140,12 +138,11 @@ export default function Home() {
                 </div>
                 <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
                 <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-                <ImageBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
                 <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
                 <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
                 <button type="submit" className={styles.button}>Generate HTML</button>
             </form>
-            <div className={styles.testButtons}>
+            <div id="testButtons" className={styles.testButtons}>
                 <button className={styles.button} onClick={handleTestHTML}>Test HTML</button>
                 <button className={styles.button} onClick={handleTestURL}>Test URL</button>
             </div>
