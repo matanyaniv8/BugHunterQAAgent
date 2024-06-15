@@ -7,9 +7,28 @@
         <title>Buggy Website</title>
     </head>
     <body>
-        <a href="404.html">Another Broken Link</a>
-<a href="">Empty Href Link</a>
-<a href="#nonexistent_anchor">Broken Anchor</a>
+        ```html
+<div class="drop-down-validation">
+    <form id="Buggy Form">
+        <label>Choose a car:</label>
+        <select id="cars" name="">
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="fiat" disabled>Fiat</option>
+            <option value="audi">Audi</option>
+        </select>
+    </form>
+</div>
+```
+
+```css
+.drop-down-validation {
+    border: 1px solid red;
+    padding: 10px;
+    background-color: lightgray;
+    margin: 10px;
+}
+```
     </body>
     </html>
     

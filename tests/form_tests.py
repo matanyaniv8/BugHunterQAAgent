@@ -1,5 +1,5 @@
 from selenium import webdriver
-from selenium.common import TimeoutException, NoSuchElementException
+from selenium.common import TimeoutException, NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service
@@ -58,6 +58,12 @@ def test_input_fields(form):
                 input.send_keys("test")
             elif input_type in ["checkbox", "radio"]:
                 input.click() if not input.is_selected() else None
+        except TimeoutException:
+            if form is None:
+                results = {}
+        except StaleElementReferenceException:
+            if form is None:
+                results = {}
         except Exception:
             test_result = f"failed -  Failed to run test"
         results[test_description] = test_result

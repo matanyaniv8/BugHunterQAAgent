@@ -51,7 +51,7 @@ def generate_html(selection: BugSelection):
     }
 
     selected_snippets = [random.choice(bug_html_snippets[bug]) for bug in selection.bugs if bug in bug_html_snippets]
-    generated_html_snippets = "\n".join(selected_snippets)
+    # generated_html_snippets = "\n".join(selected_snippets)
     generated_html_snippets = get_buggy_code_snippet(selection.bugs)
 
     # Wrap in a complete HTML structure

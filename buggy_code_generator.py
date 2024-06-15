@@ -10,7 +10,7 @@ bugs_descriptions = {
     'submit_button_no_action': f'submit_button_no_action - A submit button that does nothing when clicked. '
                                f'for example {button_bugs.button_bugs['submit_button_no_action']}',
 
-    'empty_button': f'empty_button - A button that appears empty and does nothing. '
+    'empty_button': f'empty_button - A button that appears empty and does nothing and does not have text on it. '
                     f'for example {button_bugs.button_bugs['empty_button']}',
     'non_functional_tabs': f'non_functional_tabs - Tab elements that look clickable but have no functionality. for '
                            f'example {tab_bugs.tab_bugs['non_functional_tabs']}',

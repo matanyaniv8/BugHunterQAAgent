@@ -1,5 +1,5 @@
 import base64
-from selenium.common import StaleElementReferenceException
+from selenium.common import StaleElementReferenceException, TimeoutException
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -50,7 +50,7 @@ def perform_button_tests(driver):
                 button_description = f"Button {index + 1}: {button_text}"  # Create a unique description for each button
 
                 # Determine visibility
-                visibility_test = "passed - Button is visible." if button.is_displayed() else "failed - Button is hidden."
+                visibility_test = "passed - Button is visible." if button.is_displayed() and button_text != "Unnamed Button" else "failed - Button is hidden."
 
                 # Determine interactivity
                 interact_test = "passed - Button is interactive." if button.is_enabled() else "failed - Button is not interactive."
@@ -59,11 +59,21 @@ def perform_button_tests(driver):
                 try:
                     if button.is_displayed() and button.is_enabled():
                         button.click()
-                        click_test = "PASSED - Button clicked without error."
-                    else:
-                        click_test = "NOT ATTEMPTED - Button is not visible or not interactive."
-                except Exception:
-                    click_test = f"FAILED - Error while clicking"
+                        # Example of checking for some JavaScript condition after click
+                        if not driver.execute_script(
+                                "return document.getElementById('expected-element-id') !== null"):
+                            click_test = "failed - Expected element not found after click"
+                        else:
+                            click_test = "NOT ATTEMPTED - Button is not visible or not interactive."
+                except Exception as e:
+                    click_test = f"failed - {str(e)}"
+
+                #         button.click()
+                #         click_test = "PASSED - Button clicked without error."
+                #     else:
+                #         click_test = "NOT ATTEMPTED - Button is not visible or not interactive."
+                # except Exception:
+                #     click_test = f"FAILED - Error while clicking"
 
                 results[button_description] = {
                     "Visibility Test": visibility_test,
@@ -72,7 +82,10 @@ def perform_button_tests(driver):
                 }
     except StaleElementReferenceException:
         last_btn_tested = None
-    except Exception:
+    except TimeoutException:
+        last_btn_tested = None
+    except Exception as e:
+        print(type(e))
         results["General Error"] = f"FAILED - Failed to run test"
     return results
 
