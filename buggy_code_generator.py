@@ -6,7 +6,6 @@ from system.bug_families.form_bugs import forms_bugs
 from system.bug_families.link_bugs import link_bugs
 from system.bug_families.tab_bugs import tab_bugs
 
-
 with open('openAI_Key', 'r') as file:
     OPENAI_API_KEY = file.read().strip()
     print(f"Read Open AI API Key successfully! - {OPENAI_API_KEY}")
@@ -87,7 +86,7 @@ def get_bugs_description(bugs: [str]):
 
 
 def get_buggy_code_snippet(bugs: [str]):
-    returned_format = "{response : html}"
+    returned_format = "{response : html_code}"
     prompt = f""" Generate HTML code snippets that visually demonstrate various common web development bugs. Each 
     snippet should include a single bug from the provided list and apply CSS styling to ensure that the snippet is 
     not visually boring. Each HTML snippet should clearly represent the bug in isolation so that it can be easily 
@@ -98,11 +97,11 @@ List of bugs to be included in the HTML snippets:\n{get_bugs_description(bugs)}
 Please ensure each snippet is contained within a <div> with a class name corresponding to the bug type and apply 
 minimal CSS styling to make each snippet visually interesting. For example, use colors, borders, or padding. \nAlso 
 note that you should not include the <html>, <body>, or <head> tags as they are presumed to be part of an existing 
-page."""
-
-    print(prompt)
+page. please return with the format {returned_format} where you put the combined code in one div in the html code 
+field of the response format."""
 
     answer = ask_openai_json(model="gpt-3.5-turbo", prompt=prompt)['response']
+
     print(answer)
     return answer
 
