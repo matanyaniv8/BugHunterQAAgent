@@ -10,6 +10,7 @@ from system.bug_families.button_bugs import button_bugs
 from system.bug_families.link_bugs import link_bugs
 from system.bug_families.tab_bugs import tab_bugs
 from system.bug_families.form_bugs import forms_bugs
+from buggy_code_generator import get_buggy_code_snippet
 
 app = FastAPI()
 
@@ -51,6 +52,7 @@ def generate_html(selection: BugSelection):
 
     selected_snippets = [random.choice(bug_html_snippets[bug]) for bug in selection.bugs if bug in bug_html_snippets]
     generated_html_snippets = "\n".join(selected_snippets)
+    generated_html_snippets = get_buggy_code_snippet(selection.bugs)
 
     # Wrap in a complete HTML structure
     generated_html = f"""

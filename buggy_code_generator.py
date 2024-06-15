@@ -1,8 +1,39 @@
 import json
 from openai import OpenAI
 
-OPENAI_API_KEY = ''
+from system.bug_families import button_bugs, form_bugs, link_bugs, tab_bugs
+
+OPENAI_API_KEY = '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'
 client = OpenAI(api_key=OPENAI_API_KEY)
+
+bugs_descriptions = {
+    'submit_button_no_action': f'submit_button_no_action - A submit button that does nothing when clicked. '
+                               f'for example {button_bugs.button_bugs['submit_button_no_action']}',
+
+    'empty_button': f'empty_button - A button that appears empty and does nothing. '
+                    f'for example {button_bugs.button_bugs['empty_button']}',
+    'non_functional_tabs': f'non_functional_tabs - Tab elements that look clickable but have no functionality. for '
+                           f'example {tab_bugs.tab_bugs['non_functional_tabs']}',
+    'broken_link': f'broken_link - A hyperlink that leads to a non-existent page. '
+                   f'for example {link_bugs.link_bugs['broken_link']}',
+    'non_visible_link': f'non_visible_link - A link that is present in the code but not visible on the page. '
+                        f'for example {link_bugs.link_bugs['non_visible_link']}',
+    'no_href_link': f'no_href_link - A hyperlink element without an href attribute. '
+                    f'for example {link_bugs.link_bugs['no_href_link']}',
+    'javascript_link': f'javascript_link - A link that executes JavaScript code incorrectly. '
+                       f'for example {link_bugs.link_bugs['javascript_link']}',
+    'incorrect_anchor_link': f'incorrect_anchor_link - A link that refers to a non-existent anchor on the same page. '
+                             f'for example {link_bugs.link_bugs['incorrect_anchor_link']}',
+    'input buttons': f'input buttons - Input elements styled as text area '
+                     f'for email, password, checkboxes but are non fully interactive. '
+                     f'for example {form_bugs.forms_bugs['inputs buttons']}',
+    'Drop-Down list selection validation': f'Drop-Down list selection validation'
+                                           f' - A drop-down list that does not validate or react to user selection. '
+                                           f'for example {form_bugs.forms_bugs['Drop-Down list selection validation']}',
+    'combined': f'Input elements styled as text area for email, password, checkboxes but are non fully interactive, '
+                f'and a drop-down list that does not validate or react to user selection. '
+                f'for example {form_bugs.forms_bugs['combined']}',
+}
 
 
 def ask_openai_jason(model, prompt):
@@ -39,36 +70,38 @@ def ask_openai_jason(model, prompt):
     return response_json
 
 
+def get_bugs_description(bugs: [str]):
+    description = ""
+    for idx, bug in enumerate(bugs, start=1):
+        bug_description = bugs_descriptions.get(bug, '')
+        if bug_description != '':
+            description += f"{idx}. {bug_description}\n"
+    return description
+
+
 def get_buggy_code_snippet(bugs: [str]):
-    prompt = f"""
-    Please generate HTML code snippets that intentionally contain these bug {bugs}. Each snippet should represent a common web development issue as described below. Ensure each type of bug is clearly identifiable within its snippet.
+    returned_format = "{response : html}"
+    prompt = f""" Generate HTML code snippets that visually demonstrate various common web development bugs. Each 
+    snippet should include a single bug from the provided list and apply CSS styling to ensure that the snippet is 
+    not visually boring. Each HTML snippet should clearly represent the bug in isolation so that it can be easily 
+    identified and understood.
 
-1. **Forms Input Elements Bugs**: Create a form with input elements where some inputs lack proper labels, making them less accessible and potentially causing confusion in form usage.
+List of bugs to be included in the HTML snippets:\n{get_bugs_description(bugs)}
 
-2. **Forms Submission Bugs**: Generate a form snippet where the submission button does not trigger any action due to a missing form action or incorrect method attribute.
+Please ensure each snippet is contained within a <div> with a class name corresponding to the bug type and apply 
+minimal CSS styling to make each snippet visually interesting. For example, use colors, borders, or padding. \nAlso 
+not that you should not include the <html>, <body>, or <head> tags as they are presumed to be part of an existing 
+page."""
 
-3. **Buttons Visibility and Interactivity Issues**: Produce an HTML snippet with multiple buttons. Some buttons should be hidden via CSS, others should be overlapped by other elements making them non-interactable, and one button, when clicked, should cause a JavaScript error.
+    print(prompt)
 
-4. **Link Issues**: Create a snippet with several anchor tags where:
-   - One link has no 'href' attribute.
-   - Another link leads to a non-existent resource (broken link).
-   - One uses an incorrect anchor linking method, such as a missing ID on the target element.
-   - Include a JavaScript link that triggers an error when clicked.
+    answer = ask_openai_jason(model="gpt-3.5-turbo", prompt=prompt)['response']
+    print(answer)
+    return answer
 
-For each bug, ensure the snippet is self-contained and simple enough to clearly demonstrate the specific issue, 
-and please add in-tag styling for better representation.
 
-### Example Output for One of the Requests:
-<!-- Forms Submission Bugs Example -->
-<form>
-    <input type="text" name="username" placeholder="Username">
-    <input type="password" name="password" placeholder="Password">
-    <!-- Notice the submit button has a missing 'type' attribute, and the form lacks 'action' -->
-    <button>Submit</button>
-</form>
-```
-Additional Details:
-Each snippet should be wrapped in appropriate HTML tags but should not include the <html>, <body>, or <head> tags as they are presumed to be part of an existing page.
-Each bug should be evident to a developer inspecting the code but may not be immediately obvious to a user interacting with the page.
-Please generate each requested snippet following the guidelines provided for the respective bugs, and returns in a Jason format [bugs_snippet:  your html_code bugs]
-    """
+if __name__ == '__main__':
+    get_buggy_code_snippet(
+        ['submit_button_no_action', 'empty_button', 'non_functional_tabs', 'broken_link', 'non_visible_link',
+         'no_href_link', 'javascript_link', 'incorrect_anchor_link', 'inputs buttons',
+         'Drop-Down list selection validation'])
