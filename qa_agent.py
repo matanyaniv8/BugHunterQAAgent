@@ -1,7 +1,6 @@
 import tests.link_tests as link_tests
 import tests.button_tests as button_tests
 from urllib.parse import urlparse
-
 from tests import form_tests
 
 
@@ -15,11 +14,11 @@ def run_tests_wrapper(web_data):
     if is_url:
         link_results = link_tests.execute_url_tests(web_data)
         button_results = button_tests.execute_button_url_tests(web_data)
-        form_results = form_tests.test_url(web_data)
+        form_results = form_tests.execute_forms_url_tests(web_data)
     else:
         link_results = link_tests.execute_html_tests(web_data)
         button_results = button_tests.execute_button_html_tests(web_data)
-        form_results = form_tests.test_html(web_data)
+        form_results = form_tests.execute_forms_html_tests(web_data)
 
     unified_results = {
         "links": link_results,

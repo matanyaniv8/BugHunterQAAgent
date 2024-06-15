@@ -37,13 +37,39 @@ export default function Results() {
         return `${passedTests}/${totalTests}`;
     };
 
+    const formatResult = (result) => {
+    if (typeof result !== 'string') {
+        return JSON.stringify(result);
+    }
+    const parts = result.split('-');
+    const formattedParts = parts.map((part, index) => {
+        part = part.trim();
+        if (part.toLowerCase() === 'passed') {
+            return <span key={index} className={styles.passed}>{part.toUpperCase()}</span>;
+        } else if (part.toLowerCase() === 'failed') {
+            return <span key={index} className={styles.failed}>{part.toUpperCase()}</span>;
+        }
+        return part;
+    });
+
+        return formattedParts.reduce((prev, curr, index) => <>{prev}{index > 0 ? ' - ' : ''}{curr}</>);
+    };
+
+
+    const titleCase = (text) => {
+        return text.replace(
+            /\w\S*/g,
+            (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+        );
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.overlay}></div>
             <div className={styles.content}>
                 <h1 className={styles.title}>Test Results</h1>
                 {typeof parsedContent === 'string' ? (
-                    <pre className={styles.results}>{parsedContent}</pre>
+                    <pre className={styles.results}>{formatResult(parsedContent)}</pre>
                 ) : (
                     <>
                         {parsedContent && ['links', 'buttons', 'forms'].map((category) => (
@@ -55,11 +81,11 @@ export default function Results() {
                                 <ul className={styles.list}>
                                     {Object.keys(parsedContent[category]).map((item) => (
                                         <li key={item} className={styles.listItem}>
-                                            <strong>{item}</strong>
+                                            <strong>{titleCase(item)}</strong>
                                             <ul className={styles.list}>
                                                 {Object.entries(parsedContent[category][item]).map(([test, result]) => (
                                                     <li key={test} className={styles.listItem}>
-                                                        {test}: {typeof result === 'string' ? result : JSON.stringify(result)}
+                                                        {titleCase(test)}: {formatResult(result)}
                                                     </li>
                                                 ))}
                                             </ul>
