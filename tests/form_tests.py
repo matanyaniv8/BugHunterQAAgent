@@ -58,8 +58,8 @@ def test_input_fields(form):
                 input.send_keys("test")
             elif input_type in ["checkbox", "radio"]:
                 input.click() if not input.is_selected() else None
-        except Exception as e:
-            test_result = f"failed - Exception: {str(e)}"
+        except Exception:
+            test_result = f"failed -  Failed to run test"
         results[test_description] = test_result
     return results
 
@@ -92,8 +92,8 @@ def test_form_submission(form, driver):
             results[test_description] = "failed - No Submit Button"
     except NoSuchElementException:
         results[test_description] = "failed - No Submit Button"
-    except Exception as e:
-        results[test_description] = f"failed - Exception: {str(e)}"
+    except Exception:
+        results[test_description] = f"failed -  Failed to run test"
     return results
 
 

@@ -11,54 +11,50 @@ def extract_links_from_html(html_content):
 def extract_links_from_page(url):
     response = requests.get(url)
     if response.status_code == 200:
-        # Parse the HTML content of the page
         soup = BeautifulSoup(response.content, 'html.parser')
-
-        # Find all <a> tags
         links = soup.find_all('a')
-
-        # Extract the href attribute from each <a> tag
         urls = [link.get('href') for link in links if link.get('href') is not None]
-
         return urls
     else:
         return []
 
 
 def check_broken_link(link):
-    test_name = "check_broken_link"
+    test_name = "check broken link"
     try:
         response = requests.head(link, allow_redirects=True, timeout=5)
         if response.status_code == 200:
             return test_name, "passed"
         else:
             return test_name, f"failed - Status Code: {response.status_code}"
-    except requests.RequestException as e:
-        return test_name, f"failed - Exception: {e}"
+    except requests.exceptions.InvalidURL:
+        return test_name, "failed - Invalid URL format"
+    except requests.exceptions.ConnectionError:
+        return test_name, "failed - Unable to connect"
+    except requests.RequestException:
+        return test_name, f"failed - Invalid Request"
+    except Exception:
+        return test_name, "failed - Failed to run test"
 
 
 def check_incorrect_url(link):
-    test_name = "check_incorrect_url"
-    try:
-        # Basic validation: URL should start with 'http' or 'https'
-        if link.startswith('http'):
-            return test_name, "passed"
-        else:
-            return test_name, "failed - URL does not start with 'http' or 'https'"
-    except Exception as e:
-        return test_name, f"failed - Exception: {e}"
+    test_name = "Check valid URL format "
+    if link.startswith('http'):
+        return test_name, "passed"
+    else:
+        return test_name, "failed - URL does not start with 'http' or 'https'"
 
 
 def check_non_responsive_link(link):
-    test_name = "check_non_responsive_link"
+    test_name = "check responsive link"
     try:
         response = requests.get(link, timeout=5)
         if response.status_code == 200 and len(response.content) > 0:
             return test_name, "passed"
         else:
-            return test_name, f"failed - Status Code: {response.status_code}, Content Length: {len(response.content)}"
-    except requests.RequestException as e:
-        return test_name, f"failed - Exception: {e}"
+            return test_name, f"failed - Status Code: {response.status_code}"
+    except requests.RequestException:
+        return test_name, f"failed - Failed to run test"
 
 
 def run_tests_on_links(links):
@@ -74,13 +70,13 @@ def run_tests_on_links(links):
 def execute_url_tests(url):
     print(f"Start running test on {url}")
     all_links = extract_links_from_page(url)
-    print(f"extracted all link - total of {len(all_links)} links")
-    results = run_tests_on_links(all_links[:3])
+    print(f"Extracted all links - total of {len(all_links)} links")
+    results = run_tests_on_links(all_links)
     return results
 
 
 def execute_html_tests(html_content):
-    print(f"Start running test on html")
+    print(f"Start running test on HTML content")
     links = extract_links_from_html(html_content)
     results = run_tests_on_links(links)
     return results
