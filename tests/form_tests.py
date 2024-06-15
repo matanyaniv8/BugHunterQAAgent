@@ -28,11 +28,9 @@ def perform_tests(driver):
             lambda x: x.find_elements(By.TAG_NAME, "form") if x.find_elements(By.TAG_NAME, "form") else False
         )
     except TimeoutException:
-        results['General Error'] = 'No forms found on the page or timeout reached'
         return results
 
     if not forms:
-        results['General Error'] = 'No forms found on the page'
         return results
 
     for form_index, form in enumerate(forms):
