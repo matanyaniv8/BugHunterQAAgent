@@ -1,11 +1,13 @@
+from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 from requests_html import HTML
 
 
-def extract_links_from_html(html_content):
+def extract_links_from_html(html_content, base_url):
     html = HTML(html=html_content)
-    return list(html.absolute_links)
+    absolute_links = [urljoin(base_url, link) for link in html.absolute_links]
+    return absolute_links
 
 
 def extract_links_from_page(url):
@@ -13,7 +15,8 @@ def extract_links_from_page(url):
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
         links = soup.find_all('a')
-        urls = [link.get('href') for link in links if link.get('href') is not None]
+        # Ensure all URLs are absolute by combining the base URL with the relative URL
+        urls = [urljoin(url, link.get('href')) for link in links if link.get('href') is not None]
         return urls
     else:
         return []
