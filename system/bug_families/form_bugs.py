@@ -1,7 +1,7 @@
 forms_bugs = {
     "Drop-Down list selection validation": [
         '''
-    <form id="buggyForm">
+    <form id="Buggy Form">
         <label>Choose a car:</label>
         <select id="cars" name="">
             <option value="volvo">Volvo</option>

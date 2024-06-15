@@ -1,5 +1,5 @@
 import base64
-from selenium.common import exceptions, StaleElementReferenceException
+from selenium.common import StaleElementReferenceException
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -41,7 +41,6 @@ def perform_button_tests(driver):
         # Select all elements that could be considered buttons
         buttons = driver.find_elements(By.CSS_SELECTOR,
                                        "button, input[type='button'], input[type='submit'], input[type='reset'], a[role='button']")
-        last_btn_tested = None
         print(len(buttons))
         if len(buttons) > 0:
             for index, button in enumerate(buttons):
@@ -63,8 +62,8 @@ def perform_button_tests(driver):
                         click_test = "PASSED - Button clicked without error."
                     else:
                         click_test = "NOT ATTEMPTED - Button is not visible or not interactive."
-                except Exception as e:
-                    click_test = f"FAILED - Error on clicking: {str(e)}"
+                except Exception:
+                    click_test = f"FAILED - Error while clicking"
 
                 results[button_description] = {
                     "Visibility Test": visibility_test,
@@ -73,8 +72,8 @@ def perform_button_tests(driver):
                 }
     except StaleElementReferenceException:
         last_btn_tested = None
-    except Exception as e:
-        results["General Error"] = f"FAILED - Error setting up button tests: {str(e)}"
+    except Exception:
+        results["General Error"] = f"FAILED - Failed to run test"
     return results
 
 

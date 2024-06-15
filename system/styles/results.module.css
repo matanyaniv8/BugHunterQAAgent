@@ -75,3 +75,17 @@
 .homeButton:hover {
     background-color: #005f8c;
 }
+
+.passed {
+    color: green;
+    font-weight: bold;
+}
+
+.failed {
+    color: red;
+    font-weight: bold;
+}
+
+.summary {
+    color: #007ac4;
+}

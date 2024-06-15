@@ -21,10 +21,9 @@ export default function Results() {
         router.push('/');
     };
 
-    const calculatePassedTests = (category) => {
+    const calculatePassedTests = (category, categoryName) => {
         let totalTests = 0;
         let passedTests = 0;
-
         Object.values(category).forEach(test => {
             Object.values(test).forEach(result => {
                 totalTests++;
@@ -33,8 +32,49 @@ export default function Results() {
                 }
             });
         });
+        return `${passedTests}/${totalTests} tests passed in ${categoryName}`;
+    };
 
-        return `${passedTests}/${totalTests}`;
+    const calculateValidElements = (category, categoryName) => {
+        let totalElements = 0;
+        let validElements = 0;
+        Object.values(category).forEach(tests => {
+            totalElements++;
+            let allPassed = true;
+            Object.values(tests).forEach(result => {
+                if (typeof result === 'string' && !result.toLowerCase().includes('passed')) {
+                    allPassed = false;
+                }
+            });
+            if (allPassed) {
+                validElements++;
+            }
+        });
+        return `${validElements}/${totalElements} valid ${categoryName}`;
+    };
+
+    const formatResult = (result) => {
+        if (typeof result !== 'string') {
+            return JSON.stringify(result);
+        }
+        const parts = result.split('-');
+        const formattedParts = parts.map((part, index) => {
+            part = part.trim();
+            if (part.toLowerCase() === 'passed') {
+                return <span key={index} className={styles.passed}>{part.toUpperCase()}</span>;
+            } else if (part.toLowerCase() === 'failed') {
+                return <span key={index} className={styles.failed}>{part.toUpperCase()}</span>;
+            }
+            return part;
+        });
+        return formattedParts.reduce((prev, curr, index) => <>{prev}{index > 0 ? ' - ' : ''}{curr}</>);
+    };
+
+    const titleCase = (text) => {
+        return text.replace(
+            /\w\S*/g,
+            (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+        );
     };
 
     return (
@@ -43,23 +83,28 @@ export default function Results() {
             <div className={styles.content}>
                 <h1 className={styles.title}>Test Results</h1>
                 {typeof parsedContent === 'string' ? (
-                    <pre className={styles.results}>{parsedContent}</pre>
+                    <pre className={styles.results}>{formatResult(parsedContent)}</pre>
                 ) : (
                     <>
-                        {parsedContent && ['links', 'buttons', 'forms'].map((category) => (
-                            <div key={category} className={styles.category}>
-                                <h2>{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+                        {parsedContent && Object.keys(parsedContent).map(categoryName => (
+                            <div key={categoryName} className={styles.category}>
+                                <h2>{titleCase(categoryName)}</h2>
                                 <h3 className={styles.subtitle}>
-                                    {calculatePassedTests(parsedContent[category])} tests passed
+                                    <span className={styles.summary}>
+                                        {calculateValidElements(parsedContent[categoryName], categoryName)}
+                                    </span>
+                                </h3>
+                                <h3 className={styles.subtitle}>
+                                    {calculatePassedTests(parsedContent[categoryName], categoryName)}
                                 </h3>
                                 <ul className={styles.list}>
-                                    {Object.keys(parsedContent[category]).map((item) => (
+                                    {Object.keys(parsedContent[categoryName]).map((item) => (
                                         <li key={item} className={styles.listItem}>
-                                            <strong>{item}</strong>
+                                            <strong>{titleCase(item)}</strong>
                                             <ul className={styles.list}>
-                                                {Object.entries(parsedContent[category][item]).map(([test, result]) => (
+                                                {Object.entries(parsedContent[categoryName][item]).map(([test, result]) => (
                                                     <li key={test} className={styles.listItem}>
-                                                        {test}: {typeof result === 'string' ? result : JSON.stringify(result)}
+                                                        {titleCase(test)}: {formatResult(result)}
                                                     </li>
                                                 ))}
                                             </ul>
