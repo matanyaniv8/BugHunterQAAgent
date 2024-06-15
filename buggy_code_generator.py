@@ -1,6 +1,5 @@
 import json
 from openai import OpenAI
-
 from system.bug_families import button_bugs, form_bugs, link_bugs, tab_bugs
 
 OPENAI_API_KEY = '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'
