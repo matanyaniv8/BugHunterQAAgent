@@ -1,5 +1,6 @@
 *.xml
 *.yml
+./openAI_Key
 .idea/*
 ./results/*
 ./generated_html/buggy_website.html
