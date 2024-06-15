@@ -2,7 +2,6 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import styles from '../styles/index.module.css';
-
 import ButtonBugs from '../components/ButtonBugs';
 import LinkBugs from '../components/LinkBugs';
 import TabBugs from '../components/TabBugs';
@@ -12,6 +11,7 @@ export default function Home() {
     const [selectedBugs, setSelectedBugs] = useState([]);
     const [generatedUrl, setGeneratedUrl] = useState('');
     const [inputUrl, setInputUrl] = useState('');
+    const [loading, setLoading] = useState(false); // Loading state
     const router = useRouter();
 
     const handleCheckboxChange = (event) => {
@@ -57,15 +57,18 @@ export default function Home() {
         const htmlFilePath = 'generated_html/buggy_website.html'; // Use the dynamically set file path
         if (htmlFilePath) {
             try {
+                setLoading(true); // Set loading state
                 const response = await axios.post('http://127.0.0.1:8000/test_html', {
                     file_path: htmlFilePath,
                 });
+                setLoading(false); // Reset loading state
                 if (response.data.error) {
                     openResultsPage({ error: response.data.error });
                 } else {
                     openResultsPage(response.data); // Display the test results
                 }
             } catch (error) {
+                setLoading(false); // Reset loading state
                 console.error('Failed to fetch results:', error);
                 openResultsPage({ error: error.response ? error.response.data.detail : '' });
             }
@@ -77,15 +80,18 @@ export default function Home() {
     const handleTestURL = async () => {
         if (inputUrl) {
             try {
+                setLoading(true); // Set loading state
                 const response = await axios.post('http://127.0.0.1:8000/test_url', {
                     url: inputUrl, // This key needs to match your FastAPI model
                 });
+                setLoading(false); // Reset loading state
                 if (response.data.error) {
                     openResultsPage({ error: response.data.error });
                 } else {
                     openResultsPage(response.data.results); // Display the test results
                 }
             } catch (error) {
+                setLoading(false); // Reset loading state
                 console.error('Failed to fetch results:', error);
                 openResultsPage({ error: error.response ? error.response.data.detail : '' });
             }
@@ -125,39 +131,47 @@ export default function Home() {
 
     return (
         <div>
-            <h1 className={styles.title}>Bug Hunter</h1>
-            <p className={styles.subtitle}>Your Ultimate Bug Detection Tool</p>
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="urlInput" className={styles.inputLabel}>Enter URL (optional):</label>
-                    <input
-                        type="text"
-                        id="urlInput"
-                        value={inputUrl}
-                        onChange={handleInputChange}
-                        placeholder="Enter URL if you want to use an existing webpage"
-                        className={styles.input}
-                    />
+            {loading ? (
+                <div className={styles.loadingContainer}>
+                    <img src="/loading.gif" alt="Loading..." className={styles.loadingGif} />
                 </div>
-                <div id="menuButtons" className={styles.menuButtons}>
-                    <button className={styles.button} type="button" onClick={expandAll}>Expand All</button>
-                    <button className={styles.button} type="button" onClick={minimizeAll}>Minimize All</button>
-                </div>
-                <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-                <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-                <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-                <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-                <button type="submit" className={styles.button}>Generate HTML</button>
-            </form>
-            {generatedUrl && (
-                <div className={styles.generatedHTML}>
-                    <a href={generatedUrl} id="generatedUrl" target="_blank" rel="noopener noreferrer">{generatedUrl}</a>
-                </div>
+            ) : (
+                <>
+                    <h1 className={styles.title}>Bug Hunter</h1>
+                    <p className={styles.subtitle}>Your Ultimate Bug Detection Tool</p>
+                    <form onSubmit={handleSubmit} className={styles.form}>
+                        <div className={styles.inputGroup}>
+                            <label htmlFor="urlInput" className={styles.inputLabel}>Enter URL (optional):</label>
+                            <input
+                                type="text"
+                                id="urlInput"
+                                value={inputUrl}
+                                onChange={handleInputChange}
+                                placeholder="Enter URL if you want to use an existing webpage"
+                                className={styles.input}
+                            />
+                        </div>
+                        <div id="menuButtons" className={styles.menuButtons}>
+                            <button className={styles.button} type="button" onClick={expandAll}>Expand All</button>
+                            <button className={styles.button} type="button" onClick={minimizeAll}>Minimize All</button>
+                        </div>
+                        <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+                        <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+                        <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+                        <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+                        <button type="submit" className={styles.button}>Generate HTML</button>
+                    </form>
+                    {generatedUrl && (
+                        <div className={styles.generatedHTML}>
+                            <a href={generatedUrl} id="generatedUrl" target="_blank" rel="noopener noreferrer">{generatedUrl}</a>
+                        </div>
+                    )}
+                    <div id="testButtons" className={styles.testButtons}>
+                        <button className={styles.button} type="button" onClick={handleTestHTML}>Test HTML</button>
+                        <button className={styles.button} type="button" onClick={handleTestURL}>Test URL</button>
+                    </div>
+                </>
             )}
-            <div id="testButtons" className={styles.testButtons}>
-                <button className={styles.button} type="button" onClick={handleTestHTML}>Test HTML</button>
-                <button className={styles.button} type="button" onClick={handleTestURL}>Test URL</button>
-            </div>
         </div>
     );
 }
