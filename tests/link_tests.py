@@ -4,10 +4,9 @@ from bs4 import BeautifulSoup
 from requests_html import HTML
 
 
-def extract_links_from_html(html_content, base_url):
+def extract_links_from_html(html_content):
     html = HTML(html=html_content)
-    absolute_links = [urljoin(base_url, link) for link in html.absolute_links]
-    return absolute_links
+    return list(html.absolute_links)
 
 
 def extract_links_from_page(url):
