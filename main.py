@@ -87,12 +87,12 @@ app.mount("/generated_html", StaticFiles(directory="generated_html"), name="gene
 def test_html(file: FilePath):
     file_path = file.file_path
     results = execute_html_tests(file_path)
+    print(results)
     return results
 
 
 @app.post("/test_url")
 def test_url(url_data: UrlData):
     url = str(url_data.url)
-    print(url)
     results = execute_url_tests(url)
     return {"results": results}

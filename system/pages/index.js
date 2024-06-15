@@ -67,7 +67,7 @@ export default function Home() {
                 }
             } catch (error) {
                 console.error('Failed to fetch results:', error);
-                openResultsPage({ error: error.response ? error.response.data.detail : 'Unknown error' });
+                openResultsPage({ error: error.response ? error.response.data.detail : '' });
             }
         } else {
             alert('No HTML file generated yet.');
@@ -87,7 +87,7 @@ export default function Home() {
                 }
             } catch (error) {
                 console.error('Failed to fetch results:', error);
-                openResultsPage({ error: error.response ? error.response.data.detail : 'Unknown error' });
+                openResultsPage({ error: error.response ? error.response.data.detail : '' });
             }
         } else {
             alert('Please enter a URL.');
