@@ -41,3 +41,13 @@ const FormBugs = ({handleCheckboxChange, toggleSection}) => {
 };
 
 export default FormBugs;
+
+
+
+
+
+
+
+
+
+

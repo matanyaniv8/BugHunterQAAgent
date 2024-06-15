@@ -1,4 +1,5 @@
 import base64
+from selenium.common import exceptions, StaleElementReferenceException
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -18,6 +19,7 @@ def setup_selenium_driver():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
     return driver
 
 
@@ -39,9 +41,13 @@ def perform_button_tests(driver):
         # Select all elements that could be considered buttons
         buttons = driver.find_elements(By.CSS_SELECTOR,
                                        "button, input[type='button'], input[type='submit'], input[type='reset'], a[role='button']")
+        last_btn_tested = None
+        print(len(buttons))
         if len(buttons) > 0:
             for index, button in enumerate(buttons):
-                button_text = button.text.strip() or button.get_attribute('title') or "Unnamed Button"
+                last_btn_tested = button
+                button_text = button.text.strip() or button.get_attribute('title') or button.get_attribute(
+                    'value') or "Unnamed Button"
                 button_description = f"Button {index + 1}: {button_text}"  # Create a unique description for each button
 
                 # Determine visibility
@@ -65,6 +71,8 @@ def perform_button_tests(driver):
                     "Interactivity Test": interact_test,
                     "Click Test": click_test
                 }
+    except StaleElementReferenceException:
+        last_btn_tested = None
     except Exception as e:
         results["General Error"] = f"FAILED - Error setting up button tests: {str(e)}"
     return results
