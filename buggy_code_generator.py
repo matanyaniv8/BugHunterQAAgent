@@ -94,7 +94,7 @@ def get_buggy_code_snippet(bugs: [str]):
 
 List of bugs to be included in the HTML snippets:\n{get_bugs_description(bugs)}
 
-Please ensure each snippet is contained within a <div> with a class name corresponding to the bug type and apply 
+Please ensure each snippet is contained within the same <div> with a class name corresponding to the bug type and apply 
 minimal CSS styling to make each snippet visually interesting. For example, use colors, borders, or padding. \nAlso 
 note that you should not include the <html>, <body>, or <head> tags as they are presumed to be part of an existing 
 page. please return with the format {returned_format} where you put the combined code in one div in the html code 
