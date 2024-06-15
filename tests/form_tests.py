@@ -23,9 +23,6 @@ def load_html_content(driver, html_content):
 
 def perform_tests(driver):
     """Perform form input and submission tests on the loaded content."""
-    # results = {}
-    # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "form")))
-    # forms = driver.find_elements(By.TAG_NAME, "form")
     results = {}
     try:
         forms = WebDriverWait(driver, 10).until(
