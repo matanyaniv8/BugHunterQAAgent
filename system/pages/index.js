@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import styles from '../styles/index.module.css';
 import ButtonBugs from '../components/ButtonBugs';
 import LinkBugs from '../components/LinkBugs';
@@ -14,8 +14,18 @@ export default function Home() {
     const [loading, setLoading] = useState(false); // Loading state
     const router = useRouter();
 
+    useEffect(() => {
+        const handleRouteChange = (url) => {
+            pageview(url);
+        };
+        router.events.on('routeChangeComplete', handleRouteChange);
+        return () => {
+            router.events.off('routeChangeComplete', handleRouteChange);
+        };
+    }, [router.events]);
+
     const handleCheckboxChange = (event) => {
-        const { value, checked } = event.target;
+        const {value, checked} = event.target;
         if (checked) {
             setSelectedBugs((prev) => [...prev, value]);
         } else {
@@ -63,14 +73,14 @@ export default function Home() {
                 });
                 setLoading(false); // Reset loading state
                 if (response.data.error) {
-                    openResultsPage({ error: response.data.error });
+                    openResultsPage({error: response.data.error});
                 } else {
                     openResultsPage(response.data); // Display the test results
                 }
             } catch (error) {
                 setLoading(false); // Reset loading state
                 console.error('Failed to fetch results:', error);
-                openResultsPage({ error: error.response ? error.response.data.detail : '' });
+                openResultsPage({error: error.response ? error.response.data.detail : ''});
             }
         } else {
             alert('No HTML file generated yet.');
@@ -86,14 +96,14 @@ export default function Home() {
                 });
                 setLoading(false); // Reset loading state
                 if (response.data.error) {
-                    openResultsPage({ error: response.data.error });
+                    openResultsPage({error: response.data.error});
                 } else {
                     openResultsPage(response.data.results); // Display the test results
                 }
             } catch (error) {
                 setLoading(false); // Reset loading state
                 console.error('Failed to fetch results:', error);
-                openResultsPage({ error: error.response ? error.response.data.detail : '' });
+                openResultsPage({error: error.response ? error.response.data.detail : ''});
             }
         } else {
             alert('Please enter a URL.');
@@ -133,7 +143,7 @@ export default function Home() {
         <div>
             {loading ? (
                 <div className={styles.loadingContainer}>
-                    <img src="/loading.gif" alt="Loading..." className={styles.loadingGif} />
+                    <img src="/loading.gif" alt="Loading..." className={styles.loadingGif}/>
                 </div>
             ) : (
                 <>
@@ -155,15 +165,16 @@ export default function Home() {
                             <button className={styles.button} type="button" onClick={expandAll}>Expand All</button>
                             <button className={styles.button} type="button" onClick={minimizeAll}>Minimize All</button>
                         </div>
-                        <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-                        <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-                        <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
-                        <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection} />
+                        <ButtonBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
+                        <TabBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
+                        <LinkBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
+                        <FormBugs handleCheckboxChange={handleCheckboxChange} toggleSection={toggleSection}/>
                         <button type="submit" className={styles.button}>Generate HTML</button>
                     </form>
                     {generatedUrl && (
                         <div className={styles.generatedHTML}>
-                            <a href={generatedUrl} id="generatedUrl" target="_blank" rel="noopener noreferrer">{generatedUrl}</a>
+                            <a href={generatedUrl} id="generatedUrl" target="_blank"
+                               rel="noopener noreferrer">{generatedUrl}</a>
                         </div>
                     )}
                     <div id="testButtons" className={styles.testButtons}>
