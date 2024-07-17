@@ -66,12 +66,14 @@ def ask_openai_json(model, prompt):
     # Extract the content of the response
     response_text = completion.choices[0].message.content
 
+
     # Try to parse the response into JSON
     try:
+        print(type(response_text))
         response_json = json.loads(response_text)
     except json.JSONDecodeError:
         print("Could not parse response as JSON. Returning as plain text.")
-        response_json = {"response": response_text}
+        response_json = {"response": response_text.split("response")[-1][4:-7]}
 
     return response_json
 
@@ -103,6 +105,7 @@ field of the response format."""
     answer = ask_openai_json(model="gpt-3.5-turbo", prompt=prompt)['response']
 
     print(answer)
+    answer = answer.replace('\\n', "")  # for dealing with un
     return answer
 
 
