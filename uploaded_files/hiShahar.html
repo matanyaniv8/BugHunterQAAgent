@@ -1,0 +1,21 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Buggy Website</title>
+    </head>
+    <body>
+        <style>.bug-snippet { border: 2px solid #333; padding: 10px; margin: 10px; }</style><div class='bug-snippet non_functional_tabs'>
+    <ul>
+        <li><a href='#'>Home</a></li>
+        <li><a href='#'>Contact</a></li>
+        <li><a href='#'>About Us</a></li>
+    </ul>
+</div>
+<div class='bug-snippet submit_button_no_action'>
+    <button onclick='return false;'>H Me</button> <form><button type='button'>Submit</button></form>
+    <form><input type='button' value='Submit'></form>
+</div>
+    </body>
+    </html>

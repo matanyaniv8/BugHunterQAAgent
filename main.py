@@ -1,10 +1,14 @@
-from fastapi import FastAPI
+import shutil
+
+from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, HttpUrl
 from typing import List
 import os
 import random
 from fastapi.staticfiles import StaticFiles
+from starlette.responses import JSONResponse
+
 from qa_agent import execute_url_tests, execute_html_tests
 from system.bug_families.button_bugs import button_bugs
 from system.bug_families.link_bugs import link_bugs
@@ -79,7 +83,6 @@ def generate_html(selection: BugSelection):
     return {"url": f"http://127.0.0.1:8000/generated_html/{file_name}"}
 
 
-
 app.mount("/generated_html", StaticFiles(directory="generated_html"), name="generated_html")
 
 
@@ -96,3 +99,15 @@ def test_url(url_data: UrlData):
     url = str(url_data.url)
     results = execute_url_tests(url)
     return {"results": results}
+
+
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    file_location = os.path.join('uploaded_files', file.filename)
+    print(file_location)
+    with open(file_location, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    return JSONResponse(content={"message": "File uploaded successfully", "file_path": file_location})
+
+

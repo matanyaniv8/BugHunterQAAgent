@@ -30,7 +30,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Script async
-        src={`https://www.googletagmanager.com/gtag/js?id=G-RH9W2LG6J1`}
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
       />
       <Script id="google-analytics">
         {

@@ -1,3 +1,4 @@
+// pages/index.js or your main component file
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import {useRouter} from 'next/router';
@@ -7,12 +8,51 @@ import LinkBugs from '../components/LinkBugs';
 import TabBugs from '../components/TabBugs';
 import FormBugs from '../components/FormBugs';
 
+// const pageview = (url) => {
+//     if (window.gtag) {
+//         window.gtag('config', 'G-RH9W2LG6J1', {
+//             page_path: url,
+//         });
+//     }
+// };
+
 export default function Home() {
     const [selectedBugs, setSelectedBugs] = useState([]);
     const [generatedUrl, setGeneratedUrl] = useState('');
     const [inputUrl, setInputUrl] = useState('');
     const [loading, setLoading] = useState(false); // Loading state
+    const [file, setFile] = useState(null); // File state
+    const [fileLocation, setFileLocation] = useState(''); // File location state
     const router = useRouter();
+
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
+    };
+
+    const handleFileUpload = async (event) => {
+        event.preventDefault();
+        if (!file) {
+            alert('Please select a file to upload.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            const {file_path} = response.data;
+            console.log('File uploaded successfully', file_path);
+            setFileLocation(file_path)
+            // Handle the response as needed
+        } catch (error) {
+            console.error('Failed to upload file:', error);
+        }
+    };
 
     useEffect(() => {
         const handleRouteChange = (url) => {
@@ -64,7 +104,7 @@ export default function Home() {
     };
 
     const handleTestHTML = async () => {
-        const htmlFilePath = 'generated_html/buggy_website.html'; // Use the dynamically set file path
+        const htmlFilePath = (fileLocation === '') ? 'generated_html/buggy_website.html': fileLocation; // Use the dynamically set file path
         if (htmlFilePath) {
             try {
                 setLoading(true); // Set loading state
@@ -180,6 +220,13 @@ export default function Home() {
                     <div id="testButtons" className={styles.testButtons}>
                         <button className={styles.button} type="button" onClick={handleTestHTML}>Test HTML</button>
                         <button className={styles.button} type="button" onClick={handleTestURL}>Test URL</button>
+                    </div>
+                    <div className={styles.uploadSection}>
+                        <h2>Upload HTML File</h2>
+                        <form onSubmit={handleFileUpload}>
+                            <input type="file" accept=".html" onChange={handleFileChange}/>
+                            <button type="submit" className={styles.button}>Upload File</button>
+                        </form>
                     </div>
                 </>
             )}
