@@ -1,5 +1,5 @@
 // pages/index.js or your main component file
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import axios from 'axios';
 import {useRouter} from 'next/router';
 import styles from '../styles/index.module.css';
@@ -16,6 +16,8 @@ const pageview = (url) => {
     }
 };
 
+const defaultUploadButtonText = "Upload HTML File";
+const defaultHtmlTestBtnText = "Test HTML";
 export default function Home() {
     const [selectedBugs, setSelectedBugs] = useState([]);
     const [generatedUrl, setGeneratedUrl] = useState('');
@@ -23,34 +25,40 @@ export default function Home() {
     const [loading, setLoading] = useState(false); // Loading state
     const [file, setFile] = useState(null); // File state
     const [fileLocation, setFileLocation] = useState(''); // File location state
+    const fileInputRef = useRef(null); // Reference to the hidden file input
+    const [uploadBtnText, setUploadBtnText] = useState(defaultUploadButtonText); // File Upload Button text state
+    const [htmlButtonText, sethtmlButtonText] = useState(defaultHtmlTestBtnText); // File Upload Button text state
+
     const router = useRouter();
 
-    const handleFileChange = (event) => {
-        setFile(event.target.files[0]);
+    const handleButtonClick = () => {
+        fileInputRef.current.click();
     };
 
-    const handleFileUpload = async (event) => {
-        event.preventDefault();
-        if (!file) {
-            alert('Please select a file to upload.');
-            return;
-        }
+    const handleFileChange = async (event) => {
+        const selectedFile = event.target.files[0];
+        if (selectedFile) {
+            setFile(selectedFile);
 
-        const formData = new FormData();
-        formData.append('file', file);
+            const formData = new FormData();
+            formData.append('file', selectedFile);
 
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            const {file_path} = response.data;
-            console.log('File uploaded successfully', file_path);
-            setFileLocation(file_path)
-            // Handle the response as needed
-        } catch (error) {
-            console.error('Failed to upload file:', error);
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/upload', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                const {file_path} = response.data;
+                console.log('File uploaded successfully', file_path);
+                setUploadBtnText("Uploaded!")
+                setFileLocation(file_path);
+                sethtmlButtonText("Start Test")
+                // await handleTestHTML();
+
+            } catch (error) {
+                console.error('Failed to upload file:', error);
+            }
         }
     };
 
@@ -88,6 +96,9 @@ export default function Home() {
                 });
                 if (response.data.url) {
                     setGeneratedUrl(response.data.url);
+                    setFileLocation("")
+                    sethtmlButtonText(defaultHtmlTestBtnText)
+                    setUploadBtnText(defaultUploadButtonText);
                 } else {
                     alert('Failed to generate HTML. No URL returned.');
                 }
@@ -104,7 +115,7 @@ export default function Home() {
     };
 
     const handleTestHTML = async () => {
-        const htmlFilePath = (fileLocation === '') ? 'generated_html/buggy_website.html': fileLocation; // Use the dynamically set file path
+        const htmlFilePath = (fileLocation === '') ? 'generated_html/buggy_website.html' : fileLocation; // Use the dynamically set file path
         if (htmlFilePath) {
             try {
                 setLoading(true); // Set loading state
@@ -218,15 +229,22 @@ export default function Home() {
                         </div>
                     )}
                     <div id="testButtons" className={styles.testButtons}>
-                        <button className={styles.button} type="button" onClick={handleTestHTML}>Test HTML</button>
+                        <button className={styles.button} type="button" onClick={handleTestHTML}>{htmlButtonText}</button>
                         <button className={styles.button} type="button" onClick={handleTestURL}>Test URL</button>
-                    </div>
-                    <div className={styles.uploadSection}>
-                        <h2>Upload HTML File</h2>
-                        <form onSubmit={handleFileUpload}>
-                            <input type="file" accept=".html" onChange={handleFileChange}/>
-                            <button type="submit" className={styles.button}>Upload File</button>
-                        </form>
+                        <input
+                            type="file"
+                            accept=".html"
+                            style={{display: 'none'}}
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                        />
+                        <button
+                            type="button"
+                            className={styles.button}
+                            onClick={handleButtonClick}
+                        >
+                            {uploadBtnText}
+                        </button>
                     </div>
                 </>
             )}

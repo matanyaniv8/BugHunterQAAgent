@@ -113,7 +113,7 @@
 .menuButtons,
 .testButtons {
     display: flex;
-    margin-left: 110px;
+    margin-left: 15px;
     margin-top: 20px;
     margin-bottom: 20px;
 }
