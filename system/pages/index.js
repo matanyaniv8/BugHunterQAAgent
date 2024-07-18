@@ -8,13 +8,13 @@ import LinkBugs from '../components/LinkBugs';
 import TabBugs from '../components/TabBugs';
 import FormBugs from '../components/FormBugs';
 
-// const pageview = (url) => {
-//     if (window.gtag) {
-//         window.gtag('config', 'G-RH9W2LG6J1', {
-//             page_path: url,
-//         });
-//     }
-// };
+const pageview = (url) => {
+    if (window.gtag) {
+        window.gtag('config', 'G-RH9W2LG6J1', {
+            page_path: url,
+        });
+    }
+};
 
 export default function Home() {
     const [selectedBugs, setSelectedBugs] = useState([]);

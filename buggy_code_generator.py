@@ -30,13 +30,13 @@ bugs_descriptions = {
                        f"for example {link_bugs['javascript_link']}",
     'incorrect_anchor_link': f"incorrect_anchor_link - A link that refers to a non-existent anchor on the same page. "
                              f"for example {link_bugs['incorrect_anchor_link']}",
-    'inputs buttons': f"inputs buttons - Input elements styled as text area "
+    'inputs buttons': f"inputs buttons - Input elements styled as text area, some inputs have type=number "
                       f"for email, password, checkboxes but are non fully interactive. "
                       f"for example {forms_bugs['inputs buttons']}",
     'Drop-Down list selection validation': f"Drop-Down list selection validation"
                                            f" - A drop-down list that does not validate or react to user selection. "
                                            f"for example {forms_bugs['Drop-Down list selection validation']}",
-    'combined': f"Input elements styled as text area for email, password, checkboxes but are non fully interactive, "
+    'combined': f"Input elements styled as text area for email, password, checkboxes but are non fully interactive,  "
                 f"and a drop-down list that does not validate or react to user selection. "
                 f"for example {forms_bugs['combined']}",
 }
