@@ -1,3 +1,4 @@
+import json
 import shutil
 
 from fastapi import FastAPI, UploadFile, File
@@ -14,7 +15,7 @@ from system.bug_families.button_bugs import button_bugs
 from system.bug_families.link_bugs import link_bugs
 from system.bug_families.tab_bugs import tab_bugs
 from system.bug_families.form_bugs import forms_bugs
-from buggy_code_generator import get_buggy_code_snippet
+from buggy_code_generator import get_buggy_code_snippet, ask_openai_json
 
 app = FastAPI()
 
@@ -91,7 +92,7 @@ def test_html(file: FilePath):
     file_path = file.file_path
     results = execute_html_tests(file_path)
     print(results)
-    return results
+    return results  # get_suggestion(results)
 
 
 @app.post("/test_url")
@@ -111,3 +112,22 @@ async def upload_file(file: UploadFile = File(...)):
     return JSONResponse(content={"message": "File uploaded successfully", "file_path": file_location})
 
 
+def get_suggestion(results):
+    prompt = """
+        only give me the results in a json format.
+       You are a helpful assistant. For every "failed" test in the given dictionary, add a possible solution in the same line and return the updated dictionary.
+        keep "passed" test Here is the input dictionary:
+       Input:
+       {results_dict}
+
+       Output should be the same dictionary with solutions added to failed tests. Solutions should be:
+       - For "Click Test: failed - Expected element not found after click": Ensure the expected element appears after the click by verifying the correct element locator and adding a wait condition if necessary.
+       - For "Visibility Test: failed - Button is hidden": Ensure the button is not hidden or covered by another element.
+       - For "Check Broken Link: FAILED - Status Code: 500": Investigate server issues or ensure the URL is correctly pointing to an existing resource.
+       - For "Check Responsive Link: FAILED - Status Code: 500": give me a possible solution.
+       """
+
+    # Prepare the prompt with the actual input dictionary
+    formatted_prompt = prompt.format(results_dict=results)
+
+    return ""

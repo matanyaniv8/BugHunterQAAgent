@@ -42,7 +42,7 @@ bugs_descriptions = {
 }
 
 
-def ask_openai_json(model, prompt):
+def ask_openai_json(model, prompt, buggy_code_req=True):
     """
     Send a request to OpenAI API with a specific model and prompt,
     returning the response in JSON format.
@@ -66,14 +66,16 @@ def ask_openai_json(model, prompt):
     # Extract the content of the response
     response_text = completion.choices[0].message.content
 
-
     # Try to parse the response into JSON
     try:
-        print(type(response_text))
-        response_json = json.loads(response_text)
+        # response_json = json.loads(response_text)
+        response_json = response_text if not buggy_code_req else json.loads(response_text)
     except json.JSONDecodeError:
         print("Could not parse response as JSON. Returning as plain text.")
-        response_json = {"response": response_text.split("response")[-1][4:-7]}
+        if buggy_code_req:
+            response_json = {"response": response_text.split("response")[-1][4:-7]}
+        else:
+            response_json = {response_text.strip().replace('\\*', "").split("response")[-1]}
 
     return response_json
 
@@ -102,7 +104,7 @@ note that you should not include the <html>, <body>, or <head> tags as they are 
 page. please return with the format {returned_format} where you put the combined code in one div in the html code 
 field of the response format."""
 
-    answer = ask_openai_json(model="gpt-3.5-turbo", prompt=prompt)['response']
+    answer = ask_openai_json(model="gpt-3.5-turbo", prompt=prompt, buggy_code_req=True)['response']
 
     print(answer)
     answer = answer.replace('\\n', "")  # for dealing with un
