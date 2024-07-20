@@ -2,6 +2,7 @@ import tests.link_tests as link_tests
 import tests.button_tests as button_tests
 from urllib.parse import urlparse
 from tests import form_tests
+from w3c_validator import validate
 
 
 def run_tests_wrapper(web_data):
@@ -62,6 +63,9 @@ def execute_html_tests(file_path):
     :param file_path: Path to the HTML file.
     :return: Path to the results file.
     """
+    print('\n\n\n')
+    validate_html(file_path)
+    print('\n\n\n')
     html_content = get_html_content(file_path)
     if html_content:
         return run_tests_wrapper(html_content)
@@ -76,3 +80,15 @@ def execute_url_tests(url):
     :return: Path to the results file.
     """
     return run_tests_wrapper(url)
+
+
+def validate_html(url_or_file):
+    # Validate the HTML content from a URL or file
+    result = validate(url_or_file)
+    print(result['messages'])
+
+    # for i in result['messages']:
+    #     print(f'{i}: ')
+    #     print('\n\n')
+    #
+

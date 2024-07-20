@@ -16,6 +16,7 @@ from system.bug_families.link_bugs import link_bugs
 from system.bug_families.tab_bugs import tab_bugs
 from system.bug_families.form_bugs import forms_bugs
 from buggy_code_generator import get_buggy_code_snippet, ask_openai_json
+from w3c_validator import validate
 
 app = FastAPI()
 
@@ -91,6 +92,7 @@ app.mount("/generated_html", StaticFiles(directory="generated_html"), name="gene
 def test_html(file: FilePath):
     file_path = file.file_path
     results = execute_html_tests(file_path)
+
     print(results)
     return results  # get_suggestion(results)
 
@@ -131,3 +133,6 @@ def get_suggestion(results):
     formatted_prompt = prompt.format(results_dict=results)
 
     return ""
+
+
+
