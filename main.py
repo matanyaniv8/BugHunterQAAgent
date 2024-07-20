@@ -40,6 +40,12 @@ class UrlData(BaseModel):
     url: HttpUrl
 
 
+class TestData(BaseModel):
+    category: str
+    item: str
+    test: str
+
+
 @app.get("/")
 def root():
     return {"message": "Hello World"}
@@ -129,3 +135,13 @@ def get_suggestion(results):
     formatted_prompt = prompt.format(results_dict=results)
 
     return ""
+
+
+@app.post("/suggest_fix")
+def suggest_fix(test_data: TestData):
+    suggestion = execute_fix_suggestion(test_data.category, test_data.item, test_data.test)
+    return {"suggestion": suggestion}
+
+
+def execute_fix_suggestion(category: str, item: str, test: str) -> str:
+    return "No specific fix suggestion available."

@@ -9,6 +9,7 @@ export default function Results() {
     const [selectedTest, setSelectedTest] = useState(null);
     const [description, setDescription] = useState('');
     const [sortOption, setSortOption] = useState('all');
+    const [suggestion, setSuggestion] = useState('');
 
     useEffect(() => {
         const content = sessionStorage.getItem('testResults');
@@ -124,11 +125,28 @@ export default function Results() {
             result: formattedResult.main
         });
         setDescription(formattedResult.description);
+        setSuggestion('');
     };
 
-    const handleSuggestFix = () => {
-        // Implement suggestion fix logic here
-        alert('Suggest Fix button clicked for ' + selectedTest.test);
+    const handleSuggestFix = async () => {
+        try {
+            const response = await fetch('/suggest_fix', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    category: selectedTest.category,
+                    item: selectedTest.item,
+                    test: selectedTest.test
+                })
+            });
+            const data = await response.json();
+            setSuggestion(data.suggestion);
+        } catch (error) {
+            console.error('Error fetching suggestion:', error);
+            setSuggestion('Failed to fetch suggestion.');
+        }
     };
 
     const handleMinimizeClick = () => {
@@ -197,7 +215,10 @@ export default function Results() {
                         {description && (
                             <p><strong>Description:</strong> {description}</p>
                         )}
-                        {typeof selectedTest.result === 'string' && selectedTest.result.toLowerCase().includes('failed') && (
+                        {suggestion && (
+                            <p className={styles.suggestion} style={{ backgroundColor: 'lightblue' }}><strong>Fix Suggestion:</strong> {suggestion}</p>
+                        )}
+                        {selectedTest.result.props.children === 'FAILED' && (
                             <button onClick={handleSuggestFix} className={styles.suggestFixButton}>Suggest Fix</button>
                         )}
                         <button onClick={() => setSelectedTest(null)} className={styles.closeButton}>Close</button>
