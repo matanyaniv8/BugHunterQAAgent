@@ -1,3 +1,4 @@
+/* results.module.css */
 .container {
     position: relative;
     padding: 20px;
@@ -29,11 +30,15 @@
     border-radius: 8px;
     width: 80%;
     max-width: 1000px;
+    font-family: "Exo 2", serif;
 }
 
 .title {
     font-size: 36px;
     margin-bottom: 20px;
+    text-align: center;
+    color: #459dd7;
+    font-family: "Exo 2", serif;
 }
 
 .familyContainer {
@@ -41,12 +46,14 @@
     justify-content: space-around;
     width: 100%;
     margin-bottom: 20px;
+    font-family: "Exo 2", serif;
+    color: #459dd7;
 }
 
 .familySquare {
     flex: 1;
     padding: 20px;
-    margin: 10px;
+    margin: 15px;
     background-color: #f0f0f0;
     border-radius: 8px;
     text-align: center;
@@ -62,17 +69,28 @@
 .subtitle {
     font-size: 18px;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    color: #00060d;
+    font-family: "Exo 2", serif;
 }
 
 .list {
     list-style-type: none;
-    padding: 0;
+    padding: 5px;
 }
 
 .listItem {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    font-family: "Exo 2", serif;
+}
+
+.listItem li {
     cursor: pointer;
+    transition: color 0.2s;
+}
+
+.listItem li:hover {
+    color: #3797d5;
 }
 
 .homeButton {
@@ -84,6 +102,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-family: "Exo 2", serif;
 }
 
 .homeButton:hover {
@@ -117,6 +136,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-family: "Exo 2", serif;
 }
 
 .minimizeButton:hover {
@@ -144,6 +164,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-family: "Exo 2", serif;
 }
 
 .suggestFixButton:hover {
@@ -159,6 +180,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-family: "Exo 2", serif;
 }
 
 .closeButton:hover {
@@ -169,4 +191,5 @@
     padding: 10px;
     border-radius: 5px;
     margin-top: 10px;
+    font-family: "Exo 2", serif;
 }

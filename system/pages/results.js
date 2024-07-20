@@ -159,7 +159,7 @@ export default function Results() {
             <div className={styles.content}>
                 <h1 className={styles.title}>Test Results</h1>
                 <div className={styles.sortContainer}>
-                    <label htmlFor="sortOptions">Sort by:</label>
+                    <label htmlFor="sortOptions">Sort by: </label>
                     <select id="sortOptions" onChange={handleSortChange} value={sortOption}>
                         <option value="all">All</option>
                         <option value="passed">Passed</option>
@@ -175,8 +175,8 @@ export default function Results() {
                                 <h2>{titleCase(family)}</h2>
                                 {parsedContent && parsedContent[family] && (
                                     <>
-                                        <p>{calculateValidElements(parsedContent[family])}</p>
-                                        <p>{calculatePassedTests(parsedContent[family])}</p>
+                                        <p className={styles.subtitle}>{calculateValidElements(parsedContent[family])}</p>
+                                        <p className={styles.subtitle}>{calculatePassedTests(parsedContent[family])}</p>
                                     </>
                                 )}
                             </div>
