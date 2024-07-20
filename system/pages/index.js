@@ -27,7 +27,7 @@ export default function Home() {
     const [fileLocation, setFileLocation] = useState(''); // File location state
     const fileInputRef = useRef(null); // Reference to the hidden file input
     const [uploadBtnText, setUploadBtnText] = useState(defaultUploadButtonText); // File Upload Button text state
-    const [htmlButtonText, setHtmlButtonText] = useState(defaultHtmlTestBtnText); // File Upload Button text state
+    const [htmlButtonText, sethtmlButtonText] = useState(defaultHtmlTestBtnText); // File Upload Button text state
 
     const router = useRouter();
 
@@ -53,7 +53,7 @@ export default function Home() {
                 console.log('File uploaded successfully', file_path);
                 setUploadBtnText("Uploaded!")
                 setFileLocation(file_path);
-                setHtmlButtonText("Start Test")
+                sethtmlButtonText("Start Test")
                 // await handleTestHTML();
 
             } catch (error) {
@@ -97,7 +97,7 @@ export default function Home() {
                 if (response.data.url) {
                     setGeneratedUrl(response.data.url);
                     setFileLocation("")
-                    setHtmlButtonText(defaultHtmlTestBtnText)
+                    sethtmlButtonText(defaultHtmlTestBtnText)
                     setUploadBtnText(defaultUploadButtonText);
                 } else {
                     alert('Failed to generate HTML. No URL returned.');
@@ -229,16 +229,8 @@ export default function Home() {
                         </div>
                     )}
                     <div id="testButtons" className={styles.testButtons}>
-                        <button
-                            className={styles.button}
-                            type="button"
-                            onClick={handleTestHTML}
-                            disabled={fileLocation === ''}>{htmlButtonText}</button>
-                        <button
-                            className={styles.button}
-                            type="button"
-                            onClick={handleTestURL}
-                            disabled={inputUrl === ''}>Test URL</button>
+                        <button className={styles.button} type="button" onClick={handleTestHTML}>{htmlButtonText}</button>
+                        <button className={styles.button} type="button" onClick={handleTestURL}>Test URL</button>
                         <input
                             type="file"
                             accept=".html"

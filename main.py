@@ -117,6 +117,7 @@ async def upload_file(file: UploadFile = File(...)):
 
 
 def get_suggestion(results):
+    return ""
     prompt = """
         only give me the results in a json format.
        You are a helpful assistant. For every "failed" test in the given dictionary, add a possible solution in the same line and return the updated dictionary.
