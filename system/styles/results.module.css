@@ -1,4 +1,3 @@
-/* styles/results.module.css */
 .container {
     position: relative;
     padding: 20px;
@@ -9,6 +8,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-family: 'Arial', sans-serif;
 }
 
 .overlay {
@@ -36,14 +36,27 @@
     margin-bottom: 20px;
 }
 
-.category {
-    margin-bottom: 20px;
+.familyContainer {
+    display: flex;
+    justify-content: space-around;
     width: 100%;
+    margin-bottom: 20px;
 }
 
-.category h2 {
-    font-size: 28px;
-    margin-bottom: 10px;
+.familySquare {
+    flex: 1;
+    padding: 20px;
+    margin: 10px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.familySquare:hover {
+    transform: scale(1.05);
 }
 
 .subtitle {
@@ -59,6 +72,7 @@
 
 .listItem {
     margin-bottom: 5px;
+    cursor: pointer;
 }
 
 .homeButton {
@@ -88,4 +102,65 @@
 
 .summary {
     color: #007ac4;
+}
+
+.details {
+    margin-top: 20px;
+}
+
+.minimizeButton {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.minimizeButton:hover {
+    background-color: #bbb;
+}
+
+.testDetails {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.suggestFixButton {
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #007ac4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.suggestFixButton:hover {
+    background-color: #005f8c;
+}
+
+.closeButton {
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.closeButton:hover {
+    background-color: #bbb;
 }

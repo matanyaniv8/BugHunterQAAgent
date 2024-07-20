@@ -63,10 +63,7 @@ def execute_html_tests(file_path):
     :return: Path to the results file.
     """
     html_content = get_html_content(file_path)
-    if html_content:
-        return run_tests_wrapper(html_content)
-
-    return None
+    return run_tests_wrapper(html_content) if html_content else None
 
 
 def execute_url_tests(url):

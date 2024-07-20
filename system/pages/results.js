@@ -5,6 +5,8 @@ import styles from '../styles/results.module.css';
 export default function Results() {
     const router = useRouter();
     const [parsedContent, setParsedContent] = useState(null);
+    const [selectedFamily, setSelectedFamily] = useState(null);
+    const [selectedTest, setSelectedTest] = useState(null);
 
     useEffect(() => {
         const content = sessionStorage.getItem('testResults');
@@ -21,7 +23,7 @@ export default function Results() {
         router.push('/');
     };
 
-    const calculatePassedTests = (category, categoryName) => {
+    const calculatePassedTests = (category) => {
         let totalTests = 0;
         let passedTests = 0;
         Object.values(category).forEach(test => {
@@ -32,10 +34,10 @@ export default function Results() {
                 }
             });
         });
-        return `${passedTests}/${totalTests} tests passed in ${categoryName}`;
+        return `${passedTests}/${totalTests} tests passed`;
     };
 
-    const calculateValidElements = (category, categoryName) => {
+    const calculateValidElements = (category) => {
         let totalElements = 0;
         let validElements = 0;
         Object.values(category).forEach(tests => {
@@ -50,7 +52,7 @@ export default function Results() {
                 validElements++;
             }
         });
-        return `${validElements}/${totalElements} valid ${categoryName}`;
+        return `${validElements}/${totalElements} valid elements`;
     };
 
     const formatResult = (result) => {
@@ -77,6 +79,29 @@ export default function Results() {
         );
     };
 
+    const handleFamilyClick = (family) => {
+        setSelectedFamily(family);
+        setSelectedTest(null);
+    };
+
+    const handleTestClick = (categoryName, item, test) => {
+        setSelectedTest({
+            category: categoryName,
+            item,
+            test,
+            result: parsedContent[categoryName][item][test]
+        });
+    };
+
+    const handleSuggestFix = () => {
+        // Implement suggestion fix logic here
+        alert('Suggest Fix button clicked for ' + selectedTest.test);
+    };
+
+    const handleMinimizeClick = () => {
+        setSelectedFamily(null);
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.overlay}></div>
@@ -85,37 +110,55 @@ export default function Results() {
                 {typeof parsedContent === 'string' ? (
                     <pre className={styles.results}>{formatResult(parsedContent)}</pre>
                 ) : (
-                    <>
-                        {parsedContent && Object.keys(parsedContent).map(categoryName => (
-                            <div key={categoryName} className={styles.category}>
-                                <h2>{titleCase(categoryName)}</h2>
-                                <h3 className={styles.subtitle}>
-                                    <span className={styles.summary}>
-                                        {calculateValidElements(parsedContent[categoryName], categoryName)}
-                                    </span>
-                                </h3>
-                                <h3 className={styles.subtitle}>
-                                    {calculatePassedTests(parsedContent[categoryName], categoryName)}
-                                </h3>
-                                <ul className={styles.list}>
-                                    {Object.keys(parsedContent[categoryName]).map((item) => (
-                                        <li key={item} className={styles.listItem}>
-                                            <strong>{titleCase(item)}</strong>
-                                            <ul className={styles.list}>
-                                                {Object.entries(parsedContent[categoryName][item]).map(([test, result]) => (
-                                                    <li key={test} className={styles.listItem}>
-                                                        {titleCase(test)}: {formatResult(result)}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </li>
-                                    ))}
-                                </ul>
+                    <div className={styles.familyContainer}>
+                        {['links', 'buttons', 'forms'].map(family => (
+                            <div key={family} className={styles.familySquare} onClick={() => handleFamilyClick(family)}>
+                                <h2>{titleCase(family)}</h2>
+                                {parsedContent && parsedContent[family] && (
+                                    <>
+                                        <p>{calculateValidElements(parsedContent[family])}</p>
+                                        <p>{calculatePassedTests(parsedContent[family])}</p>
+                                    </>
+                                )}
                             </div>
                         ))}
-                    </>
+                    </div>
+                )}
+                {selectedFamily && parsedContent && parsedContent[selectedFamily] && (
+                    <div className={styles.details}>
+                        <button onClick={handleMinimizeClick} className={styles.minimizeButton}>Minimize</button>
+                        <h2>{titleCase(selectedFamily)}</h2>
+                        <ul className={styles.list}>
+                            {Object.keys(parsedContent[selectedFamily]).map((item) => (
+                                <li key={item} className={styles.listItem}>
+                                    <strong>{titleCase(item)}</strong>
+                                    <ul className={styles.list}>
+                                        {Object.entries(parsedContent[selectedFamily][item]).map(([test, result]) => (
+                                            <li key={test} className={styles.listItem} onClick={() => handleTestClick(selectedFamily, item, test)}>
+                                                {titleCase(test)}: {formatResult(result)}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 )}
                 <button onClick={handleHomeClick} className={styles.homeButton}>Home</button>
+
+                {selectedTest && (
+                    <div className={styles.testDetails}>
+                        <h2>Test Details</h2>
+                        <p><strong>Category:</strong> {selectedTest.category}</p>
+                        <p><strong>Item:</strong> {selectedTest.item}</p>
+                        <p><strong>Test:</strong> {selectedTest.test}</p>
+                        <p><strong>Result:</strong> {formatResult(selectedTest.result)}</p>
+                        {typeof selectedTest.result === 'string' && selectedTest.result.toLowerCase().includes('failed') && (
+                            <button onClick={handleSuggestFix} className={styles.suggestFixButton}>Suggest Fix</button>
+                        )}
+                        <button onClick={() => setSelectedTest(null)} className={styles.closeButton}>Close</button>
+                    </div>
+                )}
             </div>
         </div>
     );
