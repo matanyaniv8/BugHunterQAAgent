@@ -1,4 +1,3 @@
-import json
 import shutil
 
 from fastapi import FastAPI, UploadFile, File

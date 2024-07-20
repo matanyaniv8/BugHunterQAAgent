@@ -63,11 +63,13 @@ def execute_html_tests(file_path):
     :param file_path: Path to the HTML file.
     :return: Path to the results file.
     """
-    print('\n\n\n')
-    validate_html(file_path)
-    print('\n\n\n')
+    validate_html_or_url(file_path)
     html_content = get_html_content(file_path)
-    return run_tests_wrapper(html_content) if html_content else None
+    unified_results = None
+    if html_content:
+        unified_results = run_tests_wrapper(html_content)
+        unified_results['W3C Validation Report'] = validate_html_or_url(file_path)
+    return unified_results
 
 
 def execute_url_tests(url):
@@ -76,16 +78,28 @@ def execute_url_tests(url):
     :param url: URL to run the tests on.
     :return: Path to the results file.
     """
-    return run_tests_wrapper(url)
+    results = run_tests_wrapper(url)
+
+    results['W3C Validation Report'] = validate_html_or_url(url)
+
+    return results
 
 
-def validate_html(url_or_file):
-    # Validate the HTML content from a URL or file
+def validate_html_or_url(url_or_file):
+    """"
+    Validate the HTML content from a URL or file
+    :param url_or_file: URL or file to validate.
+    :return: Validated Test Results."""
     result = validate(url_or_file)
-    print(result['messages'])
+    results = {}
+    for i in result['messages']:
+        message_type = i['type']
 
-    # for i in result['messages']:
-    #     print(f'{i}: ')
-    #     print('\n\n')
-    #
-
+        message_type = 'Warning' if message_type == 'info' else message_type
+            # try:
+            #     message_type = i['subType']
+            # except KeyError:
+            #     message_type = i['type']
+        desc = f"{message_type} in Line {i['lastLine']}" # - {i['message']}"
+        results[desc] = {"message": f"failed - {i['message']}"}
+    return results

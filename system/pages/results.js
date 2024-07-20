@@ -170,7 +170,7 @@ export default function Results() {
                     <pre className={styles.results}>{formatResult(parsedContent).main}</pre>
                 ) : (
                     <div className={styles.familyContainer}>
-                        {['links', 'buttons', 'forms'].map(family => (
+                        {['links', 'buttons', 'forms','W3C Validation Report'].map(family => (
                             <div key={family} className={styles.familySquare} onClick={() => handleFamilyClick(family)}>
                                 <h2>{titleCase(family)}</h2>
                                 {parsedContent && parsedContent[family] && (
