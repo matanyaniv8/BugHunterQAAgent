@@ -1,4 +1,4 @@
-/* styles/results.module.css */
+/* results.module.css */
 .container {
     position: relative;
     padding: 20px;
@@ -9,6 +9,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-family: 'Arial', sans-serif;
 }
 
 .overlay {
@@ -29,36 +30,67 @@
     border-radius: 8px;
     width: 80%;
     max-width: 1000px;
+    font-family: "Exo 2", serif;
 }
 
 .title {
     font-size: 36px;
     margin-bottom: 20px;
+    text-align: center;
+    color: #459dd7;
+    font-family: "Exo 2", serif;
 }
 
-.category {
-    margin-bottom: 20px;
+.familyContainer {
+    display: flex;
+    justify-content: space-around;
     width: 100%;
+    margin-bottom: 20px;
+    font-family: "Exo 2", serif;
+    color: #459dd7;
 }
 
-.category h2 {
-    font-size: 28px;
-    margin-bottom: 10px;
+.familySquare {
+    flex: 1;
+    padding: 20px;
+    margin: 15px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.familySquare:hover {
+    transform: scale(1.05);
 }
 
 .subtitle {
     font-size: 18px;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    color: #00060d;
+    font-family: "Exo 2", serif;
 }
 
 .list {
     list-style-type: none;
-    padding: 0;
+    padding: 5px;
 }
 
 .listItem {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    font-family: "Exo 2", serif;
+}
+
+.listItem li {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.listItem li:hover {
+    color: #3797d5;
 }
 
 .homeButton {
@@ -70,6 +102,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-family: "Exo 2", serif;
 }
 
 .homeButton:hover {
@@ -88,4 +121,77 @@
 
 .summary {
     color: #007ac4;
+}
+
+.details {
+    margin-top: 20px;
+}
+
+.minimizeButton {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Exo 2", serif;
+}
+
+.minimizeButton:hover {
+    background-color: #bbb;
+}
+
+.testDetails {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    width: 50vw;
+}
+
+.suggestFixButton {
+    margin-top: 10px;
+    padding: 5px 10px;
+    margin-right: 10px;
+    font-size: 14px;
+    background-color: #007ac4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Exo 2", serif;
+}
+
+.suggestFixButton:hover {
+    background-color: #005f8c;
+}
+
+.closeButton {
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Exo 2", serif;
+}
+
+.closeButton:hover {
+    background-color: #bbb;
+}
+
+.suggestion {
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-family: "Exo 2", serif;
 }

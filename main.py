@@ -16,7 +16,6 @@ from system.bug_families.link_bugs import link_bugs
 from system.bug_families.tab_bugs import tab_bugs
 from system.bug_families.form_bugs import forms_bugs
 from buggy_code_generator import get_buggy_code_snippet, ask_openai_json
-from w3c_validator import validate
 
 app = FastAPI()
 
@@ -41,6 +40,12 @@ class UrlData(BaseModel):
     url: HttpUrl
 
 
+class TestData(BaseModel):
+    category: str
+    item: str
+    test: str
+
+
 @app.get("/")
 def root():
     return {"message": "Hello World"}
@@ -56,8 +61,6 @@ def generate_html(selection: BugSelection):
         **forms_bugs,
     }
 
-    selected_snippets = [random.choice(bug_html_snippets[bug]) for bug in selection.bugs if bug in bug_html_snippets]
-    # generated_html_snippets = "\n".join(selected_snippets)
     generated_html_snippets = get_buggy_code_snippet(selection.bugs)
 
     # Wrap in a complete HTML structure
@@ -92,7 +95,6 @@ app.mount("/generated_html", StaticFiles(directory="generated_html"), name="gene
 def test_html(file: FilePath):
     file_path = file.file_path
     results = execute_html_tests(file_path)
-
     print(results)
     return results  # get_suggestion(results)
 
@@ -115,6 +117,7 @@ async def upload_file(file: UploadFile = File(...)):
 
 
 def get_suggestion(results):
+    return ""
     prompt = """
         only give me the results in a json format.
        You are a helpful assistant. For every "failed" test in the given dictionary, add a possible solution in the same line and return the updated dictionary.
@@ -135,4 +138,11 @@ def get_suggestion(results):
     return ""
 
 
+@app.post("/suggest_fix")
+def suggest_fix(test_data: TestData):
+    suggestion = execute_fix_suggestion(test_data.category, test_data.item, test_data.test)
+    return {"suggestion": suggestion}
 
+
+def execute_fix_suggestion(category: str, item: str, test: str) -> str:
+    return "No specific fix suggestion available."
