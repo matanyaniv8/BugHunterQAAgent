@@ -7,6 +7,7 @@ export default function Results() {
     const [parsedContent, setParsedContent] = useState(null);
     const [selectedFamily, setSelectedFamily] = useState(null);
     const [selectedTest, setSelectedTest] = useState(null);
+    const [description, setDescription] = useState('');
 
     useEffect(() => {
         const content = sessionStorage.getItem('testResults');
@@ -55,21 +56,22 @@ export default function Results() {
         return `${validElements}/${totalElements} valid elements`;
     };
 
-    const formatResult = (result) => {
+    const formatResult = (result, showDetails = false) => {
         if (typeof result !== 'string') {
-            return JSON.stringify(result);
+            return { main: JSON.stringify(result), description: '' };
         }
         const parts = result.split('-');
-        const formattedParts = parts.map((part, index) => {
-            part = part.trim();
-            if (part.toLowerCase() === 'passed') {
-                return <span key={index} className={styles.passed}>{part.toUpperCase()}</span>;
-            } else if (part.toLowerCase() === 'failed') {
-                return <span key={index} className={styles.failed}>{part.toUpperCase()}</span>;
-            }
-            return part;
-        });
-        return formattedParts.reduce((prev, curr, index) => <>{prev}{index > 0 ? ' - ' : ''}{curr}</>);
+        const mainResult = parts[0].trim();
+        const description = parts.slice(1).join('-').trim();
+
+        const formattedMainResult = mainResult.toLowerCase() === 'passed'
+            ? <span className={styles.passed}>{mainResult.toUpperCase()}</span>
+            : <span className={styles.failed}>{mainResult.toUpperCase()}</span>;
+
+        return {
+            main: formattedMainResult,
+            description: showDetails ? description : ''
+        };
     };
 
     const titleCase = (text) => {
@@ -85,12 +87,15 @@ export default function Results() {
     };
 
     const handleTestClick = (categoryName, item, test) => {
+        const result = parsedContent[categoryName][item][test];
+        const formattedResult = formatResult(result, true);
         setSelectedTest({
             category: categoryName,
             item,
             test,
-            result: parsedContent[categoryName][item][test]
+            result: formattedResult.main
         });
+        setDescription(formattedResult.description);
     };
 
     const handleSuggestFix = () => {
@@ -108,7 +113,7 @@ export default function Results() {
             <div className={styles.content}>
                 <h1 className={styles.title}>Test Results</h1>
                 {typeof parsedContent === 'string' ? (
-                    <pre className={styles.results}>{formatResult(parsedContent)}</pre>
+                    <pre className={styles.results}>{formatResult(parsedContent).main}</pre>
                 ) : (
                     <div className={styles.familyContainer}>
                         {['links', 'buttons', 'forms'].map(family => (
@@ -135,7 +140,7 @@ export default function Results() {
                                     <ul className={styles.list}>
                                         {Object.entries(parsedContent[selectedFamily][item]).map(([test, result]) => (
                                             <li key={test} className={styles.listItem} onClick={() => handleTestClick(selectedFamily, item, test)}>
-                                                {titleCase(test)}: {formatResult(result)}
+                                                {titleCase(test)}: {formatResult(result, false).main}
                                             </li>
                                         ))}
                                     </ul>
@@ -152,7 +157,10 @@ export default function Results() {
                         <p><strong>Category:</strong> {selectedTest.category}</p>
                         <p><strong>Item:</strong> {selectedTest.item}</p>
                         <p><strong>Test:</strong> {selectedTest.test}</p>
-                        <p><strong>Result:</strong> {formatResult(selectedTest.result)}</p>
+                        <p><strong>Result:</strong> {selectedTest.result}</p>
+                        {description && (
+                            <p><strong>Description:</strong> {description}</p>
+                        )}
                         {typeof selectedTest.result === 'string' && selectedTest.result.toLowerCase().includes('failed') && (
                             <button onClick={handleSuggestFix} className={styles.suggestFixButton}>Suggest Fix</button>
                         )}
