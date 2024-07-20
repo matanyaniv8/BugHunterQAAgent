@@ -8,6 +8,7 @@ export default function Results() {
     const [selectedFamily, setSelectedFamily] = useState(null);
     const [selectedTest, setSelectedTest] = useState(null);
     const [description, setDescription] = useState('');
+    const [sortOption, setSortOption] = useState('all');
 
     useEffect(() => {
         const content = sessionStorage.getItem('testResults');
@@ -22,6 +23,33 @@ export default function Results() {
 
     const handleHomeClick = () => {
         router.push('/');
+    };
+
+    const handleSortChange = (e) => {
+        setSortOption(e.target.value);
+    };
+
+    const filterResults = (results) => {
+        if (sortOption === 'passed') {
+            return Object.keys(results).reduce((filtered, item) => {
+                const tests = results[item];
+                const allPassed = Object.values(tests).every(result => result.toLowerCase().includes('passed'));
+                if (allPassed) {
+                    filtered[item] = tests;
+                }
+                return filtered;
+            }, {});
+        } else if (sortOption === 'failed') {
+            return Object.keys(results).reduce((filtered, item) => {
+                const tests = results[item];
+                const anyFailed = Object.values(tests).some(result => result.toLowerCase().includes('failed'));
+                if (anyFailed) {
+                    filtered[item] = tests;
+                }
+                return filtered;
+            }, {});
+        }
+        return results;
     };
 
     const calculatePassedTests = (category) => {
@@ -112,6 +140,14 @@ export default function Results() {
             <div className={styles.overlay}></div>
             <div className={styles.content}>
                 <h1 className={styles.title}>Test Results</h1>
+                <div className={styles.sortContainer}>
+                    <label htmlFor="sortOptions">Sort by:</label>
+                    <select id="sortOptions" onChange={handleSortChange} value={sortOption}>
+                        <option value="all">All</option>
+                        <option value="passed">Passed</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
                 {typeof parsedContent === 'string' ? (
                     <pre className={styles.results}>{formatResult(parsedContent).main}</pre>
                 ) : (
@@ -134,7 +170,7 @@ export default function Results() {
                         <button onClick={handleMinimizeClick} className={styles.minimizeButton}>Minimize</button>
                         <h2>{titleCase(selectedFamily)}</h2>
                         <ul className={styles.list}>
-                            {Object.keys(parsedContent[selectedFamily]).map((item) => (
+                            {Object.keys(filterResults(parsedContent[selectedFamily])).map((item) => (
                                 <li key={item} className={styles.listItem}>
                                     <strong>{titleCase(item)}</strong>
                                     <ul className={styles.list}>
