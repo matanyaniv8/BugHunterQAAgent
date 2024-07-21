@@ -10,6 +10,7 @@ export default function Results() {
     const [description, setDescription] = useState('');
     const [sortOption, setSortOption] = useState('all');
     const [suggestion, setSuggestion] = useState('');
+    const [loadingSuggestion, setLoadingSuggestion] = useState(false);
 
     useEffect(() => {
         const content = sessionStorage.getItem('testResults');
@@ -129,23 +130,36 @@ export default function Results() {
     };
 
     const handleSuggestFix = async () => {
+        setLoadingSuggestion(true);
+        setSuggestion('Generating fix...');
+
+        const testData = {
+            category: selectedTest.category,
+            item: selectedTest.item,
+            test: selectedTest.test
+        };
+
         try {
-            const response = await fetch('/suggest_fix', {
+            const response = await fetch('http://127.0.0.1:8000/suggest_fix', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    category: selectedTest.category,
-                    item: selectedTest.item,
-                    test: selectedTest.test
-                })
+                body: JSON.stringify(testData)
             });
+
             const data = await response.json();
-            setSuggestion(data.suggestion);
+            setLoadingSuggestion(false);
+
+            if (data.suggestion) {
+                setSuggestion(data.suggestion);
+            } else {
+                setSuggestion('No specific fix suggestion available.');
+            }
         } catch (error) {
-            console.error('Error fetching suggestion:', error);
-            setSuggestion('Failed to fetch suggestion.');
+            setLoadingSuggestion(false);
+            setSuggestion('Error generating fix suggestion');
+            console.error('Error during suggestion generation:', error);
         }
     };
 
@@ -170,7 +184,7 @@ export default function Results() {
                     <pre className={styles.results}>{formatResult(parsedContent).main}</pre>
                 ) : (
                     <div className={styles.familyContainer}>
-                        {['links', 'buttons', 'forms','W3C Validation Report'].map(family => (
+                        {['links', 'buttons', 'forms', 'W3C Validation Report'].map(family => (
                             <div key={family} className={styles.familySquare} onClick={() => handleFamilyClick(family)}>
                                 <h2>{titleCase(family)}</h2>
                                 {parsedContent && parsedContent[family] && (
@@ -215,10 +229,12 @@ export default function Results() {
                         {description && (
                             <p><strong>Description:</strong> {description}</p>
                         )}
-                        {suggestion && (
-                            <p className={styles.suggestion} style={{ backgroundColor: 'lightblue' }}><strong>Fix Suggestion:</strong> {suggestion}</p>
+                        {(suggestion || loadingSuggestion) && (
+                            <p className={styles.suggestion} style={{ backgroundColor: 'lightblue' }}>
+                                <strong>Fix Suggestion:</strong> {suggestion}
+                            </p>
                         )}
-                        {selectedTest.result.props.children === 'FAILED' && (
+                        {selectedTest.result.props.children === 'FAILED' && !loadingSuggestion && (
                             <button onClick={handleSuggestFix} className={styles.suggestFixButton}>Suggest Fix</button>
                         )}
                         <button onClick={() => setSelectedTest(null)} className={styles.closeButton}>Close</button>

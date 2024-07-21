@@ -7,9 +7,31 @@
         <title>Buggy Website</title>
     </head>
     <body>
-        <div class='empty_button' style='background-color: lightblue; padding: 10px; border: 2px solid blue; text-align: center;'>
-    <button></button>
-</div>
+           <div>
+        <!-- Bug: Margin collapse -->
+        <div class="margin-collapse" style="margin-top: 20px; border: 2px solid blue; padding: 10px;">
+            Margin Collapse Bug
+        </div>
+
+        <!-- Bug: Float issues -->
+        <div class="float-issues" style="background-color: lightpink; border: 2px solid pink; padding: 10px;">
+            <div style="float: left; width: 50px; height: 50px; background-color: pink;">Float</div>
+            <p>Float Issues Bug</p>
+            <p>Float elements can cause layout problems.</p>
+            <div style="clear: both;"></div>
+        </div>
+
+        <!-- Bug: z-index not working -->
+        <div class="z-index-bug" style="position: relative; z-index: -1; background-color: lightgreen; border: 2px solid green; padding: 10px;">
+            <div style="position: relative; z-index: 1;">Z-Index Bug</div>
+        </div>
+
+        <!-- Bug: Overflow hidden issue -->
+        <div class="overflow-hidden-issue" style="overflow: hidden; border: 2px solid purple; padding: 10px;">
+            <div style="height: 100px; width: 100px; background-color: purple;">Overflow</div>
+            <p>Overflow Hidden Bug</p>
+        </div>
+    </div
     </body>
     </html>
     
