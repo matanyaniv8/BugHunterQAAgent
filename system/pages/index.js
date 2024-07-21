@@ -35,6 +35,8 @@ export default function Home() {
     const handleButtonClick = () => {
         fileInputRef.current.click();
         reportButtonClick('uploadFile', 'Upload HTML File');
+        // trackEvent('click', 'Button', 'Upload HTML File', 'uploadFile');
+
     };
 
     const handleFileChange = async (event) => {
@@ -56,7 +58,6 @@ export default function Home() {
                 setUploadBtnText("Uploaded!")
                 setFileLocation(file_path);
                 sethtmlButtonText("Start Test")
-                // await handleTestHTML();
 
             } catch (error) {
                 console.error('Failed to upload file:', error);
@@ -106,6 +107,8 @@ export default function Home() {
                 }
             }
             reportButtonClick('generateHTML', 'Generate HTML');
+            // trackEvent('click', 'Button', 'Generate HTML', 'generateHTML');
+
         } catch (error) {
             console.error('Failed to generate HTML:', error);
             alert('Failed to generate HTML. Please check the server and try again.');
@@ -133,6 +136,8 @@ export default function Home() {
                 }
 
                 reportButtonClick('testHTML', htmlButtonText);
+                // trackEvent('click', 'Button', htmlButtonText, 'testHTML');
+
             } catch (error) {
                 setLoading(false); // Reset loading state
                 console.error('Failed to fetch results:', error);
@@ -157,6 +162,7 @@ export default function Home() {
                     openResultsPage(response.data.results); // Display the test results
                 }
 
+                // trackEvent('click', 'Button', 'Test URL', 'testURL');
                 reportButtonClick('testURL', 'Test URL');
             } catch (error) {
                 setLoading(false); // Reset loading state
