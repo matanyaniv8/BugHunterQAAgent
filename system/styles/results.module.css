@@ -207,3 +207,16 @@
     white-space: pre-wrap;
     word-wrap: break-word;
 }
+
+.codeSnippetTitle {
+    font-weight: bold;
+    color: #459dd7;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: inline-block;
+    text-align: left;
+}
+
+.codeSnippetTitle:hover {
+    color: #0b82ce;
+}

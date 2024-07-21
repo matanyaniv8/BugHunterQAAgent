@@ -19,13 +19,10 @@ class TestData(BaseModel):
     code_snippet: Optional[str]
 
 
-
-
 def execute_fix_suggestion(category: str, item: str, test: str, code_snippet: Optional[str]) -> str:
     print("Generating fix...")
     print(f"Code snippet: {code_snippet}")
 
-    # Formulate the prompt for OpenAI
     prompt = (
         f"Here is a bug in the code:\n\n"
         f"Code:\n{code_snippet}\n\n"
@@ -33,10 +30,11 @@ def execute_fix_suggestion(category: str, item: str, test: str, code_snippet: Op
         f"Category: {category}\n"
         f"Item: {item}\n\n"
         f"Can you suggest a fix for the above code?\n\n"
-        f"Please format your response as follows:\n"
-        f"Suggested Fix:\n\n<Your suggestion here>\n"
-        f"Example:\n"
-        f"Suggested Fix:\n\nRefactor the function to handle edge cases properly. Update the error handling mechanism."
+        f"Please provide your suggestion in plain text format. Avoid including HTML code or other special formatting characters. If the issue involves a URL, simply provide the corrected URL without additional formatting.\n\n"
+        f"**Example Fix:**\n\n"
+        f"If the link 'https://dummies-profileapi.dummies.com/v2/sso/login' is broken, replace it with a valid link. Contact your backend team to get the correct link URL. Once you have the link, update the href value with the correct URL.\n\n"
+        f"Example:\n\n"
+        f"Replace 'https://dummies-profileapi.dummies.com/v2/sso/login' with 'https://valid-link.com/v2/sso/login'."
     )
 
     messages = [
@@ -53,7 +51,5 @@ def execute_fix_suggestion(category: str, item: str, test: str, code_snippet: Op
     completion = openai.chat.completions.create(
             model="gpt-4",
             messages=messages)
-
-    print(completion.choices[0].message.content)
 
     return completion.choices[0].message.content

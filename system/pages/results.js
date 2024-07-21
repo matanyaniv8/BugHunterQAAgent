@@ -11,6 +11,7 @@ export default function Results() {
     const [sortOption, setSortOption] = useState('all');
     const [suggestion, setSuggestion] = useState('');
     const [loadingSuggestion, setLoadingSuggestion] = useState(false);
+    const [codeSnippetVisible, setCodeSnippetVisible] = useState(false); // Add this state
 
     useEffect(() => {
         const content = sessionStorage.getItem('testResults');
@@ -130,6 +131,7 @@ export default function Results() {
         });
         setDescription(formattedResult.description);
         setSuggestion('');
+        setCodeSnippetVisible(false);
     };
 
     const handleSuggestFix = async () => {
@@ -156,7 +158,9 @@ export default function Results() {
             setLoadingSuggestion(false);
 
             if (data.suggestion) {
-                setSuggestion(data.suggestion);
+                // Remove the "Suggested Fix:" label from the suggestion
+                const formattedSuggestion = data.suggestion.replace(/^Suggested Fix:\s*/i, '');
+                setSuggestion(formattedSuggestion);
             } else {
                 setSuggestion('No specific fix suggestion available.');
             }
@@ -237,15 +241,22 @@ export default function Results() {
                             <p><strong>Description:</strong> {description}</p>
                         )}
                         {selectedTest.codeSnippet && (
-                            <pre className={styles.codeSnippet}>
-                                <div>{selectedTest.codeSnippet}</div>
-                            </pre>
+                            <div className={styles.codeSnippetContainer}>
+                                <div className={styles.codeSnippetTitle} onClick={() => setCodeSnippetVisible(!codeSnippetVisible)}>
+                                    Code Snippet &gt;
+                                </div>
+                                {codeSnippetVisible && (
+                                    <pre className={styles.codeSnippet}>
+                                        <div>{selectedTest.codeSnippet}</div>
+                                    </pre>
+                                )}
+                            </div>
                         )}
                         {(suggestion || loadingSuggestion) && (
                             <p className={styles.suggestion} style={{backgroundColor: 'lightblue'}}>
                                 <strong>Fix Suggestion:</strong><br/>
                                 <span
-                                    dangerouslySetInnerHTML={{__html: suggestion.replace('Suggested Fix:', '').trim()}}/>
+                                    dangerouslySetInnerHTML={{__html: suggestion.trim().replace(/\n/g, '<br />')}}/>
                             </p>
                         )}
                         {selectedTest.result.props.children === 'FAILED' && !loadingSuggestion && (

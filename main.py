@@ -34,6 +34,7 @@ class FilePath(BaseModel):
 class UrlData(BaseModel):
     url: HttpUrl
 
+
 class TestData(BaseModel):
     category: str
     item: str
