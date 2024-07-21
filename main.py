@@ -1,19 +1,21 @@
 import shutil
+import os
+import asyncio
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List
-import os
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
+from pydantic import BaseModel, HttpUrl
+from typing import List, Optional
+import uvicorn
 
 import fix_suggestions_generator
 from qa_agent import execute_url_tests, execute_html_tests
 from buggy_code_generator import get_buggy_code_snippet
-from pydantic import BaseModel, HttpUrl
-from typing import List, Optional
 
 app = FastAPI()
 
+# CORS middleware setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -42,12 +44,22 @@ class TestData(BaseModel):
     code_snippet: Optional[str]
 
 
+@app.on_event("startup")
+async def startup_event():
+    print("Application startup")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    print("Application shutdown")
+
+
 @app.post("/generate")
 def generate_html(selection: BugSelection):
     print("Generating buggy website...")
     generated_html_snippets = get_buggy_code_snippet(selection.bugs)
 
-    # Wrap in a complete HTML structure
+    # Create HTML structure
     generated_html = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -62,14 +74,13 @@ def generate_html(selection: BugSelection):
     </html>
     """
 
-    # Save the generated HTML
+    # Save the generated HTML file
     file_name = "buggy_website.html"
     file_path = os.path.join("generated_html", file_name)
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, "w") as file:
         file.write(generated_html)
 
-    # Return the URL to the generated HTML file
     return {"url": f"http://127.0.0.1:8000/generated_html/{file_name}"}
 
 
@@ -92,11 +103,17 @@ def test_url(url_data: UrlData):
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
-    file_location = os.path.join('uploaded_files', file.filename)
-    with open(file_location, "wb") as f:
-        shutil.copyfileobj(file.file, f)
-
-    return JSONResponse(content={"message": "File uploaded successfully", "file_path": file_location})
+    try:
+        file_location = os.path.join('uploaded_files', file.filename)
+        os.makedirs(os.path.dirname(file_location), exist_ok=True)
+        with open(file_location, "wb") as f:
+            shutil.copyfileobj(file.file, f)
+        return JSONResponse(content={"message": "File uploaded successfully", "file_path": file_location})
+    except asyncio.CancelledError:
+        print("Upload was cancelled")
+        raise
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"message": str(e)})
 
 
 @app.post("/suggest_fix")
@@ -112,3 +129,14 @@ def suggest_fix(test_data: TestData):
     except Exception as e:
         print("Error during suggestion generation:", e)
         return {"suggestion": "Error during suggestion generation"}
+
+
+if __name__ == "__main__":
+    try:
+        uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="info")
+    except KeyboardInterrupt:
+        print("Manual interruption received (CTRL-C).")
+    except asyncio.CancelledError:
+        print("Async operations cancelled.")
+    finally:
+        print("Server is shutting down. Cleaning up resources...")

@@ -7,31 +7,7 @@
         <title>Buggy Website</title>
     </head>
     <body>
-           <div>
-        <!-- Bug: Margin collapse -->
-        <div class="margin-collapse" style="margin-top: 20px; border: 2px solid blue; padding: 10px;">
-            Margin Collapse Bug
-        </div>
-
-        <!-- Bug: Float issues -->
-        <div class="float-issues" style="background-color: lightpink; border: 2px solid pink; padding: 10px;">
-            <div style="float: left; width: 50px; height: 50px; background-color: pink;">Float</div>
-            <p>Float Issues Bug</p>
-            <p>Float elements can cause layout problems.</p>
-            <div style="clear: both;"></div>
-        </div>
-
-        <!-- Bug: z-index not working -->
-        <div class="z-index-bug" style="position: relative; z-index: -1; background-color: lightgreen; border: 2px solid green; padding: 10px;">
-            <div style="position: relative; z-index: 1;">Z-Index Bug</div>
-        </div>
-
-        <!-- Bug: Overflow hidden issue -->
-        <div class="overflow-hidden-issue" style="overflow: hidden; border: 2px solid purple; padding: 10px;">
-            <div style="height: 100px; width: 100px; background-color: purple;">Overflow</div>
-            <p>Overflow Hidden Bug</p>
-        </div>
-    </div
+        <style>.buggy-form, .inputs-buttons, .input-dropdown{margin: 20px; padding: 10px; background-color: #f7f7f7; border: 2px solid #333; border-radius: 5px;}.buggy-form label, .inputs-buttons label, .input-dropdown label{font-weight: bold;}.buggy-form button, .inputs-buttons button, .input-dropdown button{margin-top: 10px; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;}.empty-button button{margin: 20px; padding: 10px; background-color: lightblue; border: 2px dashed blue; border-radius: 5px;}</style><div class='buggy-form'>    <form id='Buggy Form'>        <label>Choose a car:</label>        <select id='cars' name=''>            <option value='volvo'>Volvo</option>            <option value='saab'>Saab</option>            <option value='fiat' disabled>Fiat</option>            <option value='audi'>Audi</option>        </select>    </form></div><div class='inputs-buttons'>    <form id='buggyForm'>        <label for='name'>Name:</label>        <input type='text' id='name' name='name'><br><br>        <label for='email'>Email:</label>        <input type='email' id='email' name='email'>        <button type='button' onclick='checkEmail()'>Check Email</button><br><br>        <label for='password'>Password:</label>        <input type='password' id='password' name='password'><br><br>        <label for='confirm_password'>Confirm Password:</label>        <input type='password' id='confirm_password'>        <button type='button' onclick='checkPasswords()'>Check Passwords</button><br><br>    </form></div><div class='input-dropdown'>    <form id='buggyForm'>        <label for='name'>Name:</label>        <input type='text' id='name' name='name'><br><br>        <label for='email'>Email:</label>        <input type='email' id='email' name='email'>        <button type='button' onclick='checkEmail()'>Check Email</button><br><br>        <label for='password'>Password:</label>        <input type='password' id='password' name='password'><br><br>        <label for='confirm_password'>Confirm Password:</label>        <input type='password' id='confirm_password'>        <button type='button' onclick='checkPasswords()'>Check Passwords</button><br><br>        <label for='dropdown'>Choose an option:</label>        <select id='dropdown' name='dropdown'>            <option value=''>Please select</option>            <option>Option1</option>            <option value='option2'>Option 2</option>        </select>        <button type='button' onclick='checkDropdown()'>Check Dropdown</button><br><br>        <label>Choose a car:</label>        <select id='cars' name=''>            <option value='volvo'>Volvo</option>            <option value='saab'>Saab</option>            <option value='fiat' disabled>Fiat</option>            <option value='audi'>Audi</option>        </select>        <button type='button' onclick='checkCarSelection()'>Check Car</button><br><br>        <label for='subscribe'>Subscribe to newsletter:</label>        <input type='checkbox' id='subscribe' name='subscribe'><br><br>        <input type='submit' value='Submit'>    </form></div><div class='empty-button'>    <button></button>    <button type='button'></button></div>
     </body>
     </html>
     
