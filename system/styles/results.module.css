@@ -195,3 +195,13 @@
     margin-top: 10px;
     font-family: "Exo 2", serif;
 }
+
+.codeSnippet {
+    background-color: lightblue;
+    padding: 10px;
+    border: 1px solid #007BFF;
+    border-radius: 4px;
+    margin-top: 10px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}

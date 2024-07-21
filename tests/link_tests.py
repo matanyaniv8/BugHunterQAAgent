@@ -15,7 +15,7 @@ def extract_links_from_page(url):
         soup = BeautifulSoup(response.content, 'html.parser')
         links = soup.find_all('a')
         # Ensure all URLs are absolute by combining the base URL with the relative URL
-        urls = [urljoin(url, link.get('href')) for link in links if link.get('href') is not None]
+        urls = [(urljoin(url, link.get('href')), str(link)) for link in links if link.get('href') is not None]
         return urls
     else:
         return []
@@ -40,7 +40,7 @@ def check_broken_link(link):
 
 
 def check_incorrect_url(link):
-    test_name = "Check valid URL format "
+    test_name = "Check valid URL format"
     if link.startswith('http'):
         return test_name, "passed"
     else:
@@ -61,8 +61,10 @@ def check_non_responsive_link(link):
 
 def run_tests_on_links(links):
     results = {}
-    for link in links:
-        results[link] = {}
+    for link, link_html in links:
+        results[link] = {
+            "code_snippet": link_html
+        }
         for check in [check_broken_link, check_incorrect_url, check_non_responsive_link]:
             test_name, result = check(link)
             results[link][test_name] = result
@@ -80,5 +82,6 @@ def execute_url_tests(url):
 def execute_html_tests(html_content):
     print(f"Start running test on HTML content")
     links = extract_links_from_html(html_content)
-    results = run_tests_on_links(links)
+    link_htmls = [(link, "") for link in links]  # No HTML available for these links
+    results = run_tests_on_links(link_htmls)
     return results

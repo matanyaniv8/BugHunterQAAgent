@@ -1,6 +1,5 @@
 from selenium import webdriver
-from selenium.common import TimeoutException, NoSuchElementException, StaleElementReferenceException, \
-    ElementNotInteractableException
+from selenium.common import TimeoutException, NoSuchElementException, StaleElementReferenceException, ElementNotInteractableException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service
@@ -36,9 +35,11 @@ def perform_tests(driver):
 
     for form_index, form in enumerate(forms):
         form_description = form.get_attribute('id') or f"Form {form_index + 1}"
+        form_html = form.get_attribute('outerHTML')
         results[form_description] = {
             **test_input_fields(form),
-            **test_form_submission(form, driver)
+            **test_form_submission(form, driver),
+            "code_snippet": form_html
         }
     return results
 
@@ -103,32 +104,6 @@ def test_input_fields(form):
     return results
 
 
-# def test_input_fields(form):
-#     """Test input fields within a form."""
-#     results = {}
-#     inputs = form.find_elements(By.CSS_SELECTOR, "input, textarea")
-#     for input in inputs:
-#         input_type = input.get_attribute("type") or input.tag_name
-#         input_name = input.get_attribute("name") or "Unnamed Input"
-#         test_description = f"{input.tag_name} {input_type} {input_name}"  # Descriptive name
-#         test_result = "passed - Filled or Checked"
-#         try:
-#             if input_type in ["text", "password", "email", "textarea"]:
-#                 input.send_keys("test")
-#             elif input_type in ["checkbox", "radio"]:
-#                 input.click() if not input.is_selected() else None
-#         except TimeoutException:
-#             if form is None:
-#                 results = {}
-#         except StaleElementReferenceException:
-#             if form is None:
-#                 results = {}
-#         except Exception:
-#             test_result = f"failed -  Failed to run test"
-#         results[test_description] = test_result
-#     return results
-
-
 def get_button_text(button):
     # Try to get text directly from the button
     text = button.get_attribute('value').strip()
@@ -146,7 +121,6 @@ def test_form_submission(form, driver):
     results = {}
     test_description = "Form Submission Test"
     try:
-
         submit_button = form.find_element(By.CSS_SELECTOR, "input[type='submit'], button[type='submit']")
         if submit_button:
             button_text = get_button_text(submit_button)
@@ -157,10 +131,9 @@ def test_form_submission(form, driver):
         else:
             results[test_description] = "failed - No Submit Button"
     except NoSuchElementException:
-        # results[test_description] = "failed - No Submit button"
         pass
-    except Exception:
-        results[test_description] = f"failed -  Failed to run test"
+    except Exception as e:
+        results[test_description] = f"failed - Exception: {str(e)}"
     return results
 
 

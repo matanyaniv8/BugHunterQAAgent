@@ -35,7 +35,7 @@ export default function Results() {
         if (sortOption === 'passed') {
             return Object.keys(results).reduce((filtered, item) => {
                 const tests = results[item];
-                const allPassed = Object.values(tests).every(result => result.toLowerCase().includes('passed'));
+                const allPassed = Object.entries(tests).every(([key, result]) => key !== 'code_snippet' && result.toLowerCase().includes('passed'));
                 if (allPassed) {
                     filtered[item] = tests;
                 }
@@ -44,7 +44,7 @@ export default function Results() {
         } else if (sortOption === 'failed') {
             return Object.keys(results).reduce((filtered, item) => {
                 const tests = results[item];
-                const anyFailed = Object.values(tests).some(result => result.toLowerCase().includes('failed'));
+                const anyFailed = Object.entries(tests).some(([key, result]) => key !== 'code_snippet' && result.toLowerCase().includes('failed'));
                 if (anyFailed) {
                     filtered[item] = tests;
                 }
@@ -58,10 +58,12 @@ export default function Results() {
         let totalTests = 0;
         let passedTests = 0;
         Object.values(category).forEach(test => {
-            Object.values(test).forEach(result => {
-                totalTests++;
-                if (typeof result === 'string' && result.toLowerCase().includes('passed')) {
-                    passedTests++;
+            Object.entries(test).forEach(([key, result]) => {
+                if (typeof result === 'string' && key !== 'code_snippet') {
+                    totalTests++;
+                    if (result.toLowerCase().includes('passed')) {
+                        passedTests++;
+                    }
                 }
             });
         });
@@ -74,8 +76,8 @@ export default function Results() {
         Object.values(category).forEach(tests => {
             totalElements++;
             let allPassed = true;
-            Object.values(tests).forEach(result => {
-                if (typeof result === 'string' && !result.toLowerCase().includes('passed')) {
+            Object.entries(tests).forEach(([key, result]) => {
+                if (typeof result === 'string' && key !== 'code_snippet' && !result.toLowerCase().includes('passed')) {
                     allPassed = false;
                 }
             });
@@ -117,13 +119,14 @@ export default function Results() {
     };
 
     const handleTestClick = (categoryName, item, test) => {
-        const result = parsedContent[categoryName][item][test];
-        const formattedResult = formatResult(result, true);
+        const testData = parsedContent[categoryName][item][test];
+        const formattedResult = formatResult(testData, true);
         setSelectedTest({
             category: categoryName,
             item,
             test,
-            result: formattedResult.main
+            result: formattedResult.main,
+            codeSnippet: parsedContent[categoryName][item]['code_snippet']
         });
         setDescription(formattedResult.description);
         setSuggestion('');
@@ -136,7 +139,8 @@ export default function Results() {
         const testData = {
             category: selectedTest.category,
             item: selectedTest.item,
-            test: selectedTest.test
+            test: selectedTest.test,
+            code_snippet: selectedTest.codeSnippet
         };
 
         try {
@@ -207,9 +211,11 @@ export default function Results() {
                                     <strong>{titleCase(item)}</strong>
                                     <ul className={styles.list}>
                                         {Object.entries(parsedContent[selectedFamily][item]).map(([test, result]) => (
-                                            <li key={test} className={styles.listItem} onClick={() => handleTestClick(selectedFamily, item, test)}>
-                                                {titleCase(test)}: {formatResult(result, false).main}
-                                            </li>
+                                            test !== 'code_snippet' && (
+                                                <li key={test} className={styles.listItem} onClick={() => handleTestClick(selectedFamily, item, test)}>
+                                                    {titleCase(test)}: {formatResult(result, false).main}
+                                                </li>
+                                            )
                                         ))}
                                     </ul>
                                 </li>
@@ -228,6 +234,11 @@ export default function Results() {
                         <p><strong>Result:</strong> {selectedTest.result}</p>
                         {description && (
                             <p><strong>Description:</strong> {description}</p>
+                        )}
+                        {selectedTest.codeSnippet && (
+                            <pre className={styles.codeSnippet}>
+                                <div>{selectedTest.codeSnippet}</div>
+                            </pre>
                         )}
                         {(suggestion || loadingSuggestion) && (
                             <p className={styles.suggestion} style={{ backgroundColor: 'lightblue' }}>

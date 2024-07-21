@@ -1,13 +1,14 @@
 import shutil
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, HttpUrl
 from typing import List
 import os
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
 from qa_agent import execute_url_tests, execute_html_tests
 from buggy_code_generator import get_buggy_code_snippet
+from pydantic import BaseModel, HttpUrl
+from typing import List, Optional
 
 app = FastAPI()
 
@@ -31,11 +32,11 @@ class FilePath(BaseModel):
 class UrlData(BaseModel):
     url: HttpUrl
 
-
 class TestData(BaseModel):
     category: str
     item: str
     test: str
+    code_snippet: Optional[str]
 
 
 @app.post("/generate")
@@ -76,7 +77,6 @@ app.mount("/generated_html", StaticFiles(directory="generated_html"), name="gene
 def test_html(file: FilePath):
     file_path = file.file_path
     results = execute_html_tests(file_path)
-    print(results)
     return results
 
 
@@ -100,13 +100,13 @@ async def upload_file(file: UploadFile = File(...)):
 @app.post("/suggest_fix")
 def suggest_fix(test_data: TestData):
     try:
-        suggestion = execute_fix_suggestion(test_data.category, test_data.item, test_data.test)
+        suggestion = execute_fix_suggestion(test_data.category, test_data.item, test_data.test, test_data.code_snippet)
         return {"suggestion": suggestion}
     except Exception as e:
         print("Error during suggestion generation:", e)
         return {"suggestion": "Error during suggestion generation"}
 
-
-def execute_fix_suggestion(category: str, item: str, test: str) -> str:
+def execute_fix_suggestion(category: str, item: str, test: str, code_snippet: Optional[str]) -> str:
     print("Generating fix...")
+    print(f"Code snippet: {code_snippet}")
     return "suggestion"

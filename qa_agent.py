@@ -14,11 +14,11 @@ def run_tests_wrapper(web_data):
     is_url = web_data.startswith("http")
     if is_url:
         link_results = link_tests.execute_url_tests(web_data)
-        button_results = button_tests.execute_button_url_tests(web_data)
+        button_results = button_tests.execute_forms_url_tests(web_data)
         form_results = form_tests.execute_forms_url_tests(web_data)
     else:
         link_results = link_tests.execute_html_tests(web_data)
-        button_results = button_tests.execute_button_html_tests(web_data)
+        button_results = button_tests.execute_forms_html_tests(web_data)
         form_results = form_tests.execute_forms_html_tests(web_data)
 
     unified_results = {
@@ -26,7 +26,7 @@ def run_tests_wrapper(web_data):
         "buttons": button_results,
         "forms": form_results
     }
-
+    print(unified_results)
     return unified_results
 
 
