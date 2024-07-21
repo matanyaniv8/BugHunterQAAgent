@@ -63,7 +63,7 @@ def test_input_fields(form):
 
         if input_type in ["text", "password", "email", "textarea", "number"]:
             for value in test_data.get(input_type, ["test"]):  # Use default ["test"] if input_type is not in test_data
-                test_description = f"{input.tag_name} {input_type} {input_name} with value '{value}'"
+                test_description = f"{input.tag_name} {input_type} {input_name} with tested value (length {len(value)})"
                 test_result = "passed - Filled or Checked"
 
                 try:
@@ -76,12 +76,12 @@ def test_input_fields(form):
                         entered_value = input.get_attribute("value")
 
                         if not value.isnumeric() and entered_value != "":
-                            test_result = f"failed - Numeric input accepted non-numeric value '{value}'"
+                            test_result = f"failed - Numeric input accepted non-numeric value:\n'{value}'"
                         elif value.isnumeric() and entered_value != value:
-                            test_result = f"failed - Numeric input did not accept valid number '{value}'"
+                            test_result = f"failed - Numeric input did not accept valid number:\n'{value}'"
 
                 except ElementNotInteractableException:
-                    test_result = f"failed - Element not interactable with value '{value}'"
+                    test_result = f"failed - Element not intractable tested value (length {len(value)})"
                 except TimeoutException:
                     test_result = "failed - TimeoutException"
                 except StaleElementReferenceException:

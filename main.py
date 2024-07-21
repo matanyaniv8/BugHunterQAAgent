@@ -6,12 +6,7 @@ from typing import List
 import os
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
-
 from qa_agent import execute_url_tests, execute_html_tests
-from system.bug_families.button_bugs import button_bugs
-from system.bug_families.link_bugs import link_bugs
-from system.bug_families.tab_bugs import tab_bugs
-from system.bug_families.form_bugs import forms_bugs
 from buggy_code_generator import get_buggy_code_snippet
 
 app = FastAPI()
@@ -41,11 +36,6 @@ class TestData(BaseModel):
     category: str
     item: str
     test: str
-
-
-@app.get("/")
-def root():
-    return {"message": "Hello World"}
 
 
 @app.post("/generate")
@@ -107,8 +97,6 @@ async def upload_file(file: UploadFile = File(...)):
     return JSONResponse(content={"message": "File uploaded successfully", "file_path": file_location})
 
 
-from fastapi.encoders import jsonable_encoder
-
 @app.post("/suggest_fix")
 def suggest_fix(test_data: TestData):
     try:
@@ -117,9 +105,6 @@ def suggest_fix(test_data: TestData):
     except Exception as e:
         print("Error during suggestion generation:", e)
         return {"suggestion": "Error during suggestion generation"}
-
-
-
 
 
 def execute_fix_suggestion(category: str, item: str, test: str) -> str:
