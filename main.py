@@ -93,7 +93,6 @@ def test_url(url_data: UrlData):
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     file_location = os.path.join('uploaded_files', file.filename)
-    print(file_location)
     with open(file_location, "wb") as f:
         shutil.copyfileobj(file.file, f)
 

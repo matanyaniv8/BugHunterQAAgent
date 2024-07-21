@@ -33,15 +33,17 @@ export default function Results() {
     };
 
     const filterResults = (results) => {
-        if (sortOption === 'passed') {
-            return Object.keys(results).reduce((filtered, item) => {
-                const tests = results[item];
-                const allPassed = Object.entries(tests).every(([key, result]) => key !== 'code_snippet' && result.toLowerCase().includes('passed'));
-                if (allPassed) {
-                    filtered[item] = tests;
-                }
-                return filtered;
-            }, {});
+    if (sortOption === 'passed') {
+        return Object.keys(results).reduce((filtered, item) => {
+            const tests = results[item];
+            const allPassed = Object.entries(tests).every(([key, result]) =>
+                key === 'code_snippet' || result.toLowerCase().includes('passed')
+            );
+            if (allPassed) {
+                filtered[item] = tests;
+            }
+            return filtered;
+        }, {});
         } else if (sortOption === 'failed') {
             return Object.keys(results).reduce((filtered, item) => {
                 const tests = results[item];
@@ -54,6 +56,7 @@ export default function Results() {
         }
         return results;
     };
+
 
     const calculatePassedTests = (category) => {
         let totalTests = 0;

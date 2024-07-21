@@ -26,7 +26,7 @@ def run_tests_wrapper(web_data):
         "buttons": button_results,
         "forms": form_results
     }
-    print(unified_results)
+
     return unified_results
 
 
