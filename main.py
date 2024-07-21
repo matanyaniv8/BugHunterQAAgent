@@ -5,6 +5,8 @@ from typing import List
 import os
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
+
+import fix_suggestions_generator
 from qa_agent import execute_url_tests, execute_html_tests
 from buggy_code_generator import get_buggy_code_snippet
 from pydantic import BaseModel, HttpUrl
@@ -100,13 +102,13 @@ async def upload_file(file: UploadFile = File(...)):
 @app.post("/suggest_fix")
 def suggest_fix(test_data: TestData):
     try:
-        suggestion = execute_fix_suggestion(test_data.category, test_data.item, test_data.test, test_data.code_snippet)
+        suggestion = fix_suggestions_generator.execute_fix_suggestion(
+            test_data.category,
+            test_data.item,
+            test_data.test,
+            test_data.code_snippet
+        )
         return {"suggestion": suggestion}
     except Exception as e:
         print("Error during suggestion generation:", e)
         return {"suggestion": "Error during suggestion generation"}
-
-def execute_fix_suggestion(category: str, item: str, test: str, code_snippet: Optional[str]) -> str:
-    print("Generating fix...")
-    print(f"Code snippet: {code_snippet}")
-    return "suggestion"

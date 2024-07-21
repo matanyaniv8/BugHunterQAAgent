@@ -96,10 +96,6 @@ def validate_html_or_url(url_or_file):
         message_type = i['type']
 
         message_type = 'Warning' if message_type == 'info' else message_type
-            # try:
-            #     message_type = i['subType']
-            # except KeyError:
-            #     message_type = i['type']
-        desc = f"{message_type} in Line {i['lastLine']}" # - {i['message']}"
+        desc = f"{message_type} in Line {i['lastLine']}"
         results[desc] = {"message": f"failed - {i['message']}"}
     return results
