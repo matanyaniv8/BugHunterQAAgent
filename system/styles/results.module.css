@@ -191,9 +191,11 @@
 
 .suggestion {
     padding: 10px;
-    border-radius: 5px;
     margin-top: 10px;
     font-family: "Exo 2", serif;
+    font-size: 14px;
+    border: 1px solid #007BFF;
+    border-radius: 4px;
 }
 
 .codeSnippet {

@@ -90,7 +90,7 @@ export default function Results() {
 
     const formatResult = (result, showDetails = false) => {
         if (typeof result !== 'string') {
-            return { main: JSON.stringify(result), description: '' };
+            return {main: JSON.stringify(result), description: ''};
         }
         const parts = result.split('-');
         const mainResult = parts[0].trim();
@@ -212,7 +212,8 @@ export default function Results() {
                                     <ul className={styles.list}>
                                         {Object.entries(parsedContent[selectedFamily][item]).map(([test, result]) => (
                                             test !== 'code_snippet' && (
-                                                <li key={test} className={styles.listItem} onClick={() => handleTestClick(selectedFamily, item, test)}>
+                                                <li key={test} className={styles.listItem}
+                                                    onClick={() => handleTestClick(selectedFamily, item, test)}>
                                                     {titleCase(test)}: {formatResult(result, false).main}
                                                 </li>
                                             )
@@ -241,8 +242,10 @@ export default function Results() {
                             </pre>
                         )}
                         {(suggestion || loadingSuggestion) && (
-                            <p className={styles.suggestion} style={{ backgroundColor: 'lightblue' }}>
-                                <strong>Fix Suggestion:</strong> {suggestion}
+                            <p className={styles.suggestion} style={{backgroundColor: 'lightblue'}}>
+                                <strong>Fix Suggestion:</strong><br/>
+                                <span
+                                    dangerouslySetInnerHTML={{__html: suggestion.replace('Suggested Fix:', '').trim()}}/>
                             </p>
                         )}
                         {selectedTest.result.props.children === 'FAILED' && !loadingSuggestion && (
