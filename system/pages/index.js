@@ -7,6 +7,7 @@ import ButtonBugs from '../components/ButtonBugs';
 import LinkBugs from '../components/LinkBugs';
 import TabBugs from '../components/TabBugs';
 import FormBugs from '../components/FormBugs';
+import {reportButtonClick} from './analytics';
 
 const pageview = (url) => {
     if (window.gtag) {
@@ -33,6 +34,7 @@ export default function Home() {
 
     const handleButtonClick = () => {
         fileInputRef.current.click();
+        reportButtonClick('uploadFile', 'Upload HTML File');
     };
 
     const handleFileChange = async (event) => {
@@ -103,6 +105,7 @@ export default function Home() {
                     alert('Failed to generate HTML. No URL returned.');
                 }
             }
+            reportButtonClick('generateHTML', 'Generate HTML');
         } catch (error) {
             console.error('Failed to generate HTML:', error);
             alert('Failed to generate HTML. Please check the server and try again.');
@@ -128,6 +131,8 @@ export default function Home() {
                 } else {
                     openResultsPage(response.data); // Display the test results
                 }
+
+                reportButtonClick('testHTML', htmlButtonText);
             } catch (error) {
                 setLoading(false); // Reset loading state
                 console.error('Failed to fetch results:', error);
@@ -151,6 +156,8 @@ export default function Home() {
                 } else {
                     openResultsPage(response.data.results); // Display the test results
                 }
+
+                reportButtonClick('testURL', 'Test URL');
             } catch (error) {
                 setLoading(false); // Reset loading state
                 console.error('Failed to fetch results:', error);
@@ -171,7 +178,7 @@ export default function Home() {
     };
 
     const expandAll = () => {
-        const sections = ['buttonsSection', 'tabsSection', 'linksSection', 'doctypeSection'];
+        const sections = ['buttonsSection', 'tabsSection', 'linksSection', 'formSection'];
         sections.forEach((section) => {
             const element = document.getElementById(section);
             if (element) {
@@ -181,7 +188,7 @@ export default function Home() {
     };
 
     const minimizeAll = () => {
-        const sections = ['buttonsSection', 'tabsSection', 'linksSection', 'doctypeSection'];
+        const sections = ['buttonsSection', 'tabsSection', 'linksSection', 'formSection'];
         sections.forEach((section) => {
             const element = document.getElementById(section);
             if (element) {
@@ -229,7 +236,8 @@ export default function Home() {
                         </div>
                     )}
                     <div id="testButtons" className={styles.testButtons}>
-                        <button className={styles.button} type="button" onClick={handleTestHTML}>{htmlButtonText}</button>
+                        <button className={styles.button} type="button"
+                                onClick={handleTestHTML}>{htmlButtonText}</button>
                         <button className={styles.button} type="button" onClick={handleTestURL}>Test URL</button>
                         <input
                             type="file"

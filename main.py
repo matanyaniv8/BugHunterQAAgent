@@ -115,26 +115,26 @@ async def upload_file(file: UploadFile = File(...)):
     return JSONResponse(content={"message": "File uploaded successfully", "file_path": file_location})
 
 
-def get_suggestion(results):
-    return ""
-    prompt = """
-        only give me the results in a json format.
-       You are a helpful assistant. For every "failed" test in the given dictionary, add a possible solution in the same line and return the updated dictionary.
-        keep "passed" test Here is the input dictionary:
-       Input:
-       {results_dict}
-
-       Output should be the same dictionary with solutions added to failed tests. Solutions should be:
-       - For "Click Test: failed - Expected element not found after click": Ensure the expected element appears after the click by verifying the correct element locator and adding a wait condition if necessary.
-       - For "Visibility Test: failed - Button is hidden": Ensure the button is not hidden or covered by another element.
-       - For "Check Broken Link: FAILED - Status Code: 500": Investigate server issues or ensure the URL is correctly pointing to an existing resource.
-       - For "Check Responsive Link: FAILED - Status Code: 500": give me a possible solution.
-       """
-
-    # Prepare the prompt with the actual input dictionary
-    formatted_prompt = prompt.format(results_dict=results)
-
-    return ""
+# def get_suggestion(results):
+#     return ""
+#     prompt = """
+#         only give me the results in a json format.
+#        You are a helpful assistant. For every "failed" test in the given dictionary, add a possible solution in the same line and return the updated dictionary.
+#         keep "passed" test Here is the input dictionary:
+#        Input:
+#        {results_dict}
+#
+#        Output should be the same dictionary with solutions added to failed tests. Solutions should be:
+#        - For "Click Test: failed - Expected element not found after click": Ensure the expected element appears after the click by verifying the correct element locator and adding a wait condition if necessary.
+#        - For "Visibility Test: failed - Button is hidden": Ensure the button is not hidden or covered by another element.
+#        - For "Check Broken Link: FAILED - Status Code: 500": Investigate server issues or ensure the URL is correctly pointing to an existing resource.
+#        - For "Check Responsive Link: FAILED - Status Code: 500": give me a possible solution.
+#        """
+#
+#     # Prepare the prompt with the actual input dictionary
+#     formatted_prompt = prompt.format(results_dict=results)
+#
+#     return ""
 
 
 @app.post("/suggest_fix")
