@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse
 from pydantic import BaseModel, HttpUrl
 from typing import List, Optional
 import uvicorn
-
+from bs4 import BeautifulSoup
 import fix_suggestions_generator
 from qa_agent import execute_url_tests, execute_html_tests
 from buggy_code_generator import get_buggy_code_snippet
@@ -59,27 +59,26 @@ def generate_html(selection: BugSelection):
     print("Generating buggy website...")
     generated_html_snippets = get_buggy_code_snippet(selection.bugs)
 
-    # Create HTML structure
-    generated_html = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Buggy Website</title>
-    </head>
-    <body>
-        {generated_html_snippets}
-    </body>
-    </html>
-    """
+    # Read the existing HTML template
+    template_path = "./generated_html/website_template1.html"
+    with open(template_path, "r") as template_file:
+        template_html = template_file.read()
 
-    # Save the generated HTML file
+    # Define the placeholder in the template where you want to insert the snippets
+    placeholder = "<!-- INSERT BUGGY CODE HERE -->"
+
+    # Insert the generated HTML snippets at the placeholder
+    if placeholder in template_html:
+        updated_html = template_html.replace(placeholder, generated_html_snippets)
+    else:
+        print("Placeholder not found in the template")
+        return {"error": "Placeholder not found in the template"}
+
+    # Save the updated HTML file
     file_name = "buggy_website.html"
     file_path = os.path.join("generated_html", file_name)
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, "w") as file:
-        file.write(generated_html)
+        file.write(updated_html)
 
     return {"url": f"http://127.0.0.1:8000/generated_html/{file_name}"}
 

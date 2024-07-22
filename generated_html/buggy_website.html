@@ -1,13 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Sample Website</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            background-color: #007bff;
+            border-radius: 8px;
+        }
+        .tab {
+            padding: 15px 25px;
+            margin: 0 5px;
+            cursor: pointer;
+            color: #fff;
+            transition: background-color 0.3s ease;
+            border-radius: 8px;
+        }
+        .tab.active {
+            background-color: #0056b3;
+        }
+        .tab:hover {
+            background-color: #0056b3;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            margin: 0 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .images img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        form {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        input, textarea, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            .tab {
+                margin: 5px 0;
+            }
+            .tab-content {
+                margin: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome to Modern Sample Website</h1>
+    </div>
 
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Buggy Website</title>
-    </head>
-    <body>
-        <div class='javascript_link' style='background-color: #f1f1f1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;'><a href='javascript:void(0);' style='color: red; text-decoration: none;'>JavaScript Link</a></div>
-    </body>
-    </html>
-    
+    <div class="tabs">
+        <div class="tab active" onclick="showTabContent('home')">Home</div>
+        <div class="tab" onclick="showTabContent('about')">About</div>
+        <div class="tab" onclick="showTabContent('services')">Services</div>
+        <div class="tab" onclick="showTabContent('contact')">Contact</div>
+    </div>
+
+    <div id="home" class="tab-content active">
+        <h2>Home</h2>
+        <p>Welcome to our website. We offer a variety of services to meet your needs.</p>
+        <div class="images">
+            <img src="https://via.placeholder.com/600x400" alt="Sample Image 1">
+        </div>
+    </div>
+
+    <div id="about" class="tab-content">
+        <h2>About Us</h2>
+        <p>We are a company dedicated to providing the best service possible.</p>
+        <div class="images">
+            <img src="https://via.placeholder.com/600x400" alt="Sample Image 2">
+        </div>
+    </div>
+
+    <div id="services" class="tab-content">
+        <h2>Our Services</h2>
+        <ul>
+            <li><a href="#">Service 1</a></li>
+            <li><a href="#">Service 2</a></li>
+            <li><a href="#">Service 3</a></li>
+        </ul>
+        <div class="images">
+            <img src="https://via.placeholder.com/600x400" alt="Sample Image 3">
+        </div>
+    </div>
+
+    <div id="contact" class="tab-content">
+        <h2>Contact Us</h2>
+        <p>If you have any questions, feel free to <a href="mailto:info@example.com">email us</a>.</p>
+        <div class="images">
+            <img src="https://via.placeholder.com/600x400" alt="Sample Image 4">
+        </div>
+        <div class="form-container">
+            <form id="contactForm">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your name..">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Your email..">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Write something.." style="height:200px"></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    div class="non_functional_tabs" style="background-color: lightblue; padding: 10px; border: 1px solid black;">        <ul>            <li><a href="#">Home</a></li>            <li><a href="#">Contact</a></li>            <li><a href="#">About Us</a></li>        </ul>    </div>    <div class="broken_link" style="background-color: lightgreen; padding: 10px; border: 1px solid black;">        <a href="nonexistent.html" style="color: red; text-decoration: none;">Broken Link</a>        <a href="404.html" style="color: red; text-decoration: none;">Another Broken Link</a>    </div>    <div class="non_visible_link" style="background-color: lightcoral; padding: 10px; border: 1px solid black;">        <a href="https://n12.com" style="display:none; color: white; text-decoration: none;">Invisible Link</a>        <a href="https://n12.com" style="visibility:hidden; color: white; text-decoration: none;">Another Invisible Link</a>    </
+
+    <div class="footer">
+        <p>&copy; 2024 Modern Sample Website. All rights reserved.</p>
+    </div>
+
+    <script>
+        function showTabContent(tabId) {
+            // Hide all tab contents
+            var contents = document.querySelectorAll('.tab-content');
+            contents.forEach(function(content) {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            var tabs = document.querySelectorAll('.tab');
+            tabs.forEach(function(tab) {
+                tab.classList.remove('active');
+            });
+
+            // Show the selected tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Add active class to the selected tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

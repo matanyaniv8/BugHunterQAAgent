@@ -111,10 +111,3 @@ field of the response format."""
     answer = answer.replace('\\', "")
     print(answer)
     return answer
-
-
-if __name__ == '__main__':
-    get_buggy_code_snippet(
-        ['submit_button_no_action', 'empty_button', 'non_functional_tabs', 'broken_link', 'non_visible_link',
-         'no_href_link', 'javascript_link', 'incorrect_anchor_link', 'inputs buttons',
-         'Drop-Down list selection validation'])
