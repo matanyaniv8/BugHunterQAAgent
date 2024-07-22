@@ -1,12 +1,18 @@
 from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
-from requests_html import HTML
 
 
 def extract_links_from_html(html_content):
-    html = HTML(html=html_content)
-    return list(html.absolute_links)
+    soup = BeautifulSoup(html_content, 'html.parser')
+    all_a_tags = soup.find_all("a")
+    links = []
+    for tag in all_a_tags:
+        href = tag.get('href', 'no-href-attribute')
+        if href == "":
+            href = "empty-href-attribute"
+        links.append((href, str(tag)))
+    return links
 
 
 def extract_links_from_page(url):
@@ -82,6 +88,5 @@ def execute_url_tests(url):
 def execute_html_tests(html_content):
     print(f"Start running test on HTML content")
     links = extract_links_from_html(html_content)
-    link_htmls = [(link, "") for link in links]  # No HTML available for these links
-    results = run_tests_on_links(link_htmls)
+    results = run_tests_on_links(links)
     return results
