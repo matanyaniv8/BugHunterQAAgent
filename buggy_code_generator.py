@@ -89,21 +89,20 @@ def get_bugs_description(bugs: [str]):
     return description
 
 
-def get_buggy_code_snippet(bugs: [str]):
+def get_buggy_code_snippet(bugs: [str], file_path='./generated_html/buggy_code1.html'):
+    # Read the file content into a string
+    with open(file_path, 'r') as file:
+        file_content = file.read()
+
+    # Define the returned format
     returned_format = "{response : html_code}"
-    prompt = f""" Generate HTML code snippets that visually demonstrate various common web development bugs. Each 
-    snippet should include a single bug from the provided list and apply CSS styling to ensure that the snippet is 
-    not visually boring. Each HTML snippet should clearly represent the bug in isolation so that it can be easily 
-    identified and understood.
-    make sure that you give a buggy code for each bug!
-
-List of bugs to be included in the HTML snippets:\n{get_bugs_description(bugs)}
-
-Please ensure each snippet is contained within the same <div> with a class name corresponding to the bug type and apply 
-minimal CSS styling to make each snippet visually interesting. For example, use colors, borders, or padding. \nAlso 
-note that you should not include the <html>, <body>, or <head> tags as they are presumed to be part of an existing 
-page. please return with the format {returned_format} where you put the combined code in one div in the html code 
-field of the response format."""
+    prompt = f"""Take this html code, and the following html snippets that represents a buggy code, and generate buggy code and embeded it into the given website.
+    please return only the html content in a json format {returned_format}. PLEASE KEEP THE SAME GIVEN WEBSITE WITH IT'S STYLE AND IT'S ELEMENT, ONLY 
+    EMBED THE NEW CODE INSIDE OF THE GIVEN WEBSITE.
+    
+    the website is : {file_content}
+    The List of bugs are:\n{get_bugs_description(bugs)}
+"""
 
     answer = ask_openai_json(model="gpt-3.5-turbo", prompt=prompt, buggy_code_req=True)['response']
 
@@ -113,8 +112,22 @@ field of the response format."""
     return answer
 
 
+# prompt = f""" Generate a nice looking webpage with nice elements that embedded the following html code snippets that visually demonstrate various common web development bugs. Each
+# snippet should include a single bug from the provided list and apply CSS styling to ensure that the snippet is
+# not visually boring. Each HTML snippet should clearly represent the bug in isolation so that it can be easily
+# identified and understood.
+# make sure that you give a buggy code for each bug!
+
+
+# List of bugs to be included in the HTML snippets:\n{get_bugs_description(bugs)}
+# Please ensure each snippet is contained within the same <div> with a class name corresponding to the bug type and apply
+# minimal CSS styling to make each snippet visually interesting. For example, use colors, borders, or padding. \nAlso
+# note that you should not include the <html>, <body>, or <head> tags as they are presumed to be part of an existing
+# page. please return with the format {returned_format} where you put the combined code in one div in the html code
+# field of the response format."""
+
 if __name__ == '__main__':
     get_buggy_code_snippet(
         ['submit_button_no_action', 'empty_button', 'non_functional_tabs', 'broken_link', 'non_visible_link',
          'no_href_link', 'javascript_link', 'incorrect_anchor_link', 'inputs buttons',
-         'Drop-Down list selection validation'])
+         'Drop-Down list selection validation'], './generated_html/buggy_code1.html')

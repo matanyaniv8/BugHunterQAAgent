@@ -79,7 +79,7 @@ def generate_html(selection: BugSelection):
     file_path = os.path.join("generated_html", file_name)
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, "w") as file:
-        file.write(generated_html)
+        file.write(generated_html_snippets)
 
     return {"url": f"http://127.0.0.1:8000/generated_html/{file_name}"}
 
