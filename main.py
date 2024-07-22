@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse
 from pydantic import BaseModel, HttpUrl
 from typing import List, Optional
 import uvicorn
-from bs4 import BeautifulSoup
+import random
 import fix_suggestions_generator
 from qa_agent import execute_url_tests, execute_html_tests
 from buggy_code_generator import get_buggy_code_snippet
@@ -59,8 +59,8 @@ def generate_html(selection: BugSelection):
     print("Generating buggy website...")
     generated_html_snippets = get_buggy_code_snippet(selection.bugs)
 
-    # Read the existing HTML template
-    template_path = "./generated_html/website_template1.html"
+    template_files = ["./generated_html/website_template1.html", "./generated_html/website_template2.html"]
+    template_path = random.choice(template_files)
     with open(template_path, "r") as template_file:
         template_html = template_file.read()
 
