@@ -1,4 +1,4 @@
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 
@@ -28,7 +28,10 @@ def extract_links_from_page(url):
 
 
 def check_broken_link(link):
-    test_name = "check broken link"
+    test_name = "Check Broken Link"
+    # Skip internal page links and mailto links
+    if link.startswith("#") or link.startswith("mailto:"):
+        return test_name, "passed"
     try:
         response = requests.head(link, allow_redirects=True, timeout=5)
         if response.status_code == 200:
@@ -40,21 +43,27 @@ def check_broken_link(link):
     except requests.exceptions.ConnectionError:
         return test_name, "failed - Unable to connect"
     except requests.RequestException:
-        return test_name, f"failed - Invalid Request"
+        return test_name, "failed - Invalid Request"
     except Exception:
         return test_name, "failed - Failed to run test"
 
 
 def check_incorrect_url(link):
-    test_name = "Check valid URL format"
-    if link.startswith('http'):
+    test_name = "Check Valid URL Format"
+    # Check for valid URL, mailto link, or internal link
+    parsed_url = urlparse(link)
+    if link.startswith('#') or link.startswith("mailto:") or (
+            parsed_url.scheme in ['http', 'https'] and parsed_url.netloc):
         return test_name, "passed"
     else:
-        return test_name, "failed - URL does not start with 'http' or 'https'"
+        return test_name, "failed - URL does not start with 'http', 'https', or 'mailto'"
 
 
 def check_non_responsive_link(link):
-    test_name = "check responsive link"
+    test_name = "Check Responsive Link"
+    # Skip internal page links and mailto links
+    if link.startswith("#") or link.startswith("mailto:"):
+        return test_name, "passed"
     try:
         response = requests.get(link, timeout=5)
         if response.status_code == 200 and len(response.content) > 0:
@@ -65,13 +74,30 @@ def check_non_responsive_link(link):
         return test_name, f"failed - Failed to run test"
 
 
+def check_invalid_destination(link):
+    test_name = "Check Invalid Destination"
+    # Skip internal page links and mailto links
+    if link.startswith("#") or link.startswith("mailto:"):
+        return test_name, "passed"
+    try:
+        response = requests.get(link, timeout=5)
+        if response.status_code == 404:
+            return test_name, "failed - Page not found (404)"
+        else:
+            return test_name, "passed"
+    except requests.exceptions.ConnectionError:
+        return test_name, "failed - Unable to connect"
+    except requests.RequestException:
+        return test_name, "failed - Failed to run test"
+
+
 def run_tests_on_links(links):
     results = {}
     for link, link_html in links:
         results[link] = {
             "code_snippet": link_html
         }
-        for check in [check_broken_link, check_incorrect_url, check_non_responsive_link]:
+        for check in [check_broken_link, check_incorrect_url, check_non_responsive_link, check_invalid_destination]:
             test_name, result = check(link)
             results[link][test_name] = result
     return results
