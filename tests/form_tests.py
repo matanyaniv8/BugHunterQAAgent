@@ -1,6 +1,8 @@
 from selenium import webdriver
-from selenium.common import TimeoutException, NoSuchElementException, StaleElementReferenceException, ElementNotInteractableException
+from selenium.common import TimeoutException, NoSuchElementException, StaleElementReferenceException, \
+    ElementNotInteractableException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -57,8 +59,9 @@ test_data = {
 def test_input_fields(form):
     """Test input fields within a form using data-driven tests and boundary testing."""
     results = {}
-    inputs = form.find_elements(By.CSS_SELECTOR, "input, textarea")
-    for input in inputs:
+    forms_elements = form.find_elements(By.CSS_SELECTOR, "input, textarea, select")
+
+    for input in forms_elements:
         input_type = input.get_attribute("type") or input.tag_name
         input_name = input.get_attribute("name") or "Unnamed Input"
 
@@ -97,6 +100,27 @@ def test_input_fields(form):
             test_result = "passed - Clicked or Checked"
             try:
                 input.click() if not input.is_selected() else None
+            except Exception as e:
+                test_result = f"failed - Exception: {str(e)}"
+            results[test_description] = test_result
+
+        elif input.tag_name == "select":
+            test_description = f"{input.tag_name} {input_name}"
+            test_result = "passed - Options Selected"
+            try:
+                select = Select(input)
+                for option in select.options:
+                    select_val = option.get_attribute("value")
+                    print(select_val)
+                    if select_val == '' or select_val is None:
+                        test_result = f"failed - Select option: ({option.text}) - does not match a value property)"
+                    else:
+                        if option.is_enabled() and select_val.lower() == option.text.lower():
+                            select.select_by_value(select_val)
+                        elif not option.is_enabled():
+                            test_result = f"failed - Select element not enabled for option {option.text}"
+                        elif not input.is_displayed():
+                            test_result = f"failed - Select element not displayed for option {option.text}"
             except Exception as e:
                 test_result = f"failed - Exception: {str(e)}"
             results[test_description] = test_result

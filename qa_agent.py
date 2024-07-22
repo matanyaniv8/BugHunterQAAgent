@@ -97,5 +97,6 @@ def validate_html_or_url(url_or_file):
 
         message_type = 'Warning' if message_type == 'info' else message_type
         desc = f"{message_type} in Line {i['lastLine']}"
-        results[desc] = {"message": f"failed - {i['message']}"}
+        results[desc] = {"message": f"failed - {i['message']}",
+                         "code_snippet": i['extract'].strip()}
     return results

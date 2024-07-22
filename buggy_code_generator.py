@@ -95,6 +95,7 @@ def get_buggy_code_snippet(bugs: [str]):
     snippet should include a single bug from the provided list and apply CSS styling to ensure that the snippet is 
     not visually boring. Each HTML snippet should clearly represent the bug in isolation so that it can be easily 
     identified and understood.
+    make sure that you give a buggy code for each bug!
 
 List of bugs to be included in the HTML snippets:\n{get_bugs_description(bugs)}
 
@@ -106,8 +107,9 @@ field of the response format."""
 
     answer = ask_openai_json(model="gpt-3.5-turbo", prompt=prompt, buggy_code_req=True)['response']
 
+    answer = answer.replace('\\n', "")  # for dealing with \n
+    answer = answer.replace('\\', "")
     print(answer)
-    answer = answer.replace('\\n', "")  # for dealing with un
     return answer
 
 

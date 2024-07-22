@@ -138,5 +138,7 @@ if __name__ == "__main__":
         print("Manual interruption received (CTRL-C).")
     except asyncio.CancelledError:
         print("Async operations cancelled.")
+    except Exception as e:
+        print("Error during execution:", e)
     finally:
         print("Server is shutting down. Cleaning up resources...")

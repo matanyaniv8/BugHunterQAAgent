@@ -14,24 +14,38 @@ forms_bugs = {
     ],
     "inputs buttons": [
         '''
-        <form id="buggyForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name"><br><br>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email">
-        <button type="button" onclick="checkEmail()">Check Email</button><br><br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password"><br><br>
-
-        <label for="confirm_password">Confirm Password:</label>
-        <input type="password" id="confirm_password">
-        <button type="button" onclick="checkPasswords()">Check Passwords</button><br><br>
+        <form id="test-form">
+        <input type="text" name="text" disabled>
+        <input type="password" name="password" disabled>
+        <input type="email" name="email" disabled>
+        <input type="number" name="number" disabled>
+        <textarea name="textarea" disabled></textarea>
+        <input type="checkbox" name="checkbox" disabled>
+        <input type="radio" name="radio" disabled>
+        <select name="select" disabled>
+            <option value="">Select an option</option>
+            <option value="1">Option 1</option>
+        </select>
+        <input type="submit" value="Submit" disabled>
+        </form>
         '''
     ],
     "combined": [
         '''
+        <form id="test-form">
+        <input type="text" name="text" disabled>
+        <input type="password" name="password" disabled>
+        <input type="email" name="email" disabled>
+        <input type="number" name="number" disabled>
+        <textarea name="textarea" disabled></textarea>
+        <input type="checkbox" name="checkbox" disabled>
+        <input type="radio" name="radio" disabled>
+        <select name="select" disabled>
+            <option value="">Select an option</option>
+            <option value="1">Option 1</option>
+        </select>
+        <input type="submit" value="Submit" disabled>
+        </form>
         <form id="buggyForm">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name"><br><br>
