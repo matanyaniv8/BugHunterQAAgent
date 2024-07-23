@@ -55,7 +55,7 @@
     \`\`\`
 2. **Install Dependencies**:
     ```bash
-    cd BugHunter
+    cd system
     npm install axios
     ```
 
