@@ -60,7 +60,7 @@ def generate_html(selection: BugSelection):
     generated_html_snippets = get_buggy_code_snippet(selection.bugs)
 
     template_files = ["./generated_html/website_template1.html", "./generated_html/website_template2.html"]
-    template_path = './generated_html/buggy_website.html' # random.choice(template_files)
+    template_path = random.choice(template_files)
     with open(template_path, "r") as template_file:
         template_html = template_file.read()
 

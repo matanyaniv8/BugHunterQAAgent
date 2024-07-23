@@ -52,7 +52,9 @@ test_data = {
     "password": ["", "a" * 10, "a" * 255, "special@#$%^&*()"],
     "email": ["", "test@example.com", "invalid-email", "a" * 245 + "@example.com"],
     "number": ["", "123", "-123", "abc", "12345678901234567890"],
-    "textarea": ["", "a" * 10, "a" * 1024, "special@#$%^&*()"]
+    "textarea": ["", "a" * 10, "a" * 1024, "special@#$%^&*()"],
+    "date": ["", "2024-07-23", "23-07-2024", "invalid-date"],
+    "tel": ["", "+1234567890", "123-456-7890", "invalid-phone"],
 }
 
 test_data['card'] = test_data['number']
@@ -69,13 +71,27 @@ def test_input_fields(form):
 
         # Custom checks for specific input names
         if input_name.lower() in ["email", "mail"] and input_type != "email":
-            results[f"{input.tag_name} {input_name}"] = "failed - Input type should be 'email' but currently accepts invalid email inputs"
+            results[
+                f"{input.tag_name} {input_name}"] = "Failed - Input type should be 'email' but currently accepts invalid email inputs"
             continue
         if input_name.lower() in ["card", "credit card", "phone number"] and input_type != "number":
-            results[f"{input.tag_name} {input_name}"] = "failed - Input type should be 'number' but currently accepts non-numeric inputs"
+            results[
+                f"{input.tag_name} {input_name}"] = "Failed - Input type should be 'number' but currently accepts non-numeric inputs"
+            continue
+        if input_name.lower() in ["birthdate", "date"] and input_type != "date":
+            results[
+                f"{input.tag_name} {input_name}"] = "Failed - Input type should be 'date' but currently accepts non-date values"
+            continue
+        if input_name.lower() in ["phone", "telephone"] and input_type != "tel":
+            results[
+                f"{input.tag_name} {input_name}"] = "Failed - Input type should be 'tel' but currently accepts non-telephone values"
+            continue
+        if input_name.lower() in ["confirm_password"] and input_type != "password":
+            results[
+                f"{input.tag_name} {input_name}"] = "Failed - Input type should be 'password' but currently accepts non-password values"
             continue
 
-        elif input_type in ["text", "password", "email", "textarea", "number"]:
+        elif input_type in ["text", "password", "email", "textarea", "number", "url", "date", "tel"]:
             for value in test_data.get(input_type, ["test"]):  # Use default ["test"] if input_type is not in test_data
                 test_description = f"{input.tag_name} {input_type} {input_name} with tested value (length {len(value)})"
                 test_result = "passed - Filled or Checked"
@@ -83,25 +99,25 @@ def test_input_fields(form):
                 try:
                     input.clear()  # Clear the input field before each test
 
-                    if input_type in ["text", "password", "email", "textarea"]:
+                    if input_type in ["text", "password", "email", "textarea", "url", "date", "tel"]:
                         input.send_keys(value)
                     elif input_type == "number":
                         input.send_keys(value)
                         entered_value = input.get_attribute("value")
 
                         if not value.isnumeric() and entered_value != "":
-                            test_result = f"failed - Numeric input accepted non-numeric value:\n'{value}'"
+                            test_result = f"Failed - Numeric input accepted non-numeric value:\n'{value}'"
                         elif value.isnumeric() and entered_value != value:
-                            test_result = f"failed - Numeric input did not accept valid number:\n'{value}'"
+                            test_result = f"Failed - Numeric input did not accept valid number:\n'{value}'"
 
                 except ElementNotInteractableException:
-                    test_result = f"failed - Element not intractable tested value (length {len(value)})"
+                    test_result = f"Failed - Element not intractable tested value (length {len(value)})"
                 except TimeoutException:
-                    test_result = "failed - TimeoutException"
+                    test_result = "Failed - TimeoutException"
                 except StaleElementReferenceException:
-                    test_result = "failed - StaleElementReferenceException"
+                    test_result = "Failed - StaleElementReferenceException"
                 except Exception as e:
-                    test_result = f"failed - Exception: {str(e)}"
+                    test_result = f"Failed - Exception: {str(e)}"
 
                 results[test_description] = test_result
 
@@ -111,7 +127,7 @@ def test_input_fields(form):
             try:
                 input.click() if not input.is_selected() else None
             except Exception as e:
-                test_result = f"failed - Exception: {str(e)}"
+                test_result = f"Failed - Exception: {str(e)}"
             results[test_description] = test_result
 
         elif input.tag_name == "select":
@@ -121,18 +137,17 @@ def test_input_fields(form):
                 select = Select(input)
                 for option in select.options:
                     select_val = option.get_attribute("value")
-                    print(select_val)
                     if select_val == '' or select_val is None:
-                        test_result = f"failed - Select option: ({option.text}) - does not match a value property)"
+                        test_result = f"Failed - Select option: ({option.text}) - does not match a value property)"
                     else:
                         if option.is_enabled() and select_val.lower() == option.text.lower():
                             select.select_by_value(select_val)
                         elif not option.is_enabled():
-                            test_result = f"failed - Select element not enabled for option {option.text}"
+                            test_result = f"Failed - Select element not enabled for option {option.text}"
                         elif not input.is_displayed():
-                            test_result = f"failed - Select element not displayed for option {option.text}"
+                            test_result = f"Failed - Select element not displayed for option {option.text}"
             except Exception as e:
-                test_result = f"failed - Exception: {str(e)}"
+                test_result = f"Failed - Exception: {str(e)}"
             results[test_description] = test_result
 
     return results

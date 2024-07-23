@@ -15,6 +15,16 @@ forms_bugs = {
     "inputs buttons": [
         '''
         <form id="test-form">
+        <label for="credit-card">Credit Card:</label>
+        <input type="text" id="credit-card" name="credit card"><br><br>
+        <label for="phone-number">Phone Number:</label>
+        <input type="text" id="phone-number" name="phone number"><br><br>
+        <label for="birthdate">Birthdate:</label>
+        <input type="text" id="birthdate" name="birthdate"><br><br>
+        <label for="telephone">Telephone:</label>
+        <input type="text" id="telephone" name="telephone"><br><br>
+        <label for="confirm-password">Confirm Password:</label>
+        <input type="text" id="confirm-password" name="confirm_password"><br><br>
         <input type="email" name="mail" >
         <input type="text" name="text" disabled>
         <input type="password" name="password" disabled>
@@ -36,6 +46,16 @@ forms_bugs = {
         '''
         <form id="test-form">
         <input type="text" name="text" disabled>
+        <label for="credit-card">Credit Card:</label>
+        <input type="text" id="credit-card" name="credit card"><br><br>
+        <label for="phone-number">Phone Number:</label>
+        <input type="text" id="phone-number" name="phone number"><br><br>
+        <label for="birthdate">Birthdate:</label>
+        <input type="text" id="birthdate" name="birthdate"><br><br>
+        <label for="telephone">Telephone:</label>
+        <input type="text" id="telephone" name="telephone"><br><br>
+        <label for="confirm-password">Confirm Password:</label>
+        <input type="text" id="confirm-password" name="confirm_password"><br><br>
         <input type="password" name="password" disabled>
         <input type="email" name="email" disabled>
         <input type="number" name="number" disabled>
