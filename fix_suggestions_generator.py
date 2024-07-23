@@ -21,6 +21,7 @@ class TestData(BaseModel):
 
 def execute_fix_suggestion(category: str, item: str, test: str, code_snippet: Optional[str]) -> str:
     print("Generating fix...")
+    print(f"{category}, {item}, {test}")
     print(f"Code snippet: {code_snippet}")
 
     prompt = (

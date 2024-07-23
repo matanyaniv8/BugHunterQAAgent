@@ -90,8 +90,8 @@ def validate_html_or_url(url_or_file):
     Validate the HTML content from a URL or file
     :param url_or_file: URL or file to validate.
     :return: Validated Test Results."""
-    result = validate(url_or_file)
     results = {}
+    result = validate(url_or_file)
     for i in result['messages']:
         message_type = i['type']
 

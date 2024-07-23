@@ -55,6 +55,8 @@ test_data = {
     "textarea": ["", "a" * 10, "a" * 1024, "special@#$%^&*()"]
 }
 
+test_data['card'] = test_data['number']
+
 
 def test_input_fields(form):
     """Test input fields within a form using data-driven tests and boundary testing."""
@@ -65,7 +67,15 @@ def test_input_fields(form):
         input_type = input.get_attribute("type") or input.tag_name
         input_name = input.get_attribute("name") or "Unnamed Input"
 
-        if input_type in ["text", "password", "email", "textarea", "number"]:
+        # Custom checks for specific input names
+        if input_name.lower() in ["email", "mail"] and input_type != "email":
+            results[f"{input.tag_name} {input_name}"] = "failed - Input type should be 'email' but currently accepts invalid email inputs"
+            continue
+        if input_name.lower() in ["card", "credit card", "phone number"] and input_type != "number":
+            results[f"{input.tag_name} {input_name}"] = "failed - Input type should be 'number' but currently accepts non-numeric inputs"
+            continue
+
+        elif input_type in ["text", "password", "email", "textarea", "number"]:
             for value in test_data.get(input_type, ["test"]):  # Use default ["test"] if input_type is not in test_data
                 test_description = f"{input.tag_name} {input_type} {input_name} with tested value (length {len(value)})"
                 test_result = "passed - Filled or Checked"

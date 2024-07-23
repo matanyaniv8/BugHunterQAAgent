@@ -15,9 +15,11 @@ forms_bugs = {
     "inputs buttons": [
         '''
         <form id="test-form">
+        <input type="email" name="mail" >
         <input type="text" name="text" disabled>
         <input type="password" name="password" disabled>
-        <input type="email" name="email" disabled>
+        <input type="email" name="mail" disabled>
+        <input type="text" name="phone number">
         <input type="number" name="number" disabled>
         <textarea name="textarea" disabled></textarea>
         <input type="checkbox" name="checkbox" disabled>

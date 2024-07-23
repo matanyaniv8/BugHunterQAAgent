@@ -130,6 +130,7 @@ export default function Results() {
             item,
             test,
             result: formattedResult.main,
+            description: formattedResult.description,
             codeSnippet: parsedContent[categoryName][item]['code_snippet']
         });
         setDescription(formattedResult.description);
@@ -143,6 +144,7 @@ export default function Results() {
 
         const testData = {
             category: selectedTest.category,
+            description : selectedTest.description,
             item: selectedTest.item,
             test: selectedTest.test,
             code_snippet: selectedTest.codeSnippet
