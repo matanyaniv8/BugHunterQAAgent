@@ -33,17 +33,17 @@ export default function Results() {
     };
 
     const filterResults = (results) => {
-    if (sortOption === 'passed') {
-        return Object.keys(results).reduce((filtered, item) => {
-            const tests = results[item];
-            const allPassed = Object.entries(tests).every(([key, result]) =>
-                key === 'code_snippet' || result.toLowerCase().includes('passed')
-            );
-            if (allPassed) {
-                filtered[item] = tests;
-            }
-            return filtered;
-        }, {});
+        if (sortOption === 'passed') {
+            return Object.keys(results).reduce((filtered, item) => {
+                const tests = results[item];
+                const allPassed = Object.entries(tests).every(([key, result]) =>
+                    key === 'code_snippet' || result.toLowerCase().includes('passed')
+                );
+                if (allPassed) {
+                    filtered[item] = tests;
+                }
+                return filtered;
+            }, {});
         } else if (sortOption === 'failed') {
             return Object.keys(results).reduce((filtered, item) => {
                 const tests = results[item];
@@ -56,7 +56,6 @@ export default function Results() {
         }
         return results;
     };
-
 
     const calculatePassedTests = (category) => {
         let totalTests = 0;
@@ -90,6 +89,58 @@ export default function Results() {
             }
         });
         return `${validElements}/${totalElements} valid elements`;
+    };
+
+    const calculateScore = (category) => {
+        let totalTests = 0;
+        let passedTests = 0;
+        Object.values(category).forEach(test => {
+            Object.entries(test).forEach(([key, result]) => {
+                if (typeof result === 'string' && key !== 'code_snippet') {
+                    totalTests++;
+                    if (result.toLowerCase().includes('passed')) {
+                        passedTests++;
+                    }
+                }
+            });
+        });
+        return (passedTests / totalTests) * 100;
+    };
+
+    const getColor = (score) => {
+        if (score < 30) {
+            return 'red';
+        } else if (score < 60) {
+            return 'orange';
+        } else if (score < 80) {
+            return 'yellow';
+        } else if (score < 90) {
+            return 'lightgreen';
+        } else {
+            return 'green';
+        }
+    };
+
+    const renderScoreBar = (score) => {
+        return (
+            <div style={{ width: '100%', backgroundColor: '#e0e0e0', borderRadius: '5px', overflow: 'hidden' }}>
+                <div style={{
+                    width: `${score}%`,
+                    backgroundColor: getColor(score),
+                    height: '10px'
+                }}></div>
+            </div>
+        );
+    };
+
+    const renderScore = (category) => {
+        const score = calculateScore(category);
+        return (
+            <div className={styles.scoreContainer}>
+                <p>Score: {score.toFixed(2)}%</p>
+                {renderScoreBar(score)}
+            </div>
+        );
     };
 
     const formatResult = (result, showDetails = false) => {
@@ -204,6 +255,7 @@ export default function Results() {
                                     <>
                                         <p className={styles.subtitle}>{calculateValidElements(parsedContent[family])}</p>
                                         <p className={styles.subtitle}>{calculatePassedTests(parsedContent[family])}</p>
+                                        {renderScore(parsedContent[family])}
                                     </>
                                 )}
                             </div>
