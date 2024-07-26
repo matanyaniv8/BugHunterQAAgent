@@ -254,6 +254,10 @@ export default function Results() {
                                         <p className={styles.subtitle}>{calculatePassedTests(parsedContent[family])}</p>
                                     </>
                                 )}
+                                <div className={styles.tooltip}>
+                                    <span>ℹ️</span>
+                                    <span className={styles.tooltipText}>{`${titleCase(family)} explanation`}</span>
+                                </div>
                             </div>
                         ))}
                     </div>

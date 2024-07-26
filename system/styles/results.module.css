@@ -60,6 +60,7 @@
     cursor: pointer;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
+    position: relative;
 }
 
 .familySquare:hover {
@@ -226,3 +227,43 @@
     margin: 0 auto;
     margin-bottom: 10px;
 }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip .tooltipText {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position the tooltip above the text */
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltipText {
+    visibility: visible;
+    opacity: 1;
+}
+
+.infoButton {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #ddd;
+    text-align: center;
+    line-height: 20px;
+    margin-right: 10px;
+}
+
