@@ -120,16 +120,12 @@ export default function Results() {
     };
 
     const getColor = (score) => {
-        if (score < 30) {
-            return 'red';
-        } else if (score < 60) {
-            return 'orange';
+        if (score < 40) {
+            return 'var(--color-red)';
         } else if (score < 80) {
-            return 'yellow';
-        } else if (score < 90) {
-            return 'lightgreen';
+            return 'var(--color-orange)';
         } else {
-            return 'green';
+            return 'var(--color-green)';
         }
     };
 
@@ -259,7 +255,7 @@ export default function Results() {
                                 <div className={styles.titleContainer}>
                                     <h2>{titleCase(family)}</h2>
                                     <div className={styles.tooltip}>
-                                        <img src="/info.jpg" alt="Info" className={styles.infoImage} />
+                                        <img src="/info.jpg" alt="Info" className={styles.infoImage}/>
                                         <span className={styles.tooltipText}>{tooltipTexts[family]}</span>
                                     </div>
                                 </div>
@@ -310,7 +306,8 @@ export default function Results() {
                         )}
                         {selectedTest.codeSnippet && (
                             <div className={styles.codeSnippetContainer}>
-                                <div className={styles.codeSnippetTitle} onClick={() => setCodeSnippetVisible(!codeSnippetVisible)}>
+                                <div className={styles.codeSnippetTitle}
+                                     onClick={() => setCodeSnippetVisible(!codeSnippetVisible)}>
                                     Code Snippet &gt;
                                 </div>
                                 {codeSnippetVisible && (

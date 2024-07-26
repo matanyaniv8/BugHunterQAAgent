@@ -20,3 +20,9 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+:root {
+    --color-green: #9acc68;
+    --color-red: #eb4f3a;
+    --color-orange: #eb913a;
+}
