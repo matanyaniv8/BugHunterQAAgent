@@ -18,7 +18,7 @@ const pageview = (url) => {
 };
 
 const defaultUploadButtonText = "Upload HTML File";
-const defaultHtmlTestBtnText = "Test HTML";
+const defaultHtmlTestBtnText = "Start Test";
 export default function Home() {
     const [selectedBugs, setSelectedBugs] = useState([]);
     const [generatedUrl, setGeneratedUrl] = useState('');
@@ -35,7 +35,6 @@ export default function Home() {
     const handleButtonClick = () => {
         fileInputRef.current.click();
         reportButtonClick('uploadFile', 'Upload HTML File');
-        // trackEvent('click', 'Button', 'Upload HTML File', 'uploadFile');
 
     };
 
@@ -56,6 +55,7 @@ export default function Home() {
                 const {file_path} = response.data;
                 console.log('File uploaded successfully', file_path);
                 setUploadBtnText("Uploaded!")
+                setInputUrl("");
                 setFileLocation(file_path);
                 sethtmlButtonText("Start Test")
 
@@ -99,7 +99,7 @@ export default function Home() {
                 });
                 if (response.data.url) {
                     setGeneratedUrl(response.data.url);
-                    setFileLocation("")
+                    setFileLocation("");
                     sethtmlButtonText(defaultHtmlTestBtnText)
                     setUploadBtnText(defaultUploadButtonText);
                 } else {
@@ -107,7 +107,6 @@ export default function Home() {
                 }
             }
             reportButtonClick('generateHTML', 'Generate HTML');
-            // trackEvent('click', 'Button', 'Generate HTML', 'generateHTML');
 
         } catch (error) {
             console.error('Failed to generate HTML:', error);
@@ -136,7 +135,6 @@ export default function Home() {
                 }
 
                 reportButtonClick('testHTML', htmlButtonText);
-                // trackEvent('click', 'Button', htmlButtonText, 'testHTML');
 
             } catch (error) {
                 setLoading(false); // Reset loading state
@@ -162,7 +160,6 @@ export default function Home() {
                     openResultsPage(response.data.results); // Display the test results
                 }
 
-                // trackEvent('click', 'Button', 'Test URL', 'testURL');
                 reportButtonClick('testURL', 'Test URL');
             } catch (error) {
                 setLoading(false); // Reset loading state
