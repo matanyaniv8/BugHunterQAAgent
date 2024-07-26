@@ -86,55 +86,6 @@ def perform_tests(driver):
     return results
 
 
-# def perform_tests(driver):
-#     """Perform form input and submission tests on the loaded content."""
-#     results = {}
-#     try:
-#         # Wait until buttons are potentially loaded
-#         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR,
-#                                                                         "button, input[type='button'], input[type='submit'], input[type='reset'], a[role='button']")))
-#         # Select all elements that could be considered buttons
-#         buttons = driver.find_elements(By.CSS_SELECTOR,
-#                                        "button, input[type='button'], input[type='submit'], input[type='reset'], a[role='button']")
-#     except TimeoutException:
-#         return results
-#
-#     for index, button in enumerate(buttons):
-#         button_html = button.get_attribute('outerHTML')
-#         button_text = button.text.strip() or button.get_attribute('title') or button.get_attribute(
-#             'value') or "Unnamed Button"
-#         button_description = f"Button {index + 1}: {button_text}"  # Create a unique description for each button
-#
-#         # Determine visibility
-#         visibility_test = "passed - Button is visible." if button.is_displayed() and button_text != "Unnamed Button" else "failed - Button is hidden."
-#
-#         # Determine interactivity
-#         interact_test = "passed - Button is interactive." if button.is_enabled() else "failed - Button is not interactive."
-#
-#         # Attempt to click the button if it's visible and interactive
-#         try:
-#             if button.is_displayed() and button.is_enabled():
-#                 button.click()
-#                 # Example of checking for some JavaScript condition after click
-#                 if not driver.execute_script("return document.getElementById('expected-element-id') !== null"):
-#                     click_test = "failed - Expected element not found after click"
-#                 else:
-#                     click_test = "passed - Button clicked and expected element found."
-#             else:
-#                 click_test = "NOT ATTEMPTED - Button is not visible or not interactive."
-#         except Exception as e:
-#             click_test = f"failed - {str(e)}"
-#
-#         results[button_description] = {
-#             "Visibility Test": visibility_test,
-#             "Interactivity Test": interact_test,
-#             "Click Test": click_test,
-#             "code_snippet": button_html
-#         }
-#
-#     return results
-
-
 # Test data for data-driven testing and boundary testing
 test_data = {
     "text": ["", "a" * 10, "a" * 255, "special@#$%^&*()"],

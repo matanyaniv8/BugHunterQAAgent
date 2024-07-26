@@ -4,6 +4,14 @@ import styles from '../styles/results.module.css';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
+const tooltipTexts = {
+    'W3C Validation Report': 'Validates adherence to W3C web standards, ensuring your site is accessible and works well across different browsers and devices.',
+    'links': 'Checks links for reachability (status 200), valid format (http, https, mailto, or internal), responsiveness, and absence of 404 errors.',
+    'buttons': 'Tests the functionality, visibility, and interactivity of button elements.',
+    'forms': 'Evaluates input fields such as text boxes and checkboxes, along with the functionality of submit buttons.'
+};
+
+
 export default function Results() {
     const router = useRouter();
     const [parsedContent, setParsedContent] = useState(null);
@@ -247,17 +255,19 @@ export default function Results() {
                         {['links', 'buttons', 'forms', 'W3C Validation Report'].map(family => (
                             <div key={family} className={styles.familySquare} onClick={() => handleFamilyClick(family)}>
                                 {parsedContent && parsedContent[family] && renderScore(parsedContent[family])}
-                                <h2>{titleCase(family)}</h2>
+                                <div className={styles.titleContainer}>
+                                    <h2>{titleCase(family)}</h2>
+                                    <div className={styles.tooltip}>
+                                        <span className={styles.infoButton}>i</span>
+                                        <span className={styles.tooltipText}>{tooltipTexts[family]}</span>
+                                    </div>
+                                </div>
                                 {parsedContent && parsedContent[family] && (
                                     <>
                                         <p className={styles.subtitle}>{calculateValidElements(parsedContent[family])}</p>
                                         <p className={styles.subtitle}>{calculatePassedTests(parsedContent[family])}</p>
                                     </>
                                 )}
-                                <div className={styles.tooltip}>
-                                    <span>ℹ️</span>
-                                    <span className={styles.tooltipText}>{`${titleCase(family)} explanation`}</span>
-                                </div>
                             </div>
                         ))}
                     </div>

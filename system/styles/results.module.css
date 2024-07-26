@@ -28,8 +28,8 @@
     padding: 20px;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 8px;
-    width: 80%;
-    max-width: 1000px;
+    width: 90%;
+    max-width: 1600px;
     font-family: "Exo 2", serif;
 }
 
@@ -43,7 +43,8 @@
 
 .familyContainer {
     display: flex;
-    justify-content: space-around;
+    flex-wrap: wrap;
+    justify-content: space-between;
     width: 100%;
     margin-bottom: 20px;
     font-family: "Exo 2", serif;
@@ -92,6 +93,12 @@
 
 .listItem li:hover {
     color: #3797d5;
+}
+
+.sortContainer {
+    margin-bottom: 30px;
+    margin-left: 15px;
+    font-size: 16px;
 }
 
 .homeButton {
@@ -224,14 +231,33 @@
 
 .scoreContainer {
     width: 100px;
-    margin: 0 auto;
-    margin-bottom: 10px;
+    margin: 0 auto 10px;
 }
 
+.titleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
 .tooltip {
     position: relative;
     display: inline-block;
     cursor: pointer;
+}
+
+.infoButton {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #ddd;
+    text-align: center;
+    line-height: 20px;
+    color: blue;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    margin-right: 10px;
 }
 
 .tooltip .tooltipText {
@@ -244,7 +270,7 @@
     padding: 5px;
     position: absolute;
     z-index: 1;
-    bottom: 125%; /* Position the tooltip above the text */
+    bottom: 125%;
     left: 50%;
     margin-left: -100px;
     opacity: 0;
@@ -255,15 +281,3 @@
     visibility: visible;
     opacity: 1;
 }
-
-.infoButton {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: #ddd;
-    text-align: center;
-    line-height: 20px;
-    margin-right: 10px;
-}
-
