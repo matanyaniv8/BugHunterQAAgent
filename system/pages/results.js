@@ -113,6 +113,9 @@ export default function Results() {
                 }
             });
         });
+        if (totalTests === 0) {
+            return 100; // Default score to 100% if there are no tests
+        }
         return Math.round((passedTests / totalTests) * 100);
     };
 
@@ -198,7 +201,7 @@ export default function Results() {
 
         const testData = {
             category: selectedTest.category,
-            description : selectedTest.description,
+            description: selectedTest.description,
             item: selectedTest.item,
             test: selectedTest.test,
             code_snippet: selectedTest.codeSnippet
@@ -217,7 +220,6 @@ export default function Results() {
             setLoadingSuggestion(false);
 
             if (data.suggestion) {
-                // Remove the "Suggested Fix:" label from the suggestion
                 const formattedSuggestion = data.suggestion.replace(/^Suggested Fix:\s*/i, '');
                 setSuggestion(formattedSuggestion);
             } else {
