@@ -250,12 +250,12 @@ export default function Results() {
                     <div className={styles.familyContainer}>
                         {['links', 'buttons', 'forms', 'W3C Validation Report'].map(family => (
                             <div key={family} className={styles.familySquare} onClick={() => handleFamilyClick(family)}>
+                                {parsedContent && parsedContent[family] && renderScore(parsedContent[family])}
                                 <h2>{titleCase(family)}</h2>
                                 {parsedContent && parsedContent[family] && (
                                     <>
                                         <p className={styles.subtitle}>{calculateValidElements(parsedContent[family])}</p>
                                         <p className={styles.subtitle}>{calculatePassedTests(parsedContent[family])}</p>
-                                        {renderScore(parsedContent[family])}
                                     </>
                                 )}
                             </div>
