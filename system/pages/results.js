@@ -7,10 +7,9 @@ import 'react-circular-progressbar/dist/styles.css';
 const tooltipTexts = {
     'W3C Validation Report': 'Validates adherence to W3C web standards, ensuring your site is accessible and works well across different browsers and devices.',
     'links': 'Checks links for reachability (status 200), valid format (http, https, mailto, or internal), responsiveness, and absence of 404 errors.',
-    'buttons': 'Tests the functionality, visibility, and interactivity of button elements.',
-    'forms': 'Evaluates input fields such as text boxes and checkboxes, along with the functionality of submit buttons.'
+    'buttons': 'Tests buttons for visibility, interactivity, and click functionality, ensuring they perform expected actions.',
+    'forms': 'Evaluates input fields for valid data entry, correct input types, and successful form submission.'
 };
-
 
 export default function Results() {
     const router = useRouter();
@@ -258,7 +257,7 @@ export default function Results() {
                                 <div className={styles.titleContainer}>
                                     <h2>{titleCase(family)}</h2>
                                     <div className={styles.tooltip}>
-                                        <span className={styles.infoButton}>i</span>
+                                        <img src="/info.jpg" alt="Info" className={styles.infoImage} />
                                         <span className={styles.tooltipText}>{tooltipTexts[family]}</span>
                                     </div>
                                 </div>

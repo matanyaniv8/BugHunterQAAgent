@@ -240,24 +240,16 @@
     justify-content: center;
     gap: 5px;
 }
+
 .tooltip {
     position: relative;
     display: inline-block;
     cursor: pointer;
 }
 
-.infoButton {
-    display: inline-block;
+.infoImage {
     width: 20px;
     height: 20px;
-    border-radius: 50%;
-    background-color: #ddd;
-    text-align: center;
-    line-height: 20px;
-    color: blue;
-    font-size: 14px;
-    font-family: Arial, sans-serif;
-    margin-right: 10px;
 }
 
 .tooltip .tooltipText {
@@ -267,7 +259,7 @@
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 5px;
+    padding: 15px;
     position: absolute;
     z-index: 1;
     bottom: 125%;
@@ -275,9 +267,11 @@
     margin-left: -100px;
     opacity: 0;
     transition: opacity 0.3s;
+    line-height: 1.5;
 }
 
 .tooltip:hover .tooltipText {
     visibility: visible;
     opacity: 1;
 }
+
