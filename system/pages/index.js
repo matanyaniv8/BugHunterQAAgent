@@ -78,6 +78,7 @@ export default function Home() {
     const handleCheckboxChange = (event) => {
         const {value, checked} = event.target;
         if (checked) {
+            setInputUrl("");
             setSelectedBugs((prev) => [...prev, value]);
         } else {
             setSelectedBugs((prev) => prev.filter((bug) => bug !== value));
