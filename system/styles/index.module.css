@@ -43,8 +43,8 @@
 
 .button:disabled {
     cursor: not-allowed;
-    background-color: #e0e0e0; /* Grey background for disabled buttons */
-    color: #a0a0a0; /* Grey text color for disabled buttons */
+    background-color: #e0e0e0;
+    color: #a0a0a0;
 }
 
 .button:disabled:hover {
@@ -155,7 +155,7 @@
 }
 
 .generatedHTML {
-    margin-left: 290px;
+    margin-left: 250px;
     margin-bottom: 30px;
 
 }

@@ -238,7 +238,7 @@ export default function Home() {
                     {generatedUrl && (
                         <div className={styles.generatedHTML}>
                             <a href={generatedUrl} id="generatedUrl" target="_blank"
-                               rel="noopener noreferrer">Click Here For Preview</a>
+                               rel="noopener noreferrer">Click Here For Preview Generated HTML</a>
                         </div>
                     )}
                     <div id="testButtons" className={styles.testButtons}>
