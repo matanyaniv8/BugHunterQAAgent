@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styles from '../styles/results.module.css';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 export default function Results() {
     const router = useRouter();
@@ -104,7 +106,7 @@ export default function Results() {
                 }
             });
         });
-        return (passedTests / totalTests) * 100;
+        return Math.round((passedTests / totalTests) * 100);
     };
 
     const getColor = (score) => {
@@ -121,24 +123,18 @@ export default function Results() {
         }
     };
 
-    const renderScoreBar = (score) => {
-        return (
-            <div style={{ width: '100%', backgroundColor: '#e0e0e0', borderRadius: '5px', overflow: 'hidden' }}>
-                <div style={{
-                    width: `${score}%`,
-                    backgroundColor: getColor(score),
-                    height: '10px'
-                }}></div>
-            </div>
-        );
-    };
-
     const renderScore = (category) => {
         const score = calculateScore(category);
         return (
             <div className={styles.scoreContainer}>
-                <p>Score: {score.toFixed(2)}%</p>
-                {renderScoreBar(score)}
+                <CircularProgressbar
+                    value={score}
+                    text={`${score}%`}
+                    styles={buildStyles({
+                        textColor: getColor(score),
+                        pathColor: getColor(score),
+                    })}
+                />
             </div>
         );
     };
