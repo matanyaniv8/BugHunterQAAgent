@@ -1,7 +1,7 @@
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import {useRouter} from 'next/router';
+import {useEffect, useState} from 'react';
 import styles from '../styles/results.module.css';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import {CircularProgressbar, buildStyles} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 const tooltipTexts = {

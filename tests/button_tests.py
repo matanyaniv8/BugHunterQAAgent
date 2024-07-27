@@ -147,6 +147,9 @@ def test_input_fields(form):
 
 
 def get_button_text(button):
+    """
+    Gets button text given a button element.
+    """
     # Try to get text directly from the button
     text = button.get_attribute('value').strip()
     if not text:

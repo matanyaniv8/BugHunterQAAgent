@@ -9,7 +9,6 @@ app = FastAPI()
 with open('openAI_Key', 'r') as file:
     OPENAI_API_KEY = file.read().strip()
     openai.api_key = OPENAI_API_KEY
-    print(f"Read Open AI API Key successfully! - {OPENAI_API_KEY}")
 
 
 class TestData(BaseModel):
@@ -20,10 +19,6 @@ class TestData(BaseModel):
 
 
 def execute_fix_suggestion(category: str, item: str, test: str, code_snippet: Optional[str]) -> str:
-    print("Generating fix...")
-    print(f"{category}, {item}, {test}")
-    print(f"Code snippet: {code_snippet}")
-
     prompt = (
         f"Here is a bug in the code:\n\n"
         f"Code:\n{code_snippet}\n\n"
@@ -50,7 +45,7 @@ def execute_fix_suggestion(category: str, item: str, test: str, code_snippet: Op
     ]
 
     completion = openai.chat.completions.create(
-            model="gpt-4",
-            messages=messages)
+        model="gpt-4",
+        messages=messages)
 
     return completion.choices[0].message.content

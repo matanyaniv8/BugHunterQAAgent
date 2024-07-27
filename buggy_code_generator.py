@@ -8,7 +8,6 @@ from system.bug_families.tab_bugs import tab_bugs
 
 with open('openAI_Key', 'r') as file:
     OPENAI_API_KEY = file.read().strip()
-    print(f"Read Open AI API Key successfully! - {OPENAI_API_KEY}")
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -71,7 +70,6 @@ def ask_openai_json(model, prompt, buggy_code_req=True):
         # response_json = json.loads(response_text)
         response_json = response_text if not buggy_code_req else json.loads(response_text)
     except json.JSONDecodeError:
-        print("Could not parse response as JSON. Returning as plain text.")
         if buggy_code_req:
             response_json = {"response": response_text.split("response")[-1][4:-7]}
         else:
@@ -109,5 +107,4 @@ field of the response format."""
 
     answer = answer.replace('\\n', "")  # for dealing with \n
     answer = answer.replace('\\', "")
-    print(answer)
     return answer

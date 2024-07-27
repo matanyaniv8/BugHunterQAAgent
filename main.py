@@ -56,7 +56,6 @@ async def shutdown_event():
 
 @app.post("/generate")
 def generate_html(selection: BugSelection):
-    print("Generating buggy website...")
     generated_html_snippets = get_buggy_code_snippet(selection.bugs)
 
     template_files = ["./generated_html/website_template1.html", "./generated_html/website_template2.html"]
@@ -71,7 +70,6 @@ def generate_html(selection: BugSelection):
     if placeholder in template_html:
         updated_html = template_html.replace(placeholder, generated_html_snippets)
     else:
-        print("Placeholder not found in the template")
         return {"error": "Placeholder not found in the template"}
 
     # Save the updated HTML file
@@ -109,7 +107,6 @@ async def upload_file(file: UploadFile = File(...)):
             shutil.copyfileobj(file.file, f)
         return JSONResponse(content={"message": "File uploaded successfully", "file_path": file_location})
     except asyncio.CancelledError:
-        print("Upload was cancelled")
         raise
     except Exception as e:
         return JSONResponse(status_code=500, content={"message": str(e)})
@@ -117,7 +114,6 @@ async def upload_file(file: UploadFile = File(...)):
 
 @app.post("/suggest_fix")
 def suggest_fix(test_data: TestData):
-    print(test_data)
     try:
         suggestion = fix_suggestions_generator.execute_fix_suggestion(
             test_data.category,
@@ -127,7 +123,6 @@ def suggest_fix(test_data: TestData):
         )
         return {"suggestion": suggestion}
     except Exception as e:
-        print("Error during suggestion generation:", e)
         return {"suggestion": "Error during suggestion generation"}
 
 

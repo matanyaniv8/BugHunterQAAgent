@@ -1,10 +1,9 @@
-// pages/_app.js
 import '../app/globals.css';
 import {useEffect} from 'react';
 import {useRouter} from 'next/router';
 import Script from 'next/script';
 
-const GA_TRACKING_ID = 'G-RH9W2LG6J1'; // Replace with your Google Analytics tracking ID
+export const GA_TRACKING_ID = 'G-RH9W2LG6J1';
 
 const pageview = (url) => {
     if (typeof window.gtag !== 'undefined') {

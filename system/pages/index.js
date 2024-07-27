@@ -1,4 +1,3 @@
-// pages/index.js or your main component file
 import {useEffect, useRef, useState} from 'react';
 import axios from 'axios';
 import {useRouter} from 'next/router';
@@ -8,10 +7,11 @@ import LinkBugs from '../components/LinkBugs';
 import TabBugs from '../components/TabBugs';
 import FormBugs from '../components/FormBugs';
 import {reportButtonClick} from './analytics';
+import {GA_TRACKING_ID} from "./_app";
 
 const pageview = (url) => {
     if (window.gtag) {
-        window.gtag('config', 'G-RH9W2LG6J1', {
+        window.gtag('config', GA_TRACKING_ID, {
             page_path: url,
         });
     }

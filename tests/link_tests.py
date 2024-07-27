@@ -104,15 +104,12 @@ def run_tests_on_links(links):
 
 
 def execute_url_tests(url):
-    print(f"Start running test on {url}")
     all_links = extract_links_from_page(url)
-    print(f"Extracted all links - total of {len(all_links)} links")
     results = run_tests_on_links(all_links)
     return results
 
 
 def execute_html_tests(html_content):
-    print(f"Start running test on HTML content")
     links = extract_links_from_html(html_content)
     results = run_tests_on_links(links)
     return results
