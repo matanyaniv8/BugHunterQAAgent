@@ -1,34 +1,35 @@
 # BugHunter
 
-### Created by Shahar Hahami and Matan Yaniv
 
 ## Overview
 
 **BugHunter** is a comprehensive system designed to generate websites with intentional bugs and test them using a QA
-agent. It provides comprehesive and detailed reports on the functionality of various web components and suggests fixes
+agent.
+The QA Agent provides comprehensive and detailed reports on the functionality of various web components
+and suggests fixes
 based on best practices.
 
 ## Top Features
 
 1. **Buggy Website Generator**
-2. **QA Agent: Buttons, Forms, Links, Tabs**
+2. **QA Agent: Buttons, Forms, Links, Tabs, Compatibility and Accessibility Testing**
 3. **Bug Fix Suggestions**
-4. **Interactive Interface**
+4. **Interactive and dynamic Interface**
 
 ## Components
 
 ### Buggy Website Generator
 
-- **Functionality**: Generates websites with selected bugs.
-- **Templates**: Uses OpenAI for templates with bugs.
-- **Independence**: Not connected to the QA Agent.
+- **Functionality**: Generates buggy code snippets given selected bugs templates.
+- **Templates**: Uses OpenAI for templates with bugs, and embeds it into a given HTML website.
+- **Independence**: Seperated from the QA Agent.
 
 ### QA Agent
 
 - **Testing Scope**: Supports testing on generated HTML or user-provided URLs.
 - **Results**: Provides component-specific results.
-- **Tools Used**: Selenium, W3C (The World Wide Web Consortium) Validator class for basic Standards and Protocotls for
-  web development ,and BeautifulSoup for testing.
+- **Tools Used**: Selenium, W3C (The World Wide Web Consortium) Validator class for basic Standards and Protocols for
+  web development, and BeautifulSoup for testing.
 
 #### Supported Components
 
@@ -39,7 +40,7 @@ based on best practices.
     - Tests the markup validity of web documents according to the W3C (World Wide Web Consortium) standards, ensuring
       accessibility and compatibility across different browsers and devices.
 
-- **Fix Suggestions**: Suggest fixes based on best practices given a buggy code snippet.
+- **Fix Suggestions**: Suggest fixes based on best practices given a buggy code snippet using OpenAI query.
 
 ### BugHunter System (Node.js & React Website)
 
@@ -81,7 +82,7 @@ based on best practices.
 - **Generate a Buggy Website**: Use the Buggy Website Generator to create a website with selected bugs.
 - **Upload or Provide URL for Testing**: Use the QA Agent to test the generated HTML or any user-provided URL.
 - **View Results**: Check the dynamic website for detailed test results and suggested fixes.
-- **Bug Fix Suggestions**: Implementation of an automated bug fix suggestion feature.
+- **Bug Fix Suggestions**: Implementation of an automated bug fix suggestion feature using OpenAI query.
 
 ## License
 
