@@ -3,7 +3,7 @@ import {useEffect} from 'react';
 import {useRouter} from 'next/router';
 import Script from 'next/script';
 
-export const GA_TRACKING_ID = 'G-RH9W2LG6J1';
+export const GA_TRACKING_ID = ''; // complete your google analytics
 
 const pageview = (url) => {
     if (typeof window.gtag !== 'undefined') {
