@@ -1,6 +1,10 @@
 # BugHunter
 
 
+https://github.com/user-attachments/assets/84647df8-df95-4c80-9d71-a2742447890a
+
+
+
 ## Overview
 
 **BugHunter** is a comprehensive system designed to generate websites with intentional bugs and test them using a QA
